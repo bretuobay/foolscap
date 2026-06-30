@@ -66,3 +66,6 @@
 @import './components/layout/container.css';
 @import './components/layout/aspect-ratio.css';
 @import './components/layout/spacer.css';
+
+/* 6. Tier 2/3 interactive components */
+@import './components/toast.css';

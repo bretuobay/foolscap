@@ -1,36 +1,67 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { Button } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'Foolscap/Button',
-  parameters: {
-    docs: {
-      description: {
-        component:
-          'Class-based button markup using the Foolscap CSS layer. React adapters will replace this with package components in Phase 3.',
-      },
-    },
+  title: 'React/Button',
+  component: Button,
+  tags: ['autodocs'],
+  argTypes: {
+    variant: { control: 'select', options: ['primary', 'secondary', 'ghost', 'danger'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    loading: { control: 'boolean' },
+    disabled: { control: 'boolean' },
   },
-} satisfies Meta
+  args: {
+    children: 'Button',
+  },
+} satisfies Meta<typeof Button>
 
 export default meta
+type Story = StoryObj<typeof Button>
 
-type Story = StoryObj
+export const Primary: Story = {
+  args: { variant: 'primary', children: 'Primary' },
+}
 
-export const Variants: Story = {
+export const Secondary: Story = {
+  args: { variant: 'secondary', children: 'Secondary' },
+}
+
+export const Ghost: Story = {
+  args: { variant: 'ghost', children: 'Ghost' },
+}
+
+export const Danger: Story = {
+  args: { variant: 'danger', children: 'Delete' },
+}
+
+export const Loading: Story = {
+  args: { children: 'Saving…', loading: true },
+}
+
+export const Disabled: Story = {
+  args: { children: 'Unavailable', disabled: true },
+}
+
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+    </div>
+  ),
+}
+
+export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-      <button className="fc-button" data-variant="primary" type="button">
-        Primary
-      </button>
-      <button className="fc-button" data-variant="secondary" type="button">
-        Secondary
-      </button>
-      <button className="fc-button" data-variant="ghost" type="button">
-        Ghost
-      </button>
-      <button className="fc-button" disabled type="button">
-        Disabled
-      </button>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="danger">Danger</Button>
+      <Button disabled>Disabled</Button>
+      <Button loading>Loading</Button>
     </div>
   ),
 }

@@ -3,5 +3,11 @@
   "compilerOptions": {
     "rootDir": "."
   },
-  "include": ["src/index.ts", "vite.config.ts", "vitest.config.ts", "postcss.config.js"]
+  "include": [
+    "src/index.ts",
+    "src/**/*.test.ts",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "postcss.config.js"
+  ]
 }

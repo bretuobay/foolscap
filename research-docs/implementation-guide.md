@@ -440,7 +440,7 @@ Thin wrappers: forward the class, spread remaining props, merge Foolscap classna
 
 - [ ] One component file per Tier 1 spec (37 components + 12 layout primitives)
 - [ ] Each exports a typed `Props` interface extending the relevant HTML element's attributes
-- [ ] Each uses `forwardRef`
+- [ ] Each uses ref. No use of `forwardRef` since is deprecated 
 - [ ] Example pattern:
   ```tsx
   export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
