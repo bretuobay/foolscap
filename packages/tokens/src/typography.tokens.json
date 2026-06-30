@@ -1,0 +1,27 @@
+{
+  "font-sans": {
+    "$value": "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "$type": "fontFamily"
+  },
+  "font-serif": { "$value": "Georgia, 'Times New Roman', Times, serif", "$type": "fontFamily" },
+  "font-mono": {
+    "$value": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace",
+    "$type": "fontFamily"
+  },
+  "text-xs": { "$value": "clamp(0.75rem, 0.71rem + 0.18vw, 0.875rem)", "$type": "dimension" },
+  "text-sm": { "$value": "clamp(0.875rem, 0.83rem + 0.22vw, 1rem)", "$type": "dimension" },
+  "text-base": { "$value": "clamp(1rem, 0.95rem + 0.25vw, 1.125rem)", "$type": "dimension" },
+  "text-lg": { "$value": "clamp(1.125rem, 1.06rem + 0.33vw, 1.25rem)", "$type": "dimension" },
+  "text-xl": { "$value": "clamp(1.25rem, 1.14rem + 0.54vw, 1.5rem)", "$type": "dimension" },
+  "text-2xl": { "$value": "clamp(1.5rem, 1.32rem + 0.89vw, 1.875rem)", "$type": "dimension" },
+  "text-3xl": { "$value": "clamp(1.875rem, 1.55rem + 1.61vw, 2.25rem)", "$type": "dimension" },
+  "text-4xl": { "$value": "clamp(2.25rem, 1.77rem + 2.41vw, 3rem)", "$type": "dimension" },
+  "text-5xl": { "$value": "clamp(3rem, 2.25rem + 3.75vw, 4.5rem)", "$type": "dimension" },
+  "leading-tight": { "$value": "1.25", "$type": "number" },
+  "leading-normal": { "$value": "1.5", "$type": "number" },
+  "leading-relaxed": { "$value": "1.75", "$type": "number" },
+  "font-normal": { "$value": "400", "$type": "fontWeight" },
+  "font-medium": { "$value": "500", "$type": "fontWeight" },
+  "font-semibold": { "$value": "600", "$type": "fontWeight" },
+  "font-bold": { "$value": "700", "$type": "fontWeight" }
+}

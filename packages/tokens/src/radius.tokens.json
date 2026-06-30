@@ -1,0 +1,8 @@
+{
+  "radius-none": { "$value": "0", "$type": "dimension" },
+  "radius-sm": { "$value": "2px", "$type": "dimension" },
+  "radius-md": { "$value": "4px", "$type": "dimension" },
+  "radius-lg": { "$value": "8px", "$type": "dimension" },
+  "radius-xl": { "$value": "12px", "$type": "dimension" },
+  "radius-full": { "$value": "9999px", "$type": "dimension" }
+}

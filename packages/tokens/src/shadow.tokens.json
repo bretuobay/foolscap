@@ -1,0 +1,4 @@
+{
+  "shadow-hairline": { "$value": "0 0 0 1px rgb(26 26 26 / 0.1)", "$type": "shadow" },
+  "shadow-raised": { "$value": "0 1px 3px rgb(0 0 0 / 0.08)", "$type": "shadow" }
+}

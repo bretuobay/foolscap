@@ -56,7 +56,7 @@ function build() {
   }
 
   const css = [
-    '/* Auto-generated. Do not edit. Run: node scripts/build-css.mjs */',
+    '/* Auto-generated - do not edit. Run: node scripts/build-css.mjs */',
     ':root {',
     ...allLines,
     '}',

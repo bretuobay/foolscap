@@ -1,0 +1,14 @@
+{
+  "space-1": { "$value": "0.25rem", "$type": "dimension" },
+  "space-2": { "$value": "0.5rem", "$type": "dimension" },
+  "space-3": { "$value": "0.75rem", "$type": "dimension" },
+  "space-4": { "$value": "1rem", "$type": "dimension" },
+  "space-5": { "$value": "1.25rem", "$type": "dimension" },
+  "space-6": { "$value": "1.5rem", "$type": "dimension" },
+  "space-8": { "$value": "2rem", "$type": "dimension" },
+  "space-10": { "$value": "2.5rem", "$type": "dimension" },
+  "space-12": { "$value": "3rem", "$type": "dimension" },
+  "space-16": { "$value": "4rem", "$type": "dimension" },
+  "space-20": { "$value": "5rem", "$type": "dimension" },
+  "space-24": { "$value": "6rem", "$type": "dimension" }
+}
