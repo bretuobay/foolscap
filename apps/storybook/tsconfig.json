@@ -1,0 +1,8 @@
+{
+  "extends": "@foolscap/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "rootDir": "."
+  },
+  "include": [".storybook/**/*.ts", "stories/**/*.ts", "stories/**/*.tsx"]
+}

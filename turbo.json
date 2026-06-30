@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["FOOLSCAP_CHROMIUM_PATH"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -9,6 +10,27 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
+    "test:storybook": {
+      "dependsOn": ["build:storybook"],
+      "outputs": []
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test:visual": {
+      "dependsOn": ["build:storybook"],
+      "outputs": []
     },
     "test": {
       "dependsOn": ["^build"],
