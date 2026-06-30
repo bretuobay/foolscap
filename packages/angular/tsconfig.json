@@ -1,0 +1,8 @@
+{
+  "extends": "@foolscap/tsconfig/base.json",
+  "compilerOptions": {
+    "useDefineForClassFields": false,
+    "experimentalDecorators": false
+  },
+  "include": ["src", "tsup.config.ts", "vitest.config.ts"]
+}

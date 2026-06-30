@@ -1,0 +1,12 @@
+{
+  "name": "@foolscap/prettier-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "exports": {
+    ".": "./prettier.json"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

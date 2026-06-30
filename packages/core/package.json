@@ -1,0 +1,41 @@
+{
+  "name": "@web-loom/foolscap-core",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:setup": "playwright install chromium"
+  },
+  "dependencies": {
+    "@web-loom/store-core": "^0.5.4",
+    "@floating-ui/dom": "^1.6.0"
+  },
+  "devDependencies": {
+    "@foolscap/tsconfig": "workspace:*",
+    "@foolscap/tsup-config": "workspace:*",
+    "@vitest/browser": "^2.1.9",
+    "playwright": "^1.45.0",
+    "tsup": "^8.3.0",
+    "vitest": "^2.1.9",
+    "typescript": "^5.7.0"
+  }
+}

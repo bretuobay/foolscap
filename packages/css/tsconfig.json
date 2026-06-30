@@ -1,0 +1,7 @@
+{
+  "extends": "@foolscap/tsconfig/base.json",
+  "compilerOptions": {
+    "rootDir": "."
+  },
+  "include": ["src/index.ts", "vite.config.ts", "vitest.config.ts", "postcss.config.js"]
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "@foolscap/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "tsup.config.ts", "vitest.config.ts"]
+}
