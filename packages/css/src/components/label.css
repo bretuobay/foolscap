@@ -1,0 +1,15 @@
+@layer foolscap.components {
+  .fc-label {
+    display: block;
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    font-weight: var(--fc-font-medium);
+    color: var(--fc-ink);
+    line-height: var(--fc-leading-normal);
+  }
+
+  .fc-label[data-required='true']::after {
+    content: ' *';
+    color: var(--fc-ink-muted);
+  }
+}

@@ -181,6 +181,10 @@ importers:
         version: 2.1.9(@types/node@26.0.1)(@vitest/browser@2.1.9)(jsdom@25.0.1)(msw@2.14.6(@types/node@26.0.1)(typescript@5.9.3))
 
   packages/css:
+    dependencies:
+      '@web-loom/foolscap-tokens':
+        specifier: workspace:*
+        version: link:../tokens
     devDependencies:
       '@foolscap/tsconfig':
         specifier: workspace:*

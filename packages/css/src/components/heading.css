@@ -1,0 +1,21 @@
+@layer foolscap.components {
+  .fc-heading {
+    font-family: var(--fc-font-serif);
+    font-weight: var(--fc-font-bold);
+    line-height: var(--fc-leading-tight);
+    color: var(--fc-ink);
+  }
+
+  h1.fc-heading,
+  .fc-heading[data-level='1'] { font-size: var(--fc-text-5xl); }
+  h2.fc-heading,
+  .fc-heading[data-level='2'] { font-size: var(--fc-text-4xl); }
+  h3.fc-heading,
+  .fc-heading[data-level='3'] { font-size: var(--fc-text-3xl); }
+  h4.fc-heading,
+  .fc-heading[data-level='4'] { font-size: var(--fc-text-2xl); }
+  h5.fc-heading,
+  .fc-heading[data-level='5'] { font-size: var(--fc-text-xl); }
+  h6.fc-heading,
+  .fc-heading[data-level='6'] { font-size: var(--fc-text-lg); }
+}

@@ -1,0 +1,21 @@
+@layer foolscap.components {
+  .fc-aspect-ratio {
+    position: relative;
+    width: 100%;
+
+    &[data-ratio='square']    { aspect-ratio: 1 / 1; }
+    &[data-ratio='video']     { aspect-ratio: 16 / 9; }
+    &[data-ratio='wide']      { aspect-ratio: 21 / 9; }
+    &[data-ratio='portrait']  { aspect-ratio: 3 / 4; }
+    &[data-ratio='landscape'] { aspect-ratio: 4 / 3; }
+    &[data-ratio='golden']    { aspect-ratio: 1.618 / 1; }
+
+    & > * {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}

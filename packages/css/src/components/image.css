@@ -1,0 +1,26 @@
+@layer foolscap.components {
+  .fc-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--fc-radius-md);
+
+    &[data-variant='rounded'] {
+      border-radius: var(--fc-radius-lg);
+    }
+
+    &[data-variant='circle'] {
+      border-radius: var(--fc-radius-full);
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    &[data-variant='bordered'] {
+      border: 1px solid var(--fc-grey-200);
+    }
+
+    &[data-variant='shadow'] {
+      box-shadow: var(--fc-shadow-raised);
+    }
+  }
+}

@@ -1,0 +1,64 @@
+@layer foolscap.components {
+  .fc-text-input {
+    --fc-input-border: var(--fc-grey-300);
+    --fc-input-bg: var(--fc-paper);
+    --fc-input-radius: var(--fc-radius-md);
+    --fc-input-py: var(--fc-space-2);
+    --fc-input-px: var(--fc-space-3);
+
+    display: block;
+    width: 100%;
+    padding: var(--fc-input-py) var(--fc-input-px);
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+    background-color: var(--fc-input-bg);
+    border: 1px solid var(--fc-input-border);
+    border-radius: var(--fc-input-radius);
+    line-height: var(--fc-leading-normal);
+    transition: border-color var(--fc-duration-fast) var(--fc-easing-standard);
+
+    &::placeholder {
+      color: var(--fc-ink-muted);
+    }
+
+    &:hover {
+      border-color: var(--fc-grey-500);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--fc-ink);
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: var(--fc-grey-100);
+    }
+
+    &[aria-invalid='true'],
+    &[data-state='error'] {
+      border-color: var(--fc-grey-500);
+    }
+
+    &[data-size='sm'] {
+      --fc-input-py: var(--fc-space-1);
+      --fc-input-px: var(--fc-space-2);
+      font-size: var(--fc-text-xs);
+    }
+
+    &[data-size='lg'] {
+      --fc-input-py: var(--fc-space-3);
+      --fc-input-px: var(--fc-space-4);
+      font-size: var(--fc-text-base);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@layer foolscap.components {
+  .fc-list {
+    padding-left: var(--fc-space-6);
+    line-height: var(--fc-leading-relaxed);
+
+    & li + li {
+      margin-top: var(--fc-space-1);
+    }
+
+    &[data-variant='bulleted'] {
+      list-style: none;
+      padding-left: var(--fc-space-4);
+
+      & li::before {
+        content: '–';
+        display: inline-block;
+        width: var(--fc-space-4);
+        margin-left: calc(var(--fc-space-4) * -1);
+        color: var(--fc-ink-muted);
+      }
+    }
+
+    &[data-variant='numbered'] {
+      list-style: decimal;
+    }
+
+    &[data-variant='plain'] {
+      list-style: none;
+      padding-left: 0;
+    }
+  }
+}

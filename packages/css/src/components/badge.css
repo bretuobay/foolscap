@@ -1,0 +1,31 @@
+@layer foolscap.components {
+  .fc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fc-space-1);
+    padding: 0.2em var(--fc-space-2);
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-xs);
+    font-weight: var(--fc-font-medium);
+    line-height: 1;
+    border-radius: var(--fc-radius-full);
+    white-space: nowrap;
+
+    /* default variant */
+    background-color: var(--fc-ink);
+    color: var(--fc-paper);
+    border: 1px solid var(--fc-ink);
+
+    &[data-variant='outline'] {
+      background-color: transparent;
+      color: var(--fc-ink);
+      border-color: var(--fc-ink);
+    }
+
+    &[data-variant='subtle'] {
+      background-color: var(--fc-grey-100);
+      color: var(--fc-ink);
+      border-color: var(--fc-grey-200);
+    }
+  }
+}

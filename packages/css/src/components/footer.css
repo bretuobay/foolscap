@@ -1,0 +1,51 @@
+@layer foolscap.components {
+  .fc-footer {
+    padding: var(--fc-space-8) var(--fc-space-6);
+    background-color: var(--fc-paper);
+    border-top: 1px solid var(--fc-grey-100);
+    color: var(--fc-ink-muted);
+    font-size: var(--fc-text-sm);
+
+    & .fc-footer__grid {
+      display: grid;
+      --fc-footer-col-min: 160px;
+      grid-template-columns: repeat(auto-fit, minmax(var(--fc-footer-col-min), 1fr));
+      gap: var(--fc-space-8);
+    }
+
+    & .fc-footer__section-title {
+      font-size: var(--fc-text-xs);
+      font-weight: var(--fc-font-semibold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fc-ink);
+      margin-bottom: var(--fc-space-3);
+    }
+
+    & .fc-footer__links {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--fc-space-2);
+
+      & a {
+        color: var(--fc-ink-muted);
+        text-decoration: none;
+
+        &:hover { color: var(--fc-ink); }
+      }
+    }
+
+    & .fc-footer__bottom {
+      margin-top: var(--fc-space-8);
+      padding-top: var(--fc-space-4);
+      border-top: 1px solid var(--fc-grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--fc-space-4);
+    }
+  }
+}

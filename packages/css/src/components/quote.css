@@ -1,0 +1,35 @@
+@layer foolscap.components {
+  .fc-quote {
+    border-left: 2px solid var(--fc-ink);
+    padding-left: var(--fc-space-4);
+    color: var(--fc-ink-muted);
+    font-style: italic;
+    font-size: var(--fc-text-base);
+    line-height: var(--fc-leading-relaxed);
+
+    & .fc-quote__cite {
+      display: block;
+      margin-top: var(--fc-space-2);
+      font-size: var(--fc-text-sm);
+      font-style: normal;
+      font-weight: var(--fc-font-medium);
+      color: var(--fc-ink);
+    }
+
+    &[data-variant='pull'] {
+      border-left: none;
+      padding-left: 0;
+      text-align: center;
+      font-size: var(--fc-text-2xl);
+      color: var(--fc-ink);
+      font-style: italic;
+      max-width: 36ch;
+      margin-inline: auto;
+
+      & .fc-quote__cite {
+        font-size: var(--fc-text-base);
+        color: var(--fc-ink-muted);
+      }
+    }
+  }
+}

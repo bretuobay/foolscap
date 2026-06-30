@@ -1,0 +1,42 @@
+@layer foolscap.components {
+  .fc-date-input {
+    display: block;
+    width: 100%;
+    padding: var(--fc-space-2) var(--fc-space-3);
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+    background-color: var(--fc-paper);
+    border: 1px solid var(--fc-grey-300);
+    border-radius: var(--fc-radius-md);
+    line-height: var(--fc-leading-normal);
+    transition: border-color var(--fc-duration-fast) var(--fc-easing-standard);
+
+    &::-webkit-calendar-picker-indicator {
+      opacity: 0.5;
+      cursor: pointer;
+    }
+
+    &:hover {
+      border-color: var(--fc-grey-500);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--fc-ink);
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: var(--fc-grey-100);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@layer foolscap.classless {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fc-text-sm);
+  }
+
+  th,
+  td {
+    padding: var(--fc-space-2) var(--fc-space-3);
+    text-align: left;
+    border-bottom: 1px solid var(--fc-grey-200);
+  }
+
+  th {
+    font-weight: var(--fc-font-semibold);
+    color: var(--fc-ink);
+    background-color: var(--fc-grey-100);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: var(--fc-grey-100);
+  }
+}

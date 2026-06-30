@@ -1,0 +1,19 @@
+@layer foolscap.components {
+  .fc-separator {
+    border: none;
+    background-color: var(--fc-grey-200);
+    flex-shrink: 0;
+
+    &[data-orientation='vertical'] {
+      width: 1px;
+      height: 100%;
+      align-self: stretch;
+    }
+
+    &:not([data-orientation='vertical']) {
+      width: 100%;
+      height: 1px;
+      margin-block: var(--fc-space-4);
+    }
+  }
+}

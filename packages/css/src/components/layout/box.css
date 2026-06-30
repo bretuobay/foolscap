@@ -1,0 +1,13 @@
+@layer foolscap.components {
+  .fc-box {
+    display: block;
+    box-sizing: border-box;
+
+    &[data-padding='1'] { padding: var(--fc-space-1); }
+    &[data-padding='2'] { padding: var(--fc-space-2); }
+    &[data-padding='3'] { padding: var(--fc-space-3); }
+    &[data-padding='4'] { padding: var(--fc-space-4); }
+    &[data-padding='6'] { padding: var(--fc-space-6); }
+    &[data-padding='8'] { padding: var(--fc-space-8); }
+  }
+}

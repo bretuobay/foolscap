@@ -1,0 +1,34 @@
+@layer foolscap.components {
+  .fc-link {
+    color: var(--fc-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-thickness var(--fc-duration-fast) var(--fc-easing-standard);
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    &:visited {
+      color: var(--fc-ink-muted);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-radius: var(--fc-radius-sm);
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &[target='_blank']::after {
+      content: ' ↗';
+      font-size: 0.75em;
+      vertical-align: super;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

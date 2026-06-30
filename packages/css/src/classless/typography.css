@@ -1,0 +1,108 @@
+@layer foolscap.classless {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--fc-font-serif);
+    font-weight: var(--fc-font-bold);
+    line-height: var(--fc-leading-tight);
+    color: var(--fc-ink);
+  }
+
+  h1 { font-size: var(--fc-text-5xl); }
+  h2 { font-size: var(--fc-text-4xl); }
+  h3 { font-size: var(--fc-text-3xl); }
+  h4 { font-size: var(--fc-text-2xl); }
+  h5 { font-size: var(--fc-text-xl); }
+  h6 { font-size: var(--fc-text-lg); }
+
+  p {
+    max-width: 68ch;
+    line-height: var(--fc-leading-relaxed);
+  }
+
+  strong,
+  b {
+    font-weight: var(--fc-font-bold);
+  }
+
+  em,
+  i {
+    font-style: italic;
+  }
+
+  small {
+    font-size: var(--fc-text-sm);
+  }
+
+  a {
+    color: var(--fc-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+      border-radius: var(--fc-radius-sm);
+    }
+  }
+
+  code,
+  kbd,
+  samp {
+    font-family: var(--fc-font-mono);
+    font-size: 0.9em;
+    background-color: var(--fc-grey-100);
+    padding: 0.1em 0.35em;
+    border-radius: var(--fc-radius-sm);
+  }
+
+  pre {
+    font-family: var(--fc-font-mono);
+    font-size: var(--fc-text-sm);
+    background-color: var(--fc-grey-100);
+    padding: var(--fc-space-4);
+    border-radius: var(--fc-radius-md);
+    overflow-x: auto;
+    line-height: var(--fc-leading-relaxed);
+
+    & code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+      border-radius: 0;
+    }
+  }
+
+  blockquote {
+    border-left: 2px solid var(--fc-ink);
+    padding-left: var(--fc-space-4);
+    color: var(--fc-ink-muted);
+    font-style: italic;
+  }
+
+  abbr[title] {
+    text-decoration: underline dotted;
+    cursor: help;
+  }
+
+  mark {
+    background-color: var(--fc-grey-200);
+    color: var(--fc-ink);
+    padding: 0.1em 0.2em;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--fc-grey-200);
+    margin-block: var(--fc-space-6);
+  }
+}

@@ -1,0 +1,51 @@
+@layer foolscap.components {
+  .fc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+
+    & thead {
+      border-bottom: 2px solid var(--fc-grey-200);
+    }
+
+    & th {
+      padding: var(--fc-space-2) var(--fc-space-3);
+      text-align: left;
+      font-weight: var(--fc-font-semibold);
+      color: var(--fc-ink-muted);
+      font-size: var(--fc-text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    & td {
+      padding: var(--fc-space-3);
+      vertical-align: top;
+      border-bottom: 1px solid var(--fc-grey-100);
+    }
+
+    & tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    &[data-variant='striped'] tbody tr:nth-child(even) {
+      background-color: var(--fc-grey-100);
+    }
+
+    &[data-variant='bordered'] {
+      border: 1px solid var(--fc-grey-200);
+
+      & th,
+      & td {
+        border: 1px solid var(--fc-grey-200);
+      }
+    }
+
+    & tbody tr:hover {
+      background-color: var(--fc-grey-100);
+    }
+  }
+}

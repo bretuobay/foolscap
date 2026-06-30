@@ -1,0 +1,110 @@
+@layer foolscap.components {
+  .fc-button {
+    --fc-button-bg: var(--fc-ink);
+    --fc-button-color: var(--fc-paper);
+    --fc-button-border: var(--fc-ink);
+    --fc-button-radius: var(--fc-radius-md);
+    --fc-button-px: var(--fc-space-4);
+    --fc-button-py: var(--fc-space-2);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--fc-space-2);
+    padding: var(--fc-button-py) var(--fc-button-px);
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    font-weight: var(--fc-font-medium);
+    line-height: 1;
+    color: var(--fc-button-color);
+    background-color: var(--fc-button-bg);
+    border: 1px solid var(--fc-button-border);
+    border-radius: var(--fc-button-radius);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--fc-duration-fast) var(--fc-easing-standard),
+      border-color var(--fc-duration-fast) var(--fc-easing-standard),
+      box-shadow var(--fc-duration-fast) var(--fc-easing-standard);
+
+    &:hover {
+      background-color: var(--fc-grey-800);
+      border-color: var(--fc-grey-800);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &:active {
+      background-color: var(--fc-grey-900);
+      border-color: var(--fc-grey-900);
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &[data-variant='outline'] {
+      --fc-button-bg: transparent;
+      --fc-button-color: var(--fc-ink);
+      --fc-button-border: var(--fc-ink);
+
+      &:hover {
+        background-color: var(--fc-grey-100);
+        border-color: var(--fc-ink);
+      }
+    }
+
+    &[data-variant='ghost'] {
+      --fc-button-bg: transparent;
+      --fc-button-color: var(--fc-ink);
+      --fc-button-border: transparent;
+
+      &:hover {
+        background-color: var(--fc-grey-100);
+      }
+    }
+
+    &[data-variant='link'] {
+      --fc-button-bg: transparent;
+      --fc-button-color: var(--fc-ink);
+      --fc-button-border: transparent;
+      --fc-button-px: 0;
+      --fc-button-py: 0;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+
+      &:hover { background-color: transparent; }
+    }
+
+    &[data-size='sm'] {
+      --fc-button-px: var(--fc-space-3);
+      --fc-button-py: var(--fc-space-1);
+      font-size: var(--fc-text-xs);
+    }
+
+    &[data-size='lg'] {
+      --fc-button-px: var(--fc-space-6);
+      --fc-button-py: var(--fc-space-3);
+      font-size: var(--fc-text-base);
+    }
+
+    &[data-size='icon'] {
+      --fc-button-px: var(--fc-space-2);
+      --fc-button-py: var(--fc-space-2);
+      aspect-ratio: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

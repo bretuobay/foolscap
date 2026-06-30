@@ -5,18 +5,22 @@
   "type": "module",
   "exports": {
     ".": "./dist/foolscap.css",
-    "./foolscap.css": "./dist/foolscap.css"
+    "./foolscap.css": "./dist/foolscap.css",
+    "./components/*": "./dist/components/*"
   },
   "style": "./dist/foolscap.css",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && node scripts/build-components.mjs",
     "dev": "vite build --watch",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@web-loom/foolscap-tokens": "workspace:*"
   },
   "devDependencies": {
     "@foolscap/tsconfig": "workspace:*",

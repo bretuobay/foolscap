@@ -1,0 +1,57 @@
+@layer foolscap.components {
+  .fc-slider {
+    display: block;
+    width: 100%;
+    appearance: none;
+    height: var(--fc-space-1);
+    border-radius: var(--fc-radius-full);
+    background-color: var(--fc-grey-200);
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: var(--fc-space-4);
+      height: var(--fc-space-4);
+      border-radius: var(--fc-radius-full);
+      background-color: var(--fc-ink);
+      border: 2px solid var(--fc-paper);
+      box-shadow: var(--fc-shadow-raised);
+      transition: transform var(--fc-duration-fast) var(--fc-easing-standard);
+    }
+
+    &::-moz-range-thumb {
+      width: var(--fc-space-4);
+      height: var(--fc-space-4);
+      border-radius: var(--fc-radius-full);
+      background-color: var(--fc-ink);
+      border: 2px solid var(--fc-paper);
+      box-shadow: var(--fc-shadow-raised);
+      cursor: pointer;
+      transition: transform var(--fc-duration-fast) var(--fc-easing-standard);
+    }
+
+    &:focus-visible {
+      &::-webkit-slider-thumb {
+        box-shadow:
+          0 0 0 2px var(--fc-paper),
+          0 0 0 4px var(--fc-ink);
+      }
+      &::-moz-range-thumb {
+        box-shadow:
+          0 0 0 2px var(--fc-paper),
+          0 0 0 4px var(--fc-ink);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::-webkit-slider-thumb { transition: none; }
+      &::-moz-range-thumb { transition: none; }
+    }
+  }
+}

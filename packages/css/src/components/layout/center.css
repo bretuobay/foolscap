@@ -1,0 +1,16 @@
+@layer foolscap.components {
+  .fc-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    &[data-max='prose'] { max-width: 65ch; margin-inline: auto; }
+    &[data-max='sm']    { max-width: 36rem; margin-inline: auto; }
+    &[data-max='md']    { max-width: 48rem; margin-inline: auto; }
+    &[data-max='lg']    { max-width: 64rem; margin-inline: auto; }
+    &[data-max='xl']    { max-width: 80rem; margin-inline: auto; }
+
+    &[data-text='none'] { text-align: unset; }
+  }
+}

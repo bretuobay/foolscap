@@ -1,0 +1,21 @@
+@layer foolscap.components {
+  .fc-grid {
+    display: grid;
+    --fc-grid-cols: 12;
+    --fc-grid-gap: var(--fc-space-4);
+    grid-template-columns: repeat(var(--fc-grid-cols), 1fr);
+    gap: var(--fc-grid-gap);
+
+    &[data-cols='1']  { --fc-grid-cols: 1; }
+    &[data-cols='2']  { --fc-grid-cols: 2; }
+    &[data-cols='3']  { --fc-grid-cols: 3; }
+    &[data-cols='4']  { --fc-grid-cols: 4; }
+    &[data-cols='6']  { --fc-grid-cols: 6; }
+    &[data-cols='12'] { --fc-grid-cols: 12; }
+
+    &[data-gap='2']  { --fc-grid-gap: var(--fc-space-2); }
+    &[data-gap='4']  { --fc-grid-gap: var(--fc-space-4); }
+    &[data-gap='6']  { --fc-grid-gap: var(--fc-space-6); }
+    &[data-gap='8']  { --fc-grid-gap: var(--fc-space-8); }
+  }
+}

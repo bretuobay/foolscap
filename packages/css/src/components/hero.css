@@ -1,0 +1,54 @@
+@layer foolscap.components {
+  .fc-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--fc-space-6);
+    padding: var(--fc-space-16) var(--fc-space-6);
+    background-color: var(--fc-paper);
+
+    & .fc-hero__eyebrow {
+      font-size: var(--fc-text-sm);
+      font-weight: var(--fc-font-medium);
+      color: var(--fc-ink-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    & .fc-hero__title {
+      font-family: var(--fc-font-serif);
+      font-size: var(--fc-text-5xl);
+      font-weight: var(--fc-font-bold);
+      line-height: var(--fc-leading-tight);
+      color: var(--fc-ink);
+      max-width: 20ch;
+    }
+
+    & .fc-hero__description {
+      font-size: var(--fc-text-lg);
+      color: var(--fc-ink-muted);
+      max-width: 52ch;
+      line-height: var(--fc-leading-relaxed);
+    }
+
+    & .fc-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--fc-space-3);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    &[data-variant='split'] {
+      flex-direction: row;
+      text-align: left;
+      align-items: center;
+
+      & .fc-hero__actions {
+        justify-content: flex-start;
+      }
+    }
+  }
+}

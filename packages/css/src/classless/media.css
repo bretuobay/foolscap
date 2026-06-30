@@ -1,0 +1,18 @@
+@layer foolscap.classless {
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  figcaption {
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink-muted);
+    margin-top: var(--fc-space-2);
+  }
+}

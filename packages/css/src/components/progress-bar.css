@@ -1,0 +1,29 @@
+@layer foolscap.components {
+  .fc-progress-bar {
+    --fc-progress-height: var(--fc-space-2);
+    --fc-progress-value: 0%;
+
+    display: block;
+    width: 100%;
+    height: var(--fc-progress-height);
+    background-color: var(--fc-grey-100);
+    border-radius: var(--fc-radius-full);
+    overflow: hidden;
+
+    & .fc-progress-bar__fill {
+      height: 100%;
+      width: var(--fc-progress-value);
+      background-color: var(--fc-ink);
+      border-radius: inherit;
+      transition: width var(--fc-duration-base) var(--fc-easing-standard);
+    }
+
+    &[data-size='sm'] { --fc-progress-height: 2px; }
+    &[data-size='md'] { --fc-progress-height: var(--fc-space-2); }
+    &[data-size='lg'] { --fc-progress-height: var(--fc-space-3); }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .fc-progress-bar__fill { transition: none; }
+    }
+  }
+}

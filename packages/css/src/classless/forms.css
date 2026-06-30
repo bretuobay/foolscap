@@ -1,0 +1,109 @@
+@layer foolscap.classless {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+  textarea,
+  select {
+    display: block;
+    width: 100%;
+    padding: var(--fc-space-2) var(--fc-space-3);
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-base);
+    color: var(--fc-ink);
+    background-color: var(--fc-paper-raised);
+    border: 1px solid var(--fc-grey-300);
+    border-radius: var(--fc-radius-sm);
+    transition:
+      border-color var(--fc-duration-fast) var(--fc-easing-standard),
+      box-shadow var(--fc-duration-fast) var(--fc-easing-standard);
+    min-height: 2.75rem;
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--fc-ink);
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: var(--fc-grey-100);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: calc(var(--fc-text-base) * var(--fc-leading-relaxed) * 4 + var(--fc-space-4));
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231A1A1A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--fc-space-3) center;
+    padding-right: var(--fc-space-8);
+  }
+
+  label {
+    display: block;
+    font-size: var(--fc-text-sm);
+    font-weight: var(--fc-font-medium);
+    color: var(--fc-ink);
+    margin-bottom: var(--fc-space-1);
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--fc-space-2);
+    padding: var(--fc-space-2) var(--fc-space-4);
+    min-height: 2.75rem;
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-base);
+    font-weight: var(--fc-font-medium);
+    color: var(--fc-paper);
+    background-color: var(--fc-ink);
+    border: 1px solid var(--fc-ink);
+    border-radius: var(--fc-radius-sm);
+    cursor: pointer;
+    transition: opacity var(--fc-duration-fast) var(--fc-easing-standard);
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  fieldset {
+    border: 1px solid var(--fc-grey-200);
+    border-radius: var(--fc-radius-md);
+    padding: var(--fc-space-4);
+  }
+
+  legend {
+    padding-inline: var(--fc-space-2);
+    font-size: var(--fc-text-sm);
+    font-weight: var(--fc-font-medium);
+    color: var(--fc-ink-muted);
+  }
+}

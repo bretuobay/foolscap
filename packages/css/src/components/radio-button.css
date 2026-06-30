@@ -1,0 +1,65 @@
+@layer foolscap.components {
+  .fc-radio-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fc-space-2);
+    cursor: pointer;
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+
+    & .fc-radio-button__control {
+      flex-shrink: 0;
+      width: var(--fc-space-4);
+      height: var(--fc-space-4);
+      border: 1.5px solid var(--fc-grey-400);
+      border-radius: var(--fc-radius-full);
+      background-color: var(--fc-paper);
+      display: grid;
+      place-content: center;
+      transition:
+        background-color var(--fc-duration-fast) var(--fc-easing-standard),
+        border-color var(--fc-duration-fast) var(--fc-easing-standard);
+
+      &::after {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: var(--fc-radius-full);
+        background-color: transparent;
+        transition: background-color var(--fc-duration-fast) var(--fc-easing-standard);
+      }
+    }
+
+    & input[type='radio'] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .fc-radio-button__control {
+        border-color: var(--fc-ink);
+
+        &::after {
+          background-color: var(--fc-ink);
+        }
+      }
+
+      &:focus-visible + .fc-radio-button__control {
+        box-shadow:
+          0 0 0 2px var(--fc-paper),
+          0 0 0 4px var(--fc-ink);
+      }
+    }
+
+    &:has(input:disabled) {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .fc-radio-button__control,
+      & .fc-radio-button__control::after { transition: none; }
+    }
+  }
+}

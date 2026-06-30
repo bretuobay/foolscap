@@ -1,0 +1,49 @@
+@layer foolscap.components {
+  .fc-alert {
+    display: flex;
+    gap: var(--fc-space-3);
+    padding: var(--fc-space-3) var(--fc-space-4);
+    border-radius: var(--fc-radius-md);
+    border: 1px solid var(--fc-grey-200);
+    background-color: var(--fc-paper-raised);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+    line-height: var(--fc-leading-normal);
+    box-shadow: var(--fc-shadow-hairline);
+
+    & .fc-alert__icon {
+      flex-shrink: 0;
+      align-self: flex-start;
+      margin-top: 0.1em;
+    }
+
+    & .fc-alert__body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    & .fc-alert__title {
+      font-weight: var(--fc-font-semibold);
+      margin-bottom: var(--fc-space-1);
+    }
+
+    &[data-variant='info'] {
+      border-color: var(--fc-grey-300);
+    }
+
+    &[data-variant='success'] {
+      border-color: var(--fc-grey-400);
+      background-color: var(--fc-grey-100);
+    }
+
+    &[data-variant='warning'] {
+      border-color: var(--fc-grey-400);
+      background-color: var(--fc-grey-100);
+    }
+
+    &[data-variant='error'] {
+      border-color: var(--fc-grey-500);
+      background-color: var(--fc-grey-100);
+    }
+  }
+}

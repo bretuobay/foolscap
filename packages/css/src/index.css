@@ -1,3 +1,68 @@
-/* Foolscap CSS entry point */
-/* Phase 1 imports all CSS layers here */
-@layer foolscap;
+/* Layer declaration — order is intentional and must not change */
+@layer foolscap.reset, foolscap.classless, foolscap.components;
+
+/* 1. Token variables */
+@import './tokens.css';
+
+/* 2. Reset */
+@import './reset.css';
+
+/* 3. Classless layer */
+@import './classless/base.css';
+@import './classless/typography.css';
+@import './classless/forms.css';
+@import './classless/tables.css';
+@import './classless/media.css';
+@import './classless/layout.css';
+
+/* 4. Component layer — Tier 1 components */
+@import './components/heading.css';
+@import './components/label.css';
+@import './components/link.css';
+@import './components/badge.css';
+@import './components/quote.css';
+@import './components/list.css';
+@import './components/separator.css';
+@import './components/alert.css';
+@import './components/spinner.css';
+@import './components/skeleton.css';
+@import './components/progress-bar.css';
+@import './components/empty-state.css';
+@import './components/button.css';
+@import './components/button-group.css';
+@import './components/skip-link.css';
+@import './components/text-input.css';
+@import './components/textarea.css';
+@import './components/search-input.css';
+@import './components/checkbox.css';
+@import './components/radio-button.css';
+@import './components/date-input.css';
+@import './components/color-picker.css';
+@import './components/slider.css';
+@import './components/fieldset.css';
+@import './components/file.css';
+@import './components/card.css';
+@import './components/avatar.css';
+@import './components/icon.css';
+@import './components/image.css';
+@import './components/table.css';
+@import './components/hero.css';
+@import './components/header.css';
+@import './components/footer.css';
+@import './components/visually-hidden.css';
+@import './components/breadcrumbs.css';
+@import './components/video.css';
+
+/* 5. Layout primitives */
+@import './components/layout/box.css';
+@import './components/layout/stack.css';
+@import './components/layout/inline.css';
+@import './components/layout/grid.css';
+@import './components/layout/columns.css';
+@import './components/layout/sidebar.css';
+@import './components/layout/switcher.css';
+@import './components/layout/center.css';
+@import './components/layout/cover.css';
+@import './components/layout/container.css';
+@import './components/layout/aspect-ratio.css';
+@import './components/layout/spacer.css';

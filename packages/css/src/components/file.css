@@ -1,0 +1,55 @@
+@layer foolscap.components {
+  .fc-file {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fc-space-2);
+
+    & .fc-file__input {
+      display: block;
+      width: 100%;
+      padding: var(--fc-space-2) var(--fc-space-3);
+      font-family: var(--fc-font-sans);
+      font-size: var(--fc-text-sm);
+      color: var(--fc-ink-muted);
+      background-color: var(--fc-paper);
+      border: 1px dashed var(--fc-grey-300);
+      border-radius: var(--fc-radius-md);
+      cursor: pointer;
+
+      &::file-selector-button {
+        margin-right: var(--fc-space-3);
+        padding: var(--fc-space-1) var(--fc-space-3);
+        background-color: var(--fc-grey-100);
+        color: var(--fc-ink);
+        border: 1px solid var(--fc-grey-300);
+        border-radius: var(--fc-radius-sm);
+        font-size: var(--fc-text-xs);
+        font-weight: var(--fc-font-medium);
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      &:hover {
+        border-color: var(--fc-grey-500);
+      }
+
+      &:focus-visible {
+        outline: none;
+        border-color: var(--fc-ink);
+        box-shadow:
+          0 0 0 2px var(--fc-paper),
+          0 0 0 4px var(--fc-ink);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    &[data-variant='dropzone'] .fc-file__input {
+      padding: var(--fc-space-8) var(--fc-space-6);
+      text-align: center;
+    }
+  }
+}

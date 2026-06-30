@@ -1,0 +1,18 @@
+@layer foolscap.components {
+  .fc-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    --fc-switcher-threshold: 640px;
+    --fc-switcher-gap: var(--fc-space-4);
+    gap: var(--fc-switcher-gap);
+
+    & > * {
+      flex-grow: 1;
+      flex-basis: calc((var(--fc-switcher-threshold) - 100%) * 999);
+    }
+
+    &[data-gap='2'] { --fc-switcher-gap: var(--fc-space-2); }
+    &[data-gap='4'] { --fc-switcher-gap: var(--fc-space-4); }
+    &[data-gap='6'] { --fc-switcher-gap: var(--fc-space-6); }
+  }
+}

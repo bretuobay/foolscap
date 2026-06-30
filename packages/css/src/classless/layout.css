@@ -1,0 +1,24 @@
+@layer foolscap.classless {
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--fc-space-4);
+    flex: 1;
+  }
+
+  main > * + *,
+  article > * + *,
+  section > * + * {
+    margin-top: var(--fc-space-6);
+  }
+
+  nav ul {
+    list-style: none;
+  }
+}

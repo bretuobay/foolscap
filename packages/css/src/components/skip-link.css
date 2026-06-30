@@ -1,0 +1,26 @@
+@layer foolscap.components {
+  .fc-skip-link {
+    position: absolute;
+    top: var(--fc-space-2);
+    left: var(--fc-space-2);
+    z-index: 9999;
+    padding: var(--fc-space-2) var(--fc-space-4);
+    background-color: var(--fc-ink);
+    color: var(--fc-paper);
+    font-size: var(--fc-text-sm);
+    font-weight: var(--fc-font-medium);
+    font-family: var(--fc-font-sans);
+    border-radius: var(--fc-radius-md);
+    text-decoration: none;
+    transform: translateY(-200%);
+    transition: transform var(--fc-duration-fast) var(--fc-easing-enter);
+
+    &:focus {
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}

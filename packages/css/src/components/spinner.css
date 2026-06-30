@@ -1,0 +1,28 @@
+@layer foolscap.components {
+  .fc-spinner {
+    --fc-spinner-size: var(--fc-space-6);
+    --fc-spinner-color: var(--fc-ink);
+
+    display: inline-block;
+    width: var(--fc-spinner-size);
+    height: var(--fc-spinner-size);
+    border: 2px solid transparent;
+    border-top-color: var(--fc-spinner-color);
+    border-radius: var(--fc-radius-full);
+    animation: fc-spin var(--fc-duration-base) linear infinite;
+
+    &[data-size='sm'] { --fc-spinner-size: var(--fc-space-4); }
+    &[data-size='md'] { --fc-spinner-size: var(--fc-space-6); }
+    &[data-size='lg'] { --fc-spinner-size: var(--fc-space-10); }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      border: 2px solid var(--fc-spinner-color);
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes fc-spin {
+    to { transform: rotate(360deg); }
+  }
+}

@@ -1,0 +1,47 @@
+@layer foolscap.components {
+  .fc-button-group {
+    display: inline-flex;
+    align-items: stretch;
+
+    & > .fc-button {
+      border-radius: 0;
+    }
+
+    & > .fc-button:first-child {
+      border-radius: var(--fc-radius-md) 0 0 var(--fc-radius-md);
+    }
+
+    & > .fc-button:last-child {
+      border-radius: 0 var(--fc-radius-md) var(--fc-radius-md) 0;
+    }
+
+    & > .fc-button:not(:first-child) {
+      margin-left: -1px;
+    }
+
+    & > .fc-button:focus-visible {
+      z-index: 1;
+    }
+
+    &[data-orientation='vertical'] {
+      flex-direction: column;
+
+      & > .fc-button {
+        border-radius: 0;
+      }
+
+      & > .fc-button:first-child {
+        border-radius: var(--fc-radius-md) var(--fc-radius-md) 0 0;
+      }
+
+      & > .fc-button:last-child {
+        border-radius: 0 0 var(--fc-radius-md) var(--fc-radius-md);
+      }
+
+      & > .fc-button:not(:first-child) {
+        margin-left: 0;
+        margin-top: -1px;
+      }
+    }
+  }
+}

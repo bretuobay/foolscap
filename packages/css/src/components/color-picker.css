@@ -1,0 +1,38 @@
+@layer foolscap.components {
+  .fc-color-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fc-space-2);
+
+    & .fc-color-picker__swatch {
+      width: var(--fc-space-8);
+      height: var(--fc-space-8);
+      border-radius: var(--fc-radius-md);
+      border: 1px solid var(--fc-grey-300);
+      overflow: hidden;
+      padding: 0;
+      cursor: pointer;
+
+      & input[type='color'] {
+        width: calc(100% + var(--fc-space-2));
+        height: calc(100% + var(--fc-space-2));
+        margin: calc(var(--fc-space-1) * -1);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+      }
+    }
+
+    & .fc-color-picker__value {
+      font-family: var(--fc-font-mono);
+      font-size: var(--fc-text-sm);
+      color: var(--fc-ink-muted);
+    }
+
+    &:focus-within .fc-color-picker__swatch {
+      box-shadow:
+        0 0 0 2px var(--fc-paper),
+        0 0 0 4px var(--fc-ink);
+    }
+  }
+}

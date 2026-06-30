@@ -1,0 +1,31 @@
+@layer foolscap.components {
+  .fc-video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--fc-radius-md);
+
+    &[data-variant='bordered'] {
+      border: 1px solid var(--fc-grey-200);
+    }
+  }
+
+  .fc-video-embed {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--fc-radius-md);
+    background-color: var(--fc-grey-900);
+
+    & iframe,
+    & video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+}

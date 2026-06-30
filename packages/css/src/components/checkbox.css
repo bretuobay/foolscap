@@ -1,0 +1,83 @@
+@layer foolscap.components {
+  .fc-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fc-space-2);
+    cursor: pointer;
+    font-family: var(--fc-font-sans);
+    font-size: var(--fc-text-sm);
+    color: var(--fc-ink);
+
+    & .fc-checkbox__control {
+      flex-shrink: 0;
+      width: var(--fc-space-4);
+      height: var(--fc-space-4);
+      border: 1.5px solid var(--fc-grey-400);
+      border-radius: var(--fc-radius-sm);
+      background-color: var(--fc-paper);
+      display: grid;
+      place-content: center;
+      transition:
+        background-color var(--fc-duration-fast) var(--fc-easing-standard),
+        border-color var(--fc-duration-fast) var(--fc-easing-standard);
+
+      &::after {
+        content: '';
+        width: 8px;
+        height: 5px;
+        border-left: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+        transform: rotate(-45deg) translateY(-1px);
+      }
+    }
+
+    & input[type='checkbox'] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .fc-checkbox__control {
+        background-color: var(--fc-ink);
+        border-color: var(--fc-ink);
+
+        &::after {
+          border-color: var(--fc-paper);
+        }
+      }
+
+      &:indeterminate + .fc-checkbox__control {
+        background-color: var(--fc-grey-300);
+        border-color: var(--fc-grey-300);
+
+        &::after {
+          width: 8px;
+          height: 0;
+          border-left: none;
+          border-bottom: 2px solid var(--fc-paper);
+          transform: none;
+        }
+      }
+
+      &:focus-visible + .fc-checkbox__control {
+        box-shadow:
+          0 0 0 2px var(--fc-paper),
+          0 0 0 4px var(--fc-ink);
+      }
+
+      &:disabled + .fc-checkbox__control {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    &:has(input:disabled) {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      & .fc-checkbox__control { transition: none; }
+    }
+  }
+}

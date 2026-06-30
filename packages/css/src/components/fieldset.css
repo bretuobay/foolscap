@@ -1,0 +1,33 @@
+@layer foolscap.components {
+  .fc-fieldset {
+    border: 1px solid var(--fc-grey-200);
+    border-radius: var(--fc-radius-md);
+    padding: var(--fc-space-4);
+
+    & .fc-fieldset__legend {
+      font-family: var(--fc-font-sans);
+      font-size: var(--fc-text-sm);
+      font-weight: var(--fc-font-semibold);
+      color: var(--fc-ink);
+      padding-inline: var(--fc-space-1);
+    }
+
+    & .fc-fieldset__hint {
+      font-size: var(--fc-text-xs);
+      color: var(--fc-ink-muted);
+      margin-top: var(--fc-space-1);
+    }
+
+    & .fc-fieldset__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--fc-space-3);
+      margin-top: var(--fc-space-3);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
