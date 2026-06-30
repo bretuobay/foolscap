@@ -10,4 +10,11 @@ export default [
       },
     },
   },
+  {
+    files: ['src/**/*.test.ts', 'src/test-setup.ts'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ]
