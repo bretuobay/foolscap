@@ -29,7 +29,7 @@
     align-items: center;
     width: var(--fc-toggle-track-width, 2.75rem);
     height: var(--fc-toggle-track-height, 1.5rem);
-    border-radius: 9999px;
+    border-radius: 9999rem;
     background: var(--fc-toggle-unchecked-bg, rgb(26 26 26 / 0.25));
     padding: 0;
     flex-shrink: 0;
@@ -38,7 +38,7 @@
 
   /* Checked track — sibling combinator: input is before track in DOM */
   .fc-toggle__input:checked ~ .fc-toggle__track {
-    background: var(--fc-toggle-checked-bg, var(--fc-ink, #1a1a1a));
+    background: var(--fc-toggle-checked-bg, var(--fc-ink, rgb(26 26 26)));
   }
 
   /* Focus ring on track when input is focused */
@@ -52,7 +52,7 @@
     width: var(--fc-toggle-thumb-size, 1.125rem);
     height: var(--fc-toggle-thumb-size, 1.125rem);
     border-radius: 50%;
-    background: var(--fc-toggle-thumb-bg, #fff);
+    background: var(--fc-toggle-thumb-bg, rgb(255 255 255));
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
     transform: translateX(var(--fc-toggle-thumb-offset, 0.1875rem));
     transition: transform var(--fc-toggle-transition, 120ms ease);

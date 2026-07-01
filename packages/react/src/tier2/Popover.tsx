@@ -207,7 +207,7 @@ export interface PopoverCloseProps {
 export function PopoverClose({ children }: PopoverCloseProps) {
   const { close } = usePopoverContext()
   const childProps = children.props as Record<string, unknown>
-  const childElement = children as React.ReactElement<any>
+  const childElement = children as React.ReactElement<Record<string, unknown>>
 
   return cloneElement(childElement, {
     onClick: mergeHandlers(childProps.onClick as ((event: unknown) => void) | undefined, () => {

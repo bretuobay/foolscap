@@ -11,7 +11,7 @@
     padding: var(--fc-form-error-summary-padding, 0.75rem 1rem);
     border: var(--fc-form-error-summary-border, 1px solid rgb(26 26 26 / 0.6));
     border-radius: 2px;
-    background: var(--fc-form-error-summary-bg, var(--fc-grey-100, #f5f5f5));
+    background: var(--fc-form-error-summary-bg, var(--fc-grey-100, rgb(245 245 245)));
     font-size: 0.9375rem;
   }
 

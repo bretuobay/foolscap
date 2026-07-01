@@ -28,7 +28,7 @@
     padding: var(--fc-select-trigger-padding, 0 var(--fc-space-3));
     border: var(--fc-select-trigger-border, 1px solid rgb(26 26 26 / 0.3));
     border-radius: var(--fc-select-trigger-radius, 2px);
-    background: var(--fc-paper, #fff);
+    background: var(--fc-paper, rgb(255 255 255));
     color: inherit;
     font: inherit;
     font-size: 0.9375rem;
@@ -80,7 +80,7 @@
     min-width: var(--fc-select-listbox-min-width, 12rem);
     overflow-y: auto;
     padding-block: var(--fc-space-1);
-    background: var(--fc-select-listbox-bg, var(--fc-paper-raised, var(--fc-paper, #fff)));
+    background: var(--fc-select-listbox-bg, var(--fc-paper-raised, var(--fc-paper, rgb(255 255 255))));
     border: 1px solid rgb(26 26 26 / 0.12);
     border-radius: var(--fc-select-trigger-radius, 2px);
     box-shadow: var(--fc-select-listbox-shadow, 0 4px 16px rgb(26 26 26 / 0.12));
@@ -100,7 +100,7 @@
   }
 
   .fc-select__option[data-highlighted] {
-    background: var(--fc-select-option-highlight-bg, var(--fc-grey-100, #f5f5f5));
+    background: var(--fc-select-option-highlight-bg, var(--fc-grey-100, rgb(245 245 245)));
   }
 
   .fc-select__option[aria-selected='true'] {

@@ -45,7 +45,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background: var(--fc-drawer-panel-bg, var(--fc-paper-raised, var(--fc-paper, #fff)));
+    background: var(--fc-drawer-panel-bg, var(--fc-paper-raised, var(--fc-paper, rgb(255 255 255))));
     /*
      * Transform driven by --_fc-drawer-transform, set per-side below.
      * The [data-state='open'] rule overrides to `none` to slide the panel in.
@@ -64,10 +64,10 @@
     top: 0;
     right: 0;
     height: 100dvh;
-    width: var(--fc-drawer-width, 320px);
+    width: var(--fc-drawer-width, 20rem);
     max-width: 100vw;
     border-left: var(--fc-drawer-panel-border, 1px solid rgb(26 26 26 / 0.1));
-    box-shadow: -4px 0 24px rgb(26 26 26 / 0.12);
+    box-shadow: -0.25rem 0 1.5rem rgb(26 26 26 / 0.12);
   }
 
   .fc-drawer[data-side='left'] {
@@ -77,10 +77,10 @@
     top: 0;
     left: 0;
     height: 100dvh;
-    width: var(--fc-drawer-width, 320px);
+    width: var(--fc-drawer-width, 20rem);
     max-width: 100vw;
     border-right: var(--fc-drawer-panel-border, 1px solid rgb(26 26 26 / 0.1));
-    box-shadow: 4px 0 24px rgb(26 26 26 / 0.12);
+    box-shadow: 0.25rem 0 1.5rem rgb(26 26 26 / 0.12);
   }
 
   .fc-drawer[data-side='top'] {
@@ -94,7 +94,7 @@
     height: var(--fc-drawer-height, 50vh);
     max-height: 100dvh;
     border-bottom: var(--fc-drawer-panel-border, 1px solid rgb(26 26 26 / 0.1));
-    box-shadow: 0 4px 24px rgb(26 26 26 / 0.12);
+    box-shadow: 0 0.25rem 1.5rem rgb(26 26 26 / 0.12);
   }
 
   .fc-drawer[data-side='bottom'] {
@@ -108,7 +108,7 @@
     height: var(--fc-drawer-height, 50vh);
     max-height: 100dvh;
     border-top: var(--fc-drawer-panel-border, 1px solid rgb(26 26 26 / 0.1));
-    box-shadow: 0 -4px 24px rgb(26 26 26 / 0.12);
+    box-shadow: 0 -0.25rem 1.5rem rgb(26 26 26 / 0.12);
   }
 
   /*
@@ -123,12 +123,12 @@
 
   /* ── Size variants ────────────────────────────────────── */
   .fc-drawer[data-size='sm'] {
-    --fc-drawer-width: 256px;
+    --fc-drawer-width: 16rem;
     --fc-drawer-height: 35vh;
   }
 
   .fc-drawer[data-size='lg'] {
-    --fc-drawer-width: 480px;
+    --fc-drawer-width: 30rem;
     --fc-drawer-height: 65vh;
   }
 
@@ -179,7 +179,7 @@
 
   .fc-drawer__close:hover {
     background-color: rgb(26 26 26 / 0.06);
-    color: var(--fc-ink, #1a1a1a);
+    color: var(--fc-ink, rgb(26 26 26));
   }
 
   .fc-drawer__close:focus-visible {

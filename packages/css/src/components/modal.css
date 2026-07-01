@@ -13,8 +13,8 @@
     border: none;
     border-radius: var(--fc-modal-border-radius, 4px);
     padding: 0;
-    background: var(--fc-paper, #fff);
-    box-shadow: var(--fc-modal-shadow, 0 8px 32px rgb(26 26 26 / 0.18));
+    background: var(--fc-paper, rgb(255 255 255));
+    box-shadow: var(--fc-modal-shadow, 0 0.5rem 2rem rgb(26 26 26 / 0.18));
     color: inherit;
   }
 

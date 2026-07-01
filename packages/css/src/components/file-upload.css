@@ -48,8 +48,8 @@
   }
 
   .fc-file-upload[data-state='dragging'] .fc-file-upload__dropzone {
-    border-color: var(--fc-ink, #1a1a1a);
-    background: var(--fc-file-upload-drag-bg, var(--fc-grey-100, #f5f5f5));
+    border-color: var(--fc-ink, rgb(26 26 26));
+    background: var(--fc-file-upload-drag-bg, var(--fc-grey-100, rgb(245 245 245)));
   }
 
   .fc-file-upload[data-disabled] .fc-file-upload__dropzone {
@@ -95,7 +95,7 @@
     gap: var(--fc-space-2, 0.5rem);
     padding: 0.375rem 0.5rem;
     border-radius: 2px;
-    background: var(--fc-grey-100, #f5f5f5);
+    background: var(--fc-grey-100, rgb(245 245 245));
     font-size: 0.875rem;
     overflow: hidden;
     white-space: nowrap;

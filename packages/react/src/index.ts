@@ -78,3 +78,17 @@ export type {
   DrawerFooterProps,
   DrawerSide,
 } from './tier3/Drawer'
+
+export {
+  DropdownMenuRoot,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+} from './tier3/DropdownMenu'
+export type {
+  DropdownMenuRootProps,
+  DropdownMenuTriggerProps,
+  DropdownMenuContentProps,
+  DropdownMenuSeparatorProps,
+} from './tier3/DropdownMenu'
+export type { DropdownMenuItem } from '@web-loom/foolscap-core'
