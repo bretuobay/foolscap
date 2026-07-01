@@ -60,3 +60,21 @@ export type { FileUploadProps, FileUploadError } from './tier2/FileUpload'
 
 export { FormRoot, FormFields, FormErrorSummary, FormActions, useFormContext } from './tier2/Form'
 export type { FormRootProps, FormFieldsProps, FormErrorSummaryProps, FormActionsProps, FieldConfig } from './tier2/Form'
+
+export {
+  Drawer,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+  DrawerBody,
+  DrawerFooter,
+} from './tier3/Drawer'
+export type {
+  DrawerProps,
+  DrawerHeaderProps,
+  DrawerTitleProps,
+  DrawerCloseProps,
+  DrawerBodyProps,
+  DrawerFooterProps,
+  DrawerSide,
+} from './tier3/Drawer'

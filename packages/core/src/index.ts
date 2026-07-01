@@ -36,6 +36,7 @@ export { createToaster } from './tier3/toast'
 export { createTooltip } from './tier3/tooltip'
 export { createSelect } from './tier3/select'
 export { createCombobox } from './tier3/combobox'
+export { createDrawer } from './tier3/drawer'
 
 // Types — Tier 2
 export type { AccordionOptions, AccordionState, AccordionItem, Accordion } from './tier2/accordion'
@@ -56,6 +57,7 @@ export type { ToastOptions, ToasterState, Toaster, Toast } from './tier3/toast'
 export type { TooltipOptions, TooltipState, Tooltip } from './tier3/tooltip'
 export type { SelectOptions, SelectState, Select, SelectOption } from './tier3/select'
 export type { ComboboxOptions, ComboboxState, Combobox } from './tier3/combobox'
+export type { DrawerOptions, DrawerState, Drawer, DrawerSide } from './tier3/drawer'
 
 // Utility types
 export type { FocusTrap } from './utils/focus-trap'
