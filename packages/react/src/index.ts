@@ -92,3 +92,10 @@ export type {
   DropdownMenuSeparatorProps,
 } from './tier3/DropdownMenu'
 export type { DropdownMenuItem } from '@web-loom/foolscap-core'
+
+export { DatepickerRoot, DatepickerTrigger, DatepickerDialog } from './tier3/Datepicker'
+export type {
+  DatepickerRootProps,
+  DatepickerTriggerProps,
+  DatepickerDialogProps,
+} from './tier3/Datepicker'

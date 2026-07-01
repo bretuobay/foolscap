@@ -1,0 +1,143 @@
+@layer foolscap.components {
+  .fc-datepicker {
+    position: relative;
+    display: inline-block;
+  }
+
+  .fc-datepicker__trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--fc-space-2);
+    min-height: 2.5rem;
+    min-width: 12rem;
+    padding: 0 var(--fc-space-3);
+    border: 1px solid rgb(26 26 26 / 0.3);
+    border-radius: 4px;
+    background: var(--fc-paper, rgb(255 255 255));
+    color: inherit;
+    font: inherit;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    text-align: start;
+  }
+
+  .fc-datepicker__trigger:hover {
+    border-color: rgb(26 26 26 / 0.5);
+  }
+
+  .fc-datepicker__trigger:focus-visible,
+  .fc-datepicker__prev-month:focus-visible,
+  .fc-datepicker__next-month:focus-visible,
+  .fc-datepicker__day:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-datepicker__dialog {
+    z-index: var(--fc-datepicker-z-index, 1000);
+    width: var(--fc-datepicker-dialog-width, 17.5rem);
+    padding: var(--fc-space-3);
+    background: var(--fc-datepicker-dialog-bg, var(--fc-paper-raised, var(--fc-paper, rgb(255 255 255))));
+    border: var(--fc-datepicker-dialog-border, 1px solid var(--fc-ink, rgb(26 26 26)));
+    border-radius: 4px;
+    box-shadow: var(--fc-datepicker-dialog-shadow, 0 0.25rem 1rem rgb(0 0 0 / 0.1));
+  }
+
+  .fc-datepicker__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--fc-space-2);
+    margin-bottom: var(--fc-space-2);
+  }
+
+  .fc-datepicker__month-label {
+    flex: 1;
+    text-align: center;
+    font-size: var(--fc-datepicker-header-font-size, 0.9375rem);
+    font-weight: 600;
+  }
+
+  .fc-datepicker__prev-month,
+  .fc-datepicker__next-month {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .fc-datepicker__prev-month:hover,
+  .fc-datepicker__next-month:hover,
+  .fc-datepicker__day:hover:not(:disabled) {
+    background: var(--fc-datepicker-day-hover-bg, var(--fc-grey-100, rgb(245 245 245)));
+  }
+
+  .fc-datepicker__grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .fc-datepicker__grid th {
+    height: 1.75rem;
+    color: var(--fc-ink-muted, rgb(26 26 26 / 0.6));
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .fc-datepicker__gridcell {
+    width: var(--fc-datepicker-cell-size, 2.25rem);
+    height: var(--fc-datepicker-cell-size, 2.25rem);
+    padding: 0;
+    text-align: center;
+  }
+
+  .fc-datepicker__gridcell[data-state='outside-month'] {
+    opacity: 0.35;
+  }
+
+  .fc-datepicker__day {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-datepicker-cell-size, 2.25rem);
+    height: var(--fc-datepicker-cell-size, 2.25rem);
+    min-height: 0;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .fc-datepicker__day[aria-current='date'] {
+    text-decoration: var(--fc-datepicker-day-today-underline, underline);
+    text-underline-offset: 0.2em;
+  }
+
+  .fc-datepicker__day[aria-selected='true'] {
+    background: var(--fc-datepicker-day-selected-bg, var(--fc-ink, rgb(26 26 26)));
+    color: var(--fc-datepicker-day-selected-color, var(--fc-paper, rgb(255 255 255)));
+    text-decoration-color: currentColor;
+  }
+
+  .fc-datepicker__day:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
