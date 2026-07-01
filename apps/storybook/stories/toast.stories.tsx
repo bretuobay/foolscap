@@ -4,7 +4,10 @@ import { ToastProvider, Toaster, useToast } from '@web-loom/foolscap-react'
 const meta = {
   title: 'React/Toast',
   tags: ['autodocs'],
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: { story: { height: '120px' } },
+  },
 } satisfies Meta
 
 export default meta

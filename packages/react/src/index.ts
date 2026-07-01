@@ -36,6 +36,12 @@ export type {
   ModalCloseProps,
 } from './tier3/Modal'
 
+export { PopoverRoot, PopoverTrigger, PopoverContent, PopoverClose } from './tier2/Popover'
+export type { PopoverRootProps, PopoverTriggerProps, PopoverContentProps, PopoverCloseProps } from './tier2/Popover'
+
+export { TooltipRoot, TooltipTrigger, TooltipContent } from './tier3/Tooltip'
+export type { TooltipRootProps, TooltipTriggerProps, TooltipContentProps } from './tier3/Tooltip'
+
 export { ToastProvider, Toaster, ToastItem } from './tier3/Toast'
 export type { ToastProviderProps, ToasterProps, ToastItemProps } from './tier3/Toast'
 

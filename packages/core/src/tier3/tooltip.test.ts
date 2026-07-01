@@ -79,6 +79,18 @@ describe('createTooltip', () => {
     tt.destroy()
   })
 
+  it('closes immediately on Escape', async () => {
+    const { tt } = setup({ openDelay: 0 })
+    tt.getTriggerProps().onMouseEnter()
+    await vi.advanceTimersByTimeAsync(1)
+    expect(tt.state.open).toBe(true)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(tt.state.open).toBe(false)
+
+    tt.destroy()
+  })
+
   it('destroy clears timers without error', () => {
     const { tt } = setup({ openDelay: 500 })
     tt.getTriggerProps().onMouseEnter()

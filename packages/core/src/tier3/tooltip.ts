@@ -44,8 +44,8 @@ export function createTooltip(
   options: TooltipOptions = {}
 ): Tooltip {
   const tooltipId = createId('fc-tooltip')
-  const openDelay = options.openDelay ?? 600
-  const closeDelay = options.closeDelay ?? 300
+  const openDelay = options.openDelay ?? 300
+  const closeDelay = options.closeDelay ?? 100
   const offsetPx = options.offset ?? 8
 
   const store = createStore({ open: false } as TooltipState, (set) => ({
@@ -56,6 +56,7 @@ export function createTooltip(
 
   let openTimer: ReturnType<typeof setTimeout> | null = null
   let closeTimer: ReturnType<typeof setTimeout> | null = null
+  let openGeneration = 0
 
   function clearTimers(): void {
     if (openTimer) {
@@ -68,15 +69,20 @@ export function createTooltip(
     }
   }
 
-  async function doOpen(): Promise<void> {
+  async function doOpen(generation: number): Promise<void> {
+    contentEl.hidden = false
+    contentEl.style.visibility = 'hidden'
     const { x, y } = await computePosition(triggerEl, contentEl, {
       placement: options.placement ?? 'top',
+      strategy: 'fixed',
       middleware: [offset(offsetPx), flip(), shift({ padding: 8 })],
     })
+    if (generation !== openGeneration) return
     Object.assign(contentEl.style, {
-      position: 'absolute',
+      position: 'fixed',
       left: `${x}px`,
       top: `${y}px`,
+      visibility: '',
     })
     store.actions.setOpen(true)
     dispatch(triggerEl, 'open', {})
@@ -84,10 +90,21 @@ export function createTooltip(
   }
 
   function doClose(): void {
+    if (!store.getState().open) return
     store.actions.setOpen(false)
     dispatch(triggerEl, 'close', {})
     options.onClose?.()
   }
+
+  function handleEscapeKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      clearTimers()
+      openGeneration += 1
+      doClose()
+    }
+  }
+
+  document.addEventListener('keydown', handleEscapeKeydown)
 
   const instance: Tooltip = {
     get state() {
@@ -96,11 +113,13 @@ export function createTooltip(
 
     open() {
       clearTimers()
-      void doOpen()
+      const generation = ++openGeneration
+      void doOpen(generation)
     },
 
     close() {
       clearTimers()
+      openGeneration += 1
       doClose()
     },
 
@@ -111,19 +130,23 @@ export function createTooltip(
         onMouseEnter() {
           clearTimers()
           if (store.getState().open) return
-          openTimer = setTimeout(() => void doOpen(), openDelay)
+          const generation = ++openGeneration
+          openTimer = setTimeout(() => void doOpen(generation), openDelay)
         },
         onMouseLeave() {
           clearTimers()
+          openGeneration += 1
           closeTimer = setTimeout(doClose, closeDelay)
         },
         onFocus() {
           clearTimers()
           if (store.getState().open) return
-          openTimer = setTimeout(() => void doOpen(), openDelay)
+          const generation = ++openGeneration
+          openTimer = setTimeout(() => void doOpen(generation), openDelay)
         },
         onBlur() {
           clearTimers()
+          openGeneration += 1
           closeTimer = setTimeout(doClose, closeDelay)
         },
       }
@@ -142,7 +165,9 @@ export function createTooltip(
     subscribe: store.subscribe.bind(store),
 
     destroy() {
+      openGeneration += 1
       clearTimers()
+      document.removeEventListener('keydown', handleEscapeKeydown)
       store.destroy()
     },
   }

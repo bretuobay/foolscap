@@ -1,4 +1,4 @@
-import { computePosition, flip, offset, shift } from '@floating-ui/dom'
+import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom'
 import type { Placement } from '@floating-ui/dom'
 import { createStore } from '@web-loom/store-core'
 import { dispatch } from '../utils/events'
@@ -42,6 +42,19 @@ export function createPopover(
 ): Popover {
   const contentId = createId('fc-popover')
   const offsetPx = options.offset ?? 8
+  const placement = options.placement ?? 'bottom'
+  const alignedPlacement: Placement =
+    placement === 'top'
+      ? 'top-start'
+      : placement === 'bottom'
+        ? 'bottom-start'
+        : placement === 'left'
+          ? 'left-start'
+          : 'right-start'
+
+  // Inline style beats every CSS layer — the machine is the sole owner of visibility.
+  // React must NOT manage `style.display` on PopoverContent (strip it from user style props).
+  contentEl.style.display = 'none'
 
   const store = createStore({ open: false } as PopoverState, (set) => ({
     setOpen(v: boolean) {
@@ -49,15 +62,24 @@ export function createPopover(
     },
   }))
 
-  async function position(): Promise<void> {
+  let cleanupAutoUpdate: (() => void) | null = null
+
+  async function position(hideWhileMeasuring = true): Promise<void> {
+    if (hideWhileMeasuring) {
+      contentEl.hidden = false
+      contentEl.style.display = ''    // restore — CSS grid takes over
+      contentEl.style.visibility = 'hidden'
+    }
     const { x, y } = await computePosition(triggerEl, contentEl, {
-      placement: options.placement ?? 'bottom',
+      placement: alignedPlacement,
+      strategy: 'fixed',
       middleware: [offset(offsetPx), flip(), shift({ padding: 8 })],
     })
     Object.assign(contentEl.style, {
-      position: 'absolute',
+      position: 'fixed',
       left: `${x}px`,
       top: `${y}px`,
+      ...(hideWhileMeasuring ? { visibility: '' } : {}),
     })
   }
 
@@ -82,9 +104,11 @@ export function createPopover(
     },
 
     async open() {
-      contentEl.hidden = false
       store.actions.setOpen(true)
-      await position()
+      await position(true)
+      cleanupAutoUpdate = autoUpdate(triggerEl, contentEl, () => {
+        void position(false)
+      })
       if ('showPopover' in contentEl) {
         try {
           ;(contentEl as HTMLElement).showPopover()
@@ -99,7 +123,11 @@ export function createPopover(
     },
 
     close() {
+      cleanupAutoUpdate?.()
+      cleanupAutoUpdate = null
       contentEl.hidden = true
+      contentEl.style.display = 'none'  // inline always wins over CSS layers
+      contentEl.style.visibility = ''
       store.actions.setOpen(false)
       if ('hidePopover' in contentEl) {
         try {
@@ -142,6 +170,9 @@ export function createPopover(
     subscribe: store.subscribe.bind(store),
 
     destroy() {
+      cleanupAutoUpdate?.()
+      cleanupAutoUpdate = null
+      contentEl.style.display = ''  // restore inline style so CSS [hidden] takes over
       document.removeEventListener('keydown', handleDocKeydown)
       document.removeEventListener('pointerdown', handleDocPointerdown)
       store.destroy()

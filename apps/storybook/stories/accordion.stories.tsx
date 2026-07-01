@@ -9,7 +9,10 @@ import {
 const meta = {
   title: 'React/Accordion',
   tags: ['autodocs'],
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: { story: { height: '420px' } },
+  },
 } satisfies Meta
 
 export default meta

@@ -11,6 +11,9 @@ const meta = {
     defaultChecked: { control: 'boolean' },
     label: { control: 'text' },
   },
+  parameters: {
+    docs: { story: { height: '80px' } },
+  },
 } satisfies Meta<typeof Toggle>
 
 export default meta

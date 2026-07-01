@@ -103,3 +103,14 @@ export const NativeDialog: Story = {
     </main>
   ),
 }
+
+export const NativeTooltip: Story = {
+  name: 'Native tooltip',
+  render: () => (
+    <main style={{ minHeight: '100vh', padding: '2rem', background: 'var(--fc-paper)' }}>
+      <button type="button" title="Save your changes">
+        Save
+      </button>
+    </main>
+  ),
+}

@@ -5,7 +5,10 @@ import { TabsRoot, TabsList, Tab, TabPanel } from '@web-loom/foolscap-react'
 const meta = {
   title: 'React/Tabs',
   tags: ['autodocs'],
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: { story: { height: '220px' } },
+  },
 } satisfies Meta
 
 export default meta

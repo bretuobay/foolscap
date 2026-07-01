@@ -1,0 +1,55 @@
+@layer foolscap.components {
+  .fc-popover {
+    position: fixed;
+    z-index: var(--fc-popover-z-index, 100);
+    display: grid;
+    gap: var(--fc-space-2);
+    width: var(--fc-popover-width, 16rem);
+    max-width: min(calc(100vw - var(--fc-space-4)), var(--fc-popover-width, 16rem));
+    padding: var(--fc-popover-padding, 0.75rem 1rem);
+    background-color: var(--fc-paper-raised, var(--fc-paper));
+    color: var(--fc-ink);
+    border: var(--fc-popover-border, 1px solid rgb(26 26 26 / 0.12));
+    border-radius: var(--fc-popover-border-radius, 4px);
+    box-shadow: var(--fc-popover-shadow, 0 2px 8px rgb(26 26 26 / 0.1));
+    pointer-events: auto;
+  }
+
+  /* Explicit non-nested rule — our display:grid overrides the UA [hidden]{display:none},
+     so we must restore it here at higher specificity within the same layer. */
+  .fc-popover[hidden] {
+    display: none;
+  }
+
+  .fc-popover__arrow {
+    position: absolute;
+    width: var(--fc-popover-arrow-size, 0.5rem);
+    height: var(--fc-popover-arrow-size, 0.5rem);
+    background: inherit;
+    transform: rotate(45deg);
+  }
+
+  .fc-popover[data-placement='top'] .fc-popover__arrow {
+    inset-block-end: calc(var(--fc-popover-arrow-size, 0.5rem) * -0.5);
+    inset-inline-start: 50%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .fc-popover[data-placement='bottom'] .fc-popover__arrow {
+    inset-block-start: calc(var(--fc-popover-arrow-size, 0.5rem) * -0.5);
+    inset-inline-start: 50%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .fc-popover[data-placement='left'] .fc-popover__arrow {
+    inset-inline-end: calc(var(--fc-popover-arrow-size, 0.5rem) * -0.5);
+    inset-block-start: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .fc-popover[data-placement='right'] .fc-popover__arrow {
+    inset-inline-start: calc(var(--fc-popover-arrow-size, 0.5rem) * -0.5);
+    inset-block-start: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+}
