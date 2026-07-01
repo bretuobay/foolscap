@@ -47,3 +47,7 @@ export type { ToastProviderProps, ToasterProps, ToastItemProps } from './tier3/T
 
 export { useToast } from './hooks/useToast'
 export type { UseToastReturn } from './hooks/useToast'
+
+export { SelectRoot, SelectTrigger, SelectListbox } from './tier3/Select'
+export type { SelectRootProps, SelectTriggerProps, SelectListboxProps } from './tier3/Select'
+export type { SelectOption } from '@web-loom/foolscap-core'

@@ -1,4 +1,4 @@
-import { computePosition, flip, offset, size } from '@floating-ui/dom'
+import { autoUpdate, computePosition, flip, offset, size } from '@floating-ui/dom'
 import type { Placement } from '@floating-ui/dom'
 import { createStore } from '@web-loom/store-core'
 import { dispatch } from '../utils/events'
@@ -94,29 +94,36 @@ export function createSelect(opts: SelectOptions): Select {
 
   let triggerEl: HTMLElement | null = null
   let listboxEl: HTMLElement | null = null
+  let cleanupAutoUpdate: (() => void) | null = null
 
   function enabledOptions(): { opt: SelectOption; index: number }[] {
     return opts.options.map((opt, index) => ({ opt, index })).filter(({ opt }) => !opt.disabled)
   }
 
-  async function positionListbox(): Promise<void> {
+  // hideWhileMeasuring=true on initial open; false on autoUpdate reposition (no flicker)
+  async function positionListbox(hideWhileMeasuring = true): Promise<void> {
     if (!triggerEl || !listboxEl) return
+    if (hideWhileMeasuring) {
+      listboxEl.style.visibility = 'hidden'
+    }
     const { x, y } = await computePosition(triggerEl, listboxEl, {
-      placement: opts.placement ?? 'bottom-start',
+      placement: (opts.placement ?? 'bottom-start') as Placement,
+      strategy: 'fixed',
       middleware: [
         offset(4),
         flip(),
         size({
           apply({ availableHeight, elements }) {
-            elements.floating.style.maxHeight = `${availableHeight}px`
+            elements.floating.style.maxHeight = `${Math.min(availableHeight, 240)}px`
           },
         }),
       ],
     })
     Object.assign(listboxEl.style, {
-      position: 'absolute',
+      position: 'fixed',
       left: `${x}px`,
       top: `${y}px`,
+      ...(hideWhileMeasuring ? { visibility: '' } : {}),
     })
   }
 
@@ -173,6 +180,10 @@ export function createSelect(opts: SelectOptions): Select {
         instance.closeMenu()
         triggerEl?.focus()
         break
+      case 'Tab':
+        // Close without preventing default — focus naturally moves away
+        instance.closeMenu()
+        break
       default:
         if (e.key.length === 1) {
           const labels = opts.options.map((o) => o.label)
@@ -181,6 +192,14 @@ export function createSelect(opts: SelectOptions): Select {
             store.actions.setHighlighted(nextIdx)
           }
         }
+    }
+  }
+
+  function handleDocPointerdown(e: PointerEvent): void {
+    if (!store.getState().open) return
+    const target = e.target as Node
+    if (!listboxEl?.contains(target) && !triggerEl?.contains(target)) {
+      instance.closeMenu()
     }
   }
 
@@ -193,25 +212,52 @@ export function createSelect(opts: SelectOptions): Select {
     setTriggerEl(el) {
       triggerEl = el
     },
+
     setListboxEl(el) {
+      if (!el && listboxEl) {
+        // Element removed — stop repositioning and reset display
+        cleanupAutoUpdate?.()
+        cleanupAutoUpdate = null
+        listboxEl.style.display = ''
+      }
       listboxEl = el
+      if (el && !store.getState().open) {
+        // Inline style owns visibility — beats any CSS layer (same pattern as popover)
+        el.style.display = 'none'
+      }
     },
 
     openMenu() {
+      if (!triggerEl || !listboxEl) return
+      // Make visible before measurement so Floating UI has layout
+      listboxEl.style.display = ''
+      listboxEl.removeAttribute('hidden')
       store.actions.setOpen(true)
-      void positionListbox()
+      void positionListbox(true)
+      cleanupAutoUpdate = autoUpdate(triggerEl, listboxEl, () => {
+        void positionListbox(false)
+      })
+      document.addEventListener('pointerdown', handleDocPointerdown)
       dispatch(triggerEl, 'open', {})
     },
 
     closeMenu() {
+      cleanupAutoUpdate?.()
+      cleanupAutoUpdate = null
+      if (listboxEl) {
+        listboxEl.style.display = 'none'
+        listboxEl.setAttribute('hidden', '')
+      }
       store.actions.setOpen(false)
       store.actions.setHighlighted(-1)
+      document.removeEventListener('pointerdown', handleDocPointerdown)
       dispatch(triggerEl, 'close', {})
     },
 
     selectOption(value) {
+      const opt = opts.options.find((o) => o.value === value)
       store.actions.setValue(value)
-      dispatch(triggerEl, 'change', { value })
+      dispatch(triggerEl, 'change', { value, label: opt?.label ?? '' })
       instance.closeMenu()
       triggerEl?.focus()
     },
@@ -275,7 +321,14 @@ export function createSelect(opts: SelectOptions): Select {
     },
 
     subscribe: store.subscribe.bind(store),
-    destroy: store.destroy.bind(store),
+
+    destroy() {
+      cleanupAutoUpdate?.()
+      cleanupAutoUpdate = null
+      if (listboxEl) listboxEl.style.display = ''
+      document.removeEventListener('pointerdown', handleDocPointerdown)
+      store.destroy()
+    },
   }
 
   return instance
