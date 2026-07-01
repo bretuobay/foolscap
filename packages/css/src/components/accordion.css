@@ -1,0 +1,82 @@
+@layer foolscap.components {
+  /* ── Root ─────────────────────────────────────────────── */
+  .fc-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fc-accordion-gap, 0);
+  }
+
+  /* ── Item (<details>) ─────────────────────────────────── */
+  .fc-accordion__item {
+    border-bottom: var(--fc-accordion-item-border, 1px solid rgb(26 26 26 / 0.15));
+  }
+
+  /* Suppress native browser disclosure triangle */
+  .fc-accordion__trigger {
+    list-style: none;
+  }
+  .fc-accordion__trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  /* ── Trigger (<summary>) ──────────────────────────────── */
+  .fc-accordion__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--fc-accordion-trigger-padding, 0.75rem 0);
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .fc-accordion__trigger:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  /* Chevron icon via ::after pseudo-element */
+  .fc-accordion__trigger::after {
+    content: '';
+    display: inline-block;
+    width: var(--fc-accordion-icon-size, 1rem);
+    height: var(--fc-accordion-icon-size, 1rem);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    flex-shrink: 0;
+    transition: transform 200ms ease;
+  }
+
+  .fc-accordion__item[data-state='open'] .fc-accordion__trigger::after {
+    transform: rotate(180deg);
+  }
+
+  /* ── Panel ────────────────────────────────────────────── */
+  /*
+   * Animate using grid-template-rows trick.
+   * The inner wrapper needs to be a block with min-height: 0
+   * so grid can collapse it to 0fr.
+   */
+  .fc-accordion__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms ease;
+    overflow: hidden;
+  }
+
+  .fc-accordion__item[data-state='open'] .fc-accordion__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .fc-accordion__panel > * {
+    min-height: 0;
+    padding: var(--fc-accordion-panel-padding, 0 0 0.75rem);
+  }
+}

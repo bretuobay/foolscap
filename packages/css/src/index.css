@@ -72,3 +72,10 @@
 @import './components/popover.css';
 @import './components/tooltip.css';
 @import './components/select.css';
+@import './components/accordion.css';
+@import './components/modal.css';
+@import './components/tabs.css';
+@import './components/toggle.css';
+@import './components/combobox.css';
+@import './components/file-upload.css';
+@import './components/form.css';

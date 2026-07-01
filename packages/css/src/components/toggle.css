@@ -1,0 +1,78 @@
+@layer foolscap.components {
+  /* ── Root (label) ─────────────────────────────────────── */
+  .fc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fc-toggle-gap, 0.5rem);
+    cursor: pointer;
+  }
+
+  .fc-toggle--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Input (visually hidden, screen-reader accessible) ── */
+  .fc-toggle__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── Track ────────────────────────────────────────────── */
+  .fc-toggle__track {
+    display: inline-flex;
+    align-items: center;
+    width: var(--fc-toggle-track-width, 2.75rem);
+    height: var(--fc-toggle-track-height, 1.5rem);
+    border-radius: 9999px;
+    background: var(--fc-toggle-unchecked-bg, rgb(26 26 26 / 0.25));
+    padding: 0;
+    flex-shrink: 0;
+    transition: background var(--fc-toggle-transition, 120ms ease);
+  }
+
+  /* Checked track — sibling combinator: input is before track in DOM */
+  .fc-toggle__input:checked ~ .fc-toggle__track {
+    background: var(--fc-toggle-checked-bg, var(--fc-ink, #1a1a1a));
+  }
+
+  /* Focus ring on track when input is focused */
+  .fc-toggle__input:focus-visible ~ .fc-toggle__track {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  /* ── Thumb ────────────────────────────────────────────── */
+  .fc-toggle__thumb {
+    width: var(--fc-toggle-thumb-size, 1.125rem);
+    height: var(--fc-toggle-thumb-size, 1.125rem);
+    border-radius: 50%;
+    background: var(--fc-toggle-thumb-bg, #fff);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+    transform: translateX(var(--fc-toggle-thumb-offset, 0.1875rem));
+    transition: transform var(--fc-toggle-transition, 120ms ease);
+    flex-shrink: 0;
+  }
+
+  /* Slide thumb to checked position */
+  .fc-toggle__input:checked ~ .fc-toggle__track .fc-toggle__thumb {
+    transform: translateX(
+      calc(
+        var(--fc-toggle-track-width, 2.75rem) -
+        var(--fc-toggle-thumb-size, 1.125rem) -
+        var(--fc-toggle-thumb-offset, 0.1875rem)
+      )
+    );
+  }
+
+  /* ── Label text ───────────────────────────────────────── */
+  .fc-toggle__label {
+    line-height: 1.4;
+    user-select: none;
+  }
+}

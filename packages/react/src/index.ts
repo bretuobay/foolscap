@@ -51,3 +51,12 @@ export type { UseToastReturn } from './hooks/useToast'
 export { SelectRoot, SelectTrigger, SelectListbox } from './tier3/Select'
 export type { SelectRootProps, SelectTriggerProps, SelectListboxProps } from './tier3/Select'
 export type { SelectOption } from '@web-loom/foolscap-core'
+
+export { ComboboxRoot, ComboboxInput, ComboboxListbox } from './tier3/Combobox'
+export type { ComboboxRootProps, ComboboxInputProps, ComboboxListboxProps } from './tier3/Combobox'
+
+export { FileUpload } from './tier2/FileUpload'
+export type { FileUploadProps, FileUploadError } from './tier2/FileUpload'
+
+export { FormRoot, FormFields, FormErrorSummary, FormActions, useFormContext } from './tier2/Form'
+export type { FormRootProps, FormFieldsProps, FormErrorSummaryProps, FormActionsProps, FieldConfig } from './tier2/Form'

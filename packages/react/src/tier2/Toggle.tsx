@@ -55,7 +55,9 @@ export function Toggle({
         className="fc-toggle__input"
         {...props}
       />
-      <span className="fc-toggle__track" aria-hidden="true" />
+      <span className="fc-toggle__track" aria-hidden="true">
+        <span className="fc-toggle__thumb" />
+      </span>
       {label != null && <span className="fc-toggle__label">{label}</span>}
     </label>
   )
