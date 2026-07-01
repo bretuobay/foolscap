@@ -39,6 +39,7 @@ export { createCombobox } from './tier3/combobox'
 export { createDrawer } from './tier3/drawer'
 export { createDropdownMenu } from './tier3/dropdown-menu'
 export { createDatepicker } from './tier3/datepicker'
+export { createNavigation } from './tier3/navigation'
 
 // Types — Tier 2
 export type { AccordionOptions, AccordionState, AccordionItem, Accordion } from './tier2/accordion'
@@ -72,6 +73,13 @@ export type {
   Datepicker,
   DatepickerFirstDayOfWeek,
 } from './tier3/datepicker'
+export type {
+  NavigationOptions,
+  NavigationState,
+  Navigation,
+  NavigationItem,
+  NavigationChildItem,
+} from './tier3/navigation'
 
 // Utility types
 export type { FocusTrap } from './utils/focus-trap'

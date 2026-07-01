@@ -1,7 +1,7 @@
 
-  Fully complete (Core + CSS + React + Story — 14 components):
+  Fully complete (Core + CSS + React + Story — 15 components):
   Accordion, Combobox, Datepicker, Drawer, Dropdown-menu, FileUpload, Form,
-  Modal, Popover, Select, Tabs, Toast, Toggle, Tooltip
+  Modal, Navigation, Popover, Select, Tabs, Toast, Toggle, Tooltip
   
   CSS built, no React/Story (tier-1 static components — ~30):
   Alert, Avatar, Badge, Breadcrumbs, Button-group, Card, Checkbox, Color-picker,
@@ -9,20 +9,19 @@
   List, Progress-bar, Quote, Radio-button, Search-input, Separator, Skeleton,
   Skip-link, Slider, Spinner, Table, Text-input, Textarea
 
-  Spec exists but nothing built yet (~9 components):
-  Carousel, Navigation, Pagination, Progress-indicator, Rating,
-  Rich-text-editor, Segmented-control, Stepper, Tree-view
+  Spec exists but nothing built yet (~8 components):
+  Carousel, Pagination, Progress-indicator, Rating, Rich-text-editor,
+  Segmented-control, Stepper, Tree-view
 
   ---
   The three natural next directions:
 
   1. Interactive components with new Core machines (highest product value)
-  - Navigation — disclosure navigation with submenu state, outside click close,
-  and mobile menu support.
   - Pagination — page navigation machine with current-page state, bounds handling,
   and compact page ranges.
   - Segmented Control — radio/tab-like single selection with roving keyboard
   navigation and a straightforward machine.
+  - Rating — accessible star/radio selection with read-only display support.
 
   2. React wrappers for tier-1 components (fills out the React package)
   - Checkbox, Radio-button, Text-input, Textarea, Search-input, Slider — these are
@@ -32,8 +31,8 @@
   - Add stories for the ~30 existing CSS components so the classless layer is fully
   demoed alongside the React layer.
 
-  My recommendation: Navigation next. It builds on the disclosure/menu keyboard
-  work already present in Dropdown Menu, fills an important app-shell primitive,
-  and complements the existing Header/Footer CSS components.
+  My recommendation: Pagination next. It is broadly useful, smaller than the
+  remaining media/editor/tree primitives, and should fit the current
+  machine-first Core + CSS + React + Story pattern cleanly.
 
   What direction do you want to go?
