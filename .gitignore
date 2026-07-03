@@ -33,5 +33,9 @@ blob-report/
 *.log
 logs/
 
+# Local research documents
+research-papers/**/*.pdf
+research-papers/*.pdf
+
 # pnpm
 .pnpm-debug.log
