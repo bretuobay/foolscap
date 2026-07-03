@@ -107,3 +107,102 @@ export type {
   NavigationListProps,
   NavigationItem,
 } from './tier3/Navigation'
+
+export {
+  PaginationRoot,
+  PaginationList,
+  PaginationPrev,
+  PaginationNext,
+  PaginationPageLink,
+  PaginationEllipsis,
+} from './tier3/Pagination'
+export type {
+  PaginationRootProps,
+  PaginationListProps,
+  PaginationPrevProps,
+  PaginationNextProps,
+  PaginationPageLinkProps,
+  PaginationEllipsisProps,
+  PaginationPage,
+} from './tier3/Pagination'
+
+export {
+  SegmentedControlRoot,
+  SegmentedControlItemView,
+  SegmentedControlIndicator,
+} from './tier3/SegmentedControl'
+export type {
+  SegmentedControlRootProps,
+  SegmentedControlItemProps,
+  SegmentedControlIndicatorProps,
+  SegmentedControlItem,
+  SegmentedControlMode,
+} from './tier3/SegmentedControl'
+
+export {
+  RatingRoot,
+  RatingItems,
+  RatingItem,
+  RatingValueLabel,
+  RatingReadOnlyIcon,
+} from './tier3/Rating'
+export type {
+  RatingRootProps,
+  RatingItemProps,
+  RatingValueLabelProps,
+  RatingReadOnlyIconProps,
+} from './tier3/Rating'
+
+export {
+  ProgressIndicatorRoot,
+  ProgressIndicatorStepView,
+  ProgressIndicatorStepIndicator,
+  ProgressIndicatorStepLabel,
+  ProgressIndicatorStepDescription,
+  ProgressIndicatorStepSrStatus,
+} from './tier3/ProgressIndicator'
+export type {
+  ProgressIndicatorRootProps,
+  ProgressIndicatorStepProps,
+  ProgressIndicatorStepIndicatorProps,
+  ProgressIndicatorStepLabelProps,
+  ProgressIndicatorStepDescriptionProps,
+  ProgressIndicatorStepSrStatusProps,
+  ProgressIndicatorStep,
+  ProgressIndicatorOrientation,
+} from './tier3/ProgressIndicator'
+
+export {
+  StepperRoot,
+  StepperLabel,
+  StepperDecrement,
+  StepperInput,
+  StepperIncrement,
+  StepperHiddenInput,
+} from './tier3/Stepper'
+export type {
+  StepperRootProps,
+  StepperLabelProps,
+  StepperButtonProps,
+  StepperInputProps,
+  StepperHiddenInputProps,
+} from './tier3/Stepper'
+
+export {
+  TreeViewRoot,
+  TreeViewItemView,
+  TreeViewItemContent,
+  TreeViewToggle,
+  TreeViewLabel,
+  TreeViewGroup,
+} from './tier3/TreeView'
+export type {
+  TreeViewRootProps,
+  TreeViewItemProps,
+  TreeViewItemContentProps,
+  TreeViewToggleProps,
+  TreeViewLabelProps,
+  TreeViewGroupProps,
+  TreeViewItem,
+  TreeViewSelectionMode,
+} from './tier3/TreeView'

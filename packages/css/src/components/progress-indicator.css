@@ -1,0 +1,152 @@
+@layer foolscap.components {
+  .fc-progress-indicator {
+    --fc-progress-indicator-indicator-size: 1.75rem;
+    --fc-progress-indicator-connector-thickness: 1px;
+    --fc-progress-indicator-connector-color: var(--fc-grey-300, rgb(212 212 212));
+    --fc-progress-indicator-complete-color: var(--fc-ink, rgb(26 26 26));
+    --fc-progress-indicator-current-color: var(--fc-ink, rgb(26 26 26));
+    --fc-progress-indicator-upcoming-color: var(--fc-grey-400, rgb(163 163 163));
+    --fc-progress-indicator-label-font-size: var(--fc-font-size-sm, 0.875rem);
+
+    display: flex;
+    gap: var(--fc-progress-indicator-gap, var(--fc-space-4, 1rem));
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .fc-progress-indicator[data-orientation='vertical'] {
+    flex-direction: column;
+  }
+
+  .fc-progress-indicator__step {
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    align-items: flex-start;
+    gap: var(--fc-space-2, 0.5rem);
+    min-width: 0;
+    color: var(--fc-progress-indicator-upcoming-color);
+  }
+
+  .fc-progress-indicator__step::after {
+    position: absolute;
+    z-index: 0;
+    content: '';
+    background: var(--fc-progress-indicator-connector-color);
+  }
+
+  .fc-progress-indicator__step:not(:last-child)::after {
+    top: calc(var(--fc-progress-indicator-indicator-size) / 2);
+    left: calc(var(--fc-progress-indicator-indicator-size) + var(--fc-space-2, 0.5rem));
+    width: calc(100% - var(--fc-progress-indicator-indicator-size) - var(--fc-space-2, 0.5rem));
+    height: var(--fc-progress-indicator-connector-thickness);
+  }
+
+  .fc-progress-indicator[data-orientation='vertical'] .fc-progress-indicator__step {
+    min-height: var(--fc-progress-indicator-vertical-step-size, 4rem);
+  }
+
+  .fc-progress-indicator[data-orientation='vertical'] .fc-progress-indicator__step:not(:last-child)::after {
+    top: calc(var(--fc-progress-indicator-indicator-size) + var(--fc-space-1, 0.25rem));
+    left: calc(var(--fc-progress-indicator-indicator-size) / 2);
+    width: var(--fc-progress-indicator-connector-thickness);
+    height: calc(100% - var(--fc-progress-indicator-indicator-size));
+  }
+
+  .fc-progress-indicator__step[data-state='complete'] {
+    color: var(--fc-progress-indicator-complete-color);
+  }
+
+  .fc-progress-indicator__step[data-state='current'] {
+    color: var(--fc-progress-indicator-current-color);
+  }
+
+  .fc-progress-indicator__step-indicator {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-progress-indicator-indicator-size);
+    height: var(--fc-progress-indicator-indicator-size);
+    font-size: var(--fc-font-size-xs, 0.75rem);
+    font-weight: var(--fc-font-weight-semibold, 600);
+    line-height: 1;
+    color: currentColor;
+    background: var(--fc-surface, rgb(255 255 255));
+    border: 1px solid currentColor;
+    border-radius: var(--fc-radius-full, 100vmax);
+  }
+
+  .fc-progress-indicator__step-indicator[role='button'] {
+    cursor: pointer;
+  }
+
+  .fc-progress-indicator__step-indicator[data-disabled] {
+    cursor: default;
+  }
+
+  .fc-progress-indicator__step-indicator:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-progress-indicator__step[data-state='complete'] .fc-progress-indicator__step-indicator {
+    color: var(--fc-surface, rgb(255 255 255));
+    background: var(--fc-progress-indicator-complete-color);
+  }
+
+  .fc-progress-indicator__step[data-state='current'] .fc-progress-indicator__step-indicator {
+    border-width: 2px;
+  }
+
+  .fc-progress-indicator__content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-block-start: 0.125rem;
+  }
+
+  .fc-progress-indicator__step-label {
+    font-size: var(--fc-progress-indicator-label-font-size);
+    font-weight: var(--fc-font-weight-medium, 500);
+    line-height: var(--fc-line-height-tight, 1.25);
+    color: var(--fc-ink, rgb(26 26 26));
+  }
+
+  .fc-progress-indicator__step-description {
+    margin-block-start: var(--fc-space-1, 0.25rem);
+    font-size: var(--fc-font-size-xs, 0.75rem);
+    line-height: var(--fc-line-height-normal, 1.5);
+    color: var(--fc-ink-muted, rgb(26 26 26 / 0.68));
+  }
+
+  .fc-progress-indicator__step-sr-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .fc-progress-indicator[data-orientation='horizontal'] {
+      flex-direction: column;
+    }
+
+    .fc-progress-indicator[data-orientation='horizontal'] .fc-progress-indicator__step {
+      min-height: var(--fc-progress-indicator-vertical-step-size, 4rem);
+    }
+
+    .fc-progress-indicator[data-orientation='horizontal'] .fc-progress-indicator__step:not(:last-child)::after {
+      top: calc(var(--fc-progress-indicator-indicator-size) + var(--fc-space-1, 0.25rem));
+      left: calc(var(--fc-progress-indicator-indicator-size) / 2);
+      width: var(--fc-progress-indicator-connector-thickness);
+      height: calc(100% - var(--fc-progress-indicator-indicator-size));
+    }
+  }
+}

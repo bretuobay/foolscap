@@ -1,7 +1,8 @@
 
-  Fully complete (Core + CSS + React + Story — 15 components):
+  Fully complete (Core + CSS + React + Story — 21 components):
   Accordion, Combobox, Datepicker, Drawer, Dropdown-menu, FileUpload, Form,
-  Modal, Navigation, Popover, Select, Tabs, Toast, Toggle, Tooltip
+  Modal, Navigation, Pagination, Popover, Progress-indicator, Rating,
+  Segmented-control, Select, Stepper, Tabs, Toast, Toggle, Tooltip, Tree-view
   
   CSS built, no React/Story (tier-1 static components — ~30):
   Alert, Avatar, Badge, Breadcrumbs, Button-group, Card, Checkbox, Color-picker,
@@ -9,19 +10,17 @@
   List, Progress-bar, Quote, Radio-button, Search-input, Separator, Skeleton,
   Skip-link, Slider, Spinner, Table, Text-input, Textarea
 
-  Spec exists but nothing built yet (~8 components):
-  Carousel, Pagination, Progress-indicator, Rating, Rich-text-editor,
-  Segmented-control, Stepper, Tree-view
+  Spec exists but nothing built yet (~2 components):
+  Carousel, Rich-text-editor
 
   ---
   The three natural next directions:
 
   1. Interactive components with new Core machines (highest product value)
-  - Pagination — page navigation machine with current-page state, bounds handling,
-  and compact page ranges.
-  - Segmented Control — radio/tab-like single selection with roving keyboard
-  navigation and a straightforward machine.
-  - Rating — accessible star/radio selection with read-only display support.
+  - Carousel — grouped slides with previous/next controls, pagination, and
+  keyboard behavior.
+  - Rich Text Editor — editable document surface with formatting commands and
+  content serialization.
 
   2. React wrappers for tier-1 components (fills out the React package)
   - Checkbox, Radio-button, Text-input, Textarea, Search-input, Slider — these are
@@ -31,8 +30,7 @@
   - Add stories for the ~30 existing CSS components so the classless layer is fully
   demoed alongside the React layer.
 
-  My recommendation: Pagination next. It is broadly useful, smaller than the
-  remaining media/editor/tree primitives, and should fit the current
-  machine-first Core + CSS + React + Story pattern cleanly.
+  My recommendation: Carousel next. It is smaller and more bounded than Rich Text
+  Editor while still adding a useful interactive primitive.
 
   What direction do you want to go?

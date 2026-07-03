@@ -1,0 +1,103 @@
+@layer foolscap.components {
+  .fc-tree {
+    --fc-tree-indent: 1.25rem;
+    --fc-tree-item-height: 2rem;
+    --fc-tree-item-gap: 0.375rem;
+    --fc-tree-toggle-size: 1.25rem;
+    --fc-tree-selected-bg: var(--fc-grey-100, rgb(245 245 245));
+    --fc-tree-hover-bg: var(--fc-grey-50, rgb(250 250 250));
+    --fc-tree-connector-color: var(--fc-grey-200, rgb(229 229 229));
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--fc-space-1, 0.25rem);
+    padding: 0;
+    margin: 0;
+    color: var(--fc-ink, rgb(26 26 26));
+    list-style: none;
+  }
+
+  .fc-tree__group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--fc-space-1, 0.25rem);
+    padding: 0 0 0 var(--fc-tree-indent);
+    margin: var(--fc-space-1, 0.25rem) 0 0;
+    list-style: none;
+  }
+
+  .fc-tree__group::before {
+    position: absolute;
+    inset-block: 0;
+    left: calc(var(--fc-tree-toggle-size) / 2);
+    width: 1px;
+    content: '';
+    background: var(--fc-tree-connector-color);
+  }
+
+  .fc-tree__item {
+    position: relative;
+    outline: none;
+  }
+
+  .fc-tree__item-content {
+    display: flex;
+    align-items: center;
+    gap: var(--fc-tree-item-gap);
+    min-height: var(--fc-tree-item-height);
+    padding-inline: var(--fc-space-2, 0.5rem);
+    border-radius: var(--fc-radius-sm, 2px);
+  }
+
+  .fc-tree__item-content:hover {
+    background: var(--fc-tree-hover-bg);
+  }
+
+  .fc-tree__item[data-state='selected'] > .fc-tree__item-content {
+    background: var(--fc-tree-selected-bg);
+  }
+
+  .fc-tree__item[aria-disabled='true'] {
+    opacity: 0.5;
+  }
+
+  .fc-tree__item:focus-visible > .fc-tree__item-content {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-tree__toggle,
+  .fc-tree__spacer {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-tree-toggle-size);
+    height: var(--fc-tree-toggle-size);
+  }
+
+  .fc-tree__toggle {
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+    color: inherit;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: var(--fc-radius-sm, 2px);
+  }
+
+  .fc-tree__toggle:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-tree__label {
+    overflow: hidden;
+    font-size: var(--fc-font-size-sm, 0.875rem);
+    line-height: var(--fc-line-height-tight, 1.25);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

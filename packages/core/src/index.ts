@@ -40,6 +40,12 @@ export { createDrawer } from './tier3/drawer'
 export { createDropdownMenu } from './tier3/dropdown-menu'
 export { createDatepicker } from './tier3/datepicker'
 export { createNavigation } from './tier3/navigation'
+export { createPagination } from './tier3/pagination'
+export { createSegmentedControl } from './tier3/segmented-control'
+export { createRating } from './tier3/rating'
+export { createProgressIndicator } from './tier3/progress-indicator'
+export { createStepper } from './tier3/stepper'
+export { createTreeView } from './tier3/tree-view'
 
 // Types — Tier 2
 export type { AccordionOptions, AccordionState, AccordionItem, Accordion } from './tier2/accordion'
@@ -80,6 +86,38 @@ export type {
   NavigationItem,
   NavigationChildItem,
 } from './tier3/navigation'
+export type {
+  PaginationOptions,
+  PaginationState,
+  Pagination,
+  PaginationPage,
+} from './tier3/pagination'
+export type {
+  SegmentedControlOptions,
+  SegmentedControlState,
+  SegmentedControl,
+  SegmentedControlItem,
+  SegmentedControlMode,
+} from './tier3/segmented-control'
+export type { RatingOptions, RatingState, Rating } from './tier3/rating'
+export type {
+  ProgressIndicatorOptions,
+  ProgressIndicatorState,
+  ProgressIndicator,
+  ProgressIndicatorStep,
+  ProgressIndicatorOrientation,
+  ProgressIndicatorStepState,
+  ProgressIndicatorDirection,
+} from './tier3/progress-indicator'
+export type { StepperOptions, StepperState, Stepper } from './tier3/stepper'
+export type {
+  TreeViewOptions,
+  TreeViewState,
+  TreeView,
+  TreeViewItem,
+  TreeViewSelectionMode,
+  TreeViewItemState,
+} from './tier3/tree-view'
 
 // Utility types
 export type { FocusTrap } from './utils/focus-trap'

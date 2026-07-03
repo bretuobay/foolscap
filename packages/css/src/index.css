@@ -83,3 +83,9 @@
 @import './components/dropdown-menu.css';
 @import './components/datepicker.css';
 @import './components/navigation.css';
+@import './components/pagination.css';
+@import './components/segmented-control.css';
+@import './components/rating.css';
+@import './components/progress-indicator.css';
+@import './components/stepper.css';
+@import './components/tree-view.css';

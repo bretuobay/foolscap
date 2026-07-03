@@ -1,0 +1,90 @@
+@layer foolscap.components {
+  .fc-pagination {
+    display: flex;
+    justify-content: center;
+  }
+
+  .fc-pagination__list {
+    display: flex;
+    align-items: center;
+    gap: var(--fc-pagination-gap, var(--fc-space-1));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fc-pagination__item {
+    display: flex;
+  }
+
+  .fc-pagination__link,
+  .fc-pagination__prev,
+  .fc-pagination__next,
+  .fc-pagination__ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--fc-pagination-item-size, 2.75rem);
+    height: var(--fc-pagination-item-size, 2.75rem);
+    padding: 0 var(--fc-space-2);
+    border: var(--fc-pagination-link-border, 1px solid transparent);
+    border-radius: var(--fc-pagination-link-radius, 2px);
+    color: var(--fc-ink, rgb(26 26 26));
+    font: inherit;
+    font-size: 0.9375rem;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .fc-pagination__link,
+  .fc-pagination__prev,
+  .fc-pagination__next {
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .fc-pagination__link:hover,
+  .fc-pagination__prev:hover:not(:disabled),
+  .fc-pagination__next:hover:not(:disabled) {
+    background: var(--fc-pagination-link-hover-bg, var(--fc-grey-100, rgb(245 245 245)));
+  }
+
+  .fc-pagination__link:focus-visible,
+  .fc-pagination__prev:focus-visible,
+  .fc-pagination__next:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-pagination__link[aria-current='page'] {
+    border: var(--fc-pagination-link-active-border, 1px solid var(--fc-ink, rgb(26 26 26)));
+    font-weight: 600;
+  }
+
+  .fc-pagination__prev[aria-disabled='true'],
+  .fc-pagination__next[aria-disabled='true'],
+  .fc-pagination__prev:disabled,
+  .fc-pagination__next:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .fc-pagination__ellipsis {
+    color: var(--fc-ink-muted, rgb(26 26 26 / 0.6));
+  }
+
+  .fc-pagination[data-size='sm'] {
+    --fc-pagination-item-size: 2rem;
+  }
+
+  .fc-pagination[data-size='sm'] .fc-pagination__link,
+  .fc-pagination[data-size='sm'] .fc-pagination__prev,
+  .fc-pagination[data-size='sm'] .fc-pagination__next,
+  .fc-pagination[data-size='sm'] .fc-pagination__ellipsis {
+    font-size: 0.875rem;
+  }
+
+  .fc-pagination[data-size='lg'] {
+    --fc-pagination-item-size: 3rem;
+  }
+}

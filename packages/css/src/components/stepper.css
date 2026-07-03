@@ -1,0 +1,105 @@
+@layer foolscap.components {
+  .fc-stepper {
+    --fc-stepper-height: 2.5rem;
+    --fc-stepper-button-width: 2.5rem;
+    --fc-stepper-input-width: 3.5rem;
+    --fc-stepper-border: 1px solid var(--fc-ink, rgb(26 26 26));
+    --fc-stepper-radius: var(--fc-radius-sm, 2px);
+    --fc-stepper-divider: 1px solid var(--fc-grey-300, rgb(212 212 212));
+    --fc-stepper-font-size: var(--fc-font-size-base, 1rem);
+
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--fc-space-1, 0.25rem);
+    color: var(--fc-ink, rgb(26 26 26));
+  }
+
+  .fc-stepper[data-state='disabled'] {
+    opacity: 0.5;
+  }
+
+  .fc-stepper[data-size='sm'] {
+    --fc-stepper-height: 2rem;
+    --fc-stepper-button-width: 2rem;
+    --fc-stepper-input-width: 3rem;
+    --fc-stepper-font-size: var(--fc-font-size-sm, 0.875rem);
+  }
+
+  .fc-stepper[data-size='lg'] {
+    --fc-stepper-height: 3rem;
+    --fc-stepper-button-width: 3rem;
+    --fc-stepper-input-width: 4rem;
+    --fc-stepper-font-size: var(--fc-font-size-lg, 1.125rem);
+  }
+
+  .fc-stepper__label {
+    font-size: var(--fc-font-size-sm, 0.875rem);
+    font-weight: var(--fc-font-weight-medium, 500);
+    line-height: var(--fc-line-height-tight, 1.25);
+  }
+
+  .fc-stepper__controls {
+    display: inline-flex;
+    align-items: stretch;
+    width: max-content;
+    min-height: var(--fc-stepper-height);
+    overflow: hidden;
+    background: var(--fc-surface, rgb(255 255 255));
+    border: var(--fc-stepper-border);
+    border-radius: var(--fc-stepper-radius);
+  }
+
+  .fc-stepper__decrement,
+  .fc-stepper__increment {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-stepper-button-width);
+    min-height: var(--fc-stepper-height);
+    padding: 0;
+    font: inherit;
+    font-size: var(--fc-stepper-font-size);
+    line-height: 1;
+    color: inherit;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+  }
+
+  .fc-stepper__decrement:disabled,
+  .fc-stepper__increment:disabled {
+    color: var(--fc-grey-400, rgb(163 163 163));
+    cursor: not-allowed;
+  }
+
+  .fc-stepper__decrement:focus-visible,
+  .fc-stepper__increment:focus-visible,
+  .fc-stepper__input:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: -2px;
+  }
+
+  .fc-stepper__input {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-stepper-input-width);
+    min-height: var(--fc-stepper-height);
+    padding-inline: var(--fc-space-2, 0.5rem);
+    font-size: var(--fc-stepper-font-size);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    text-align: center;
+    border-inline: var(--fc-stepper-divider);
+  }
+
+  .fc-stepper__input[contenteditable='true'] {
+    cursor: text;
+  }
+
+  .fc-stepper__hidden-input {
+    display: none;
+  }
+}
