@@ -10,18 +10,28 @@
   Remaining unbuilt specs
   No Tier 3 component specs remain unbuilt.
 
-  CSS-only specs still missing React/Story wrappers
-  These have CSS component files but no React wrapper/story coverage yet:
+  CSS-only specs now with React/Story wrappers
+  React wrappers, exports, tests, and Storybook coverage now exist for these
+  tier-1 primitives:
 
-  Alert, Avatar, Badge, Breadcrumbs, Button Group, Card, Checkbox, Color Picker,
-  Date Input, Empty State, Fieldset, File, Footer, Header, Heading, Hero, Icon,
-  Image, Label, Link, List, Progress Bar, Quote, Radio Button, Search Input,
+  Alert, Avatar, Badge, Breadcrumbs, Button Group, Card, Checkbox, Date Input,
+  Color Picker, Empty State, Fieldset, File, Footer, Header, Heading, Hero,
+  Icon, Image, Label, Link, List, Progress Bar, Quote, Radio Button, Search Input,
   Separator, Skeleton, Skip Link, Slider, Spinner, Stack, Table, Text Input,
   Textarea, Video, Visually Hidden.
 
+  CSS-only specs still missing React/Story wrappers
+  These have CSS component files but no React wrapper/story coverage yet:
+
+  None.
+
+  Queue
+  No CSS-only specs from the tracked remaining list are currently missing
+  React/Story wrappers.
+
   Recommendation
-  Start React wrappers for tier-1 form controls next, or add Storybook coverage
-  for the CSS-only components.
+  Review visual coverage in Storybook next, then decide whether to add richer
+  examples or framework wrappers for Angular/Vue.
 
   One caveat: the recent completed components are present in the working tree but
   many files are still untracked/not committed.
