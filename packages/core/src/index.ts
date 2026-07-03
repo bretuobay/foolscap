@@ -46,6 +46,7 @@ export { createRating } from './tier3/rating'
 export { createProgressIndicator } from './tier3/progress-indicator'
 export { createStepper } from './tier3/stepper'
 export { createTreeView } from './tier3/tree-view'
+export { createCarousel } from './tier3/carousel'
 
 // Types — Tier 2
 export type { AccordionOptions, AccordionState, AccordionItem, Accordion } from './tier2/accordion'
@@ -118,6 +119,7 @@ export type {
   TreeViewSelectionMode,
   TreeViewItemState,
 } from './tier3/tree-view'
+export type { CarouselOptions, CarouselState, Carousel } from './tier3/carousel'
 
 // Utility types
 export type { FocusTrap } from './utils/focus-trap'

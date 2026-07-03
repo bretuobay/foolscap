@@ -206,3 +206,21 @@ export type {
   TreeViewItem,
   TreeViewSelectionMode,
 } from './tier3/TreeView'
+
+export {
+  CarouselRoot,
+  CarouselViewport,
+  CarouselControls,
+  CarouselPrev,
+  CarouselNext,
+  CarouselIndicators,
+  CarouselIndicator,
+} from './tier3/Carousel'
+export type {
+  CarouselRootProps,
+  CarouselViewportProps,
+  CarouselControlsProps,
+  CarouselButtonProps,
+  CarouselIndicatorsProps,
+  CarouselIndicatorProps,
+} from './tier3/Carousel'

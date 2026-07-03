@@ -1,0 +1,110 @@
+@layer foolscap.components {
+  .fc-carousel {
+    --fc-carousel-gap: 0;
+    --fc-carousel-radius: 0;
+    --fc-carousel-indicator-size: 0.5rem;
+    --fc-carousel-indicator-gap: var(--fc-space-2, 0.5rem);
+    --fc-carousel-control-size: 2.75rem;
+    --fc-carousel-indicator-color: var(--fc-grey-400, rgb(163 163 163));
+    --fc-carousel-indicator-active-color: var(--fc-ink, rgb(26 26 26));
+
+    position: relative;
+    display: grid;
+    gap: var(--fc-space-3, 0.75rem);
+    color: var(--fc-ink, rgb(26 26 26));
+  }
+
+  .fc-carousel__viewport {
+    overflow: hidden;
+    border-radius: var(--fc-carousel-radius);
+  }
+
+  .fc-carousel__track {
+    display: flex;
+    gap: var(--fc-carousel-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .fc-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fc-carousel__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .fc-carousel__slide:not([data-state='active']) {
+    visibility: hidden;
+  }
+
+  .fc-carousel__controls {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline: var(--fc-space-2, 0.5rem);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .fc-carousel__prev,
+  .fc-carousel__next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--fc-carousel-control-size);
+    height: var(--fc-carousel-control-size);
+    padding: 0;
+    font: inherit;
+    font-size: var(--fc-font-size-xl, 1.25rem);
+    line-height: 1;
+    color: var(--fc-ink, rgb(26 26 26));
+    cursor: pointer;
+    pointer-events: auto;
+    background: var(--fc-surface, rgb(255 255 255));
+    border: 1px solid var(--fc-grey-300, rgb(212 212 212));
+    border-radius: var(--fc-radius-full, 100vmax);
+    box-shadow: var(--fc-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.08));
+  }
+
+  .fc-carousel__prev:disabled,
+  .fc-carousel__next:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .fc-carousel__prev:focus-visible,
+  .fc-carousel__next:focus-visible,
+  .fc-carousel__indicator:focus-visible {
+    outline: 2px solid var(--fc-focus-ring-color, Highlight);
+    outline-offset: 2px;
+  }
+
+  .fc-carousel__indicators {
+    display: flex;
+    justify-content: center;
+    gap: var(--fc-carousel-indicator-gap);
+  }
+
+  .fc-carousel__indicator {
+    width: var(--fc-carousel-indicator-size);
+    height: var(--fc-carousel-indicator-size);
+    padding: 0;
+    cursor: pointer;
+    background: var(--fc-carousel-indicator-color);
+    border: 0;
+    border-radius: var(--fc-radius-full, 100vmax);
+  }
+
+  .fc-carousel__indicator[data-state='active'] {
+    background: var(--fc-carousel-indicator-active-color);
+  }
+
+  .fc-carousel__indicator:empty {
+    font-size: 0;
+  }
+}
