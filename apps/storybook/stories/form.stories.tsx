@@ -9,7 +9,7 @@ import {
 } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Form',
+  title: 'Tier 2/Form',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

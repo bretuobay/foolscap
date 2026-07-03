@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { StepperRoot } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Stepper',
+  title: 'Tier 3/Stepper',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

@@ -45,7 +45,7 @@ const closeStyle: CSSProperties = {
 }
 
 const meta = {
-  title: 'React/Modal',
+  title: 'Tier 3/Modal',
   component: Modal,
   tags: ['autodocs'],
   parameters: {

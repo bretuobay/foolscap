@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { TabsRoot, TabsList, Tab, TabPanel } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Tabs',
+  title: 'Tier 3/Tabs',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

@@ -4,7 +4,7 @@ import { NavigationRoot } from '@web-loom/foolscap-react'
 import type { NavigationItem } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Navigation',
+  title: 'Tier 3/Navigation',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

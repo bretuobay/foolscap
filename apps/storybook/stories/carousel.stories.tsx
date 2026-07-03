@@ -18,7 +18,7 @@ const slides = [
 ]
 
 const meta = {
-  title: 'React/Carousel',
+  title: 'Tier 3/Carousel',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

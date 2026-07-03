@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Toggle } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Toggle',
+  title: 'Tier 2/Toggle',
   component: Toggle,
   tags: ['autodocs'],
   argTypes: {

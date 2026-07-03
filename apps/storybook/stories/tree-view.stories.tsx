@@ -31,7 +31,7 @@ const fileItems: TreeViewItem[] = [
 ]
 
 const meta = {
-  title: 'React/Tree View',
+  title: 'Tier 3/Tree View',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

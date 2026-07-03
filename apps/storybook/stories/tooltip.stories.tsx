@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { Button, TooltipContent, TooltipRoot, TooltipTrigger } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Tooltip',
+  title: 'Tier 3/Tooltip',
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',

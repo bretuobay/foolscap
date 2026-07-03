@@ -4,7 +4,7 @@ import { ComboboxRoot, ComboboxInput, ComboboxListbox } from '@web-loom/foolscap
 import type { SelectOption } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Combobox',
+  title: 'Tier 3/Combobox',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { RichTextEditorRoot } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Rich Text Editor',
+  title: 'Tier 3/Rich Text Editor',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

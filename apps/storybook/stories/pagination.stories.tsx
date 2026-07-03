@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { PaginationRoot } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Pagination',
+  title: 'Tier 3/Pagination',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

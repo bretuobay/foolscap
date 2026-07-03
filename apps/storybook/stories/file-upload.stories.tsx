@@ -4,7 +4,7 @@ import { FileUpload } from '@web-loom/foolscap-react'
 import type { FileUploadError } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/FileUpload',
+  title: 'Tier 2/File Upload',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

@@ -4,7 +4,7 @@ import { SelectRoot, SelectTrigger, SelectListbox } from '@web-loom/foolscap-rea
 import type { SelectOption } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Select',
+  title: 'Tier 3/Select',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

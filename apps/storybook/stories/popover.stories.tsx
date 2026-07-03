@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Button, PopoverClose, PopoverContent, PopoverRoot, PopoverTrigger } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Popover',
+  title: 'Tier 2/Popover',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

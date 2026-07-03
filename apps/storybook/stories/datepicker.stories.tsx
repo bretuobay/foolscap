@@ -7,7 +7,7 @@ import {
 } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Datepicker',
+  title: 'Tier 3/Datepicker',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

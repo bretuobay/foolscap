@@ -4,7 +4,7 @@ import { SegmentedControlRoot } from '@web-loom/foolscap-react'
 import type { SegmentedControlItem } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Segmented Control',
+  title: 'Tier 3/Segmented Control',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

@@ -7,7 +7,7 @@ import {
 } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Accordion',
+  title: 'Tier 2/Accordion',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

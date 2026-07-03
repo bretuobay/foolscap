@@ -8,7 +8,7 @@ import {
 import type { DropdownMenuItem } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Dropdown Menu',
+  title: 'Tier 3/Dropdown Menu',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

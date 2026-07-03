@@ -10,7 +10,7 @@ const checkoutSteps = [
 ]
 
 const meta = {
-  title: 'React/Progress Indicator',
+  title: 'Tier 3/Progress Indicator',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

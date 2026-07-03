@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { RatingRoot } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Rating',
+  title: 'Tier 3/Rating',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

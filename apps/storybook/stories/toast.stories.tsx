@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { ToastProvider, Toaster, useToast } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Toast',
+  title: 'Tier 3/Toast',
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',

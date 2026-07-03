@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from '@web-loom/foolscap-react'
 
 const meta = {
-  title: 'React/Button',
+  title: 'Tier 1/Button',
   component: Button,
   tags: ['autodocs'],
   argTypes: {
