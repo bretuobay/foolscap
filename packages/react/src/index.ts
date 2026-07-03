@@ -224,3 +224,21 @@ export type {
   CarouselIndicatorsProps,
   CarouselIndicatorProps,
 } from './tier3/Carousel'
+
+export {
+  RichTextEditorRoot,
+  RichTextEditorToolbar,
+  RichTextEditorToolbarGroup,
+  RichTextEditorButton,
+  RichTextEditorEditor,
+  RichTextEditorLinkForm,
+} from './tier3/RichTextEditor'
+export type {
+  RichTextEditorRootProps,
+  RichTextEditorToolbarProps,
+  RichTextEditorToolbarGroupProps,
+  RichTextEditorButtonProps,
+  RichTextEditorEditorProps,
+  RichTextEditorLinkFormProps,
+  RichTextEditorCommand,
+} from './tier3/RichTextEditor'

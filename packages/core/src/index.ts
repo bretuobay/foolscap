@@ -47,6 +47,7 @@ export { createProgressIndicator } from './tier3/progress-indicator'
 export { createStepper } from './tier3/stepper'
 export { createTreeView } from './tier3/tree-view'
 export { createCarousel } from './tier3/carousel'
+export { createRichTextEditor } from './tier3/rich-text-editor'
 
 // Types — Tier 2
 export type { AccordionOptions, AccordionState, AccordionItem, Accordion } from './tier2/accordion'
@@ -120,6 +121,12 @@ export type {
   TreeViewItemState,
 } from './tier3/tree-view'
 export type { CarouselOptions, CarouselState, Carousel } from './tier3/carousel'
+export type {
+  RichTextEditorOptions,
+  RichTextEditorState,
+  RichTextEditor,
+  RichTextEditorCommand,
+} from './tier3/rich-text-editor'
 
 // Utility types
 export type { FocusTrap } from './utils/focus-trap'
