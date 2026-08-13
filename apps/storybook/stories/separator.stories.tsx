@@ -5,6 +5,9 @@ const meta = {
   title: 'Tier 1/Separator',
   component: Separator,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'padded',
+  },
   args: {
     decorative: false,
   },

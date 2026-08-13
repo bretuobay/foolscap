@@ -5,6 +5,9 @@ const meta = {
   title: 'Tier 1/Progress Bar',
   component: ProgressBar,
   tags: ['autodocs'],
+  parameters: {
+    layout: 'padded',
+  },
   args: {
     label: 'Upload progress',
     value: 64,
