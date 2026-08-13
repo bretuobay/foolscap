@@ -26,12 +26,14 @@
   None.
 
   Queue
-  No CSS-only specs from the tracked remaining list are currently missing
-  React/Story wrappers.
+  Wave 0 (Vue composables + package deps) → Wave 1 Tier 1 batches →
+  Wave 2 Tier 2 shims → Wave 3 priority Tier 3 → Wave 4 remaining Tier 3 →
+  Wave 5 Vue Storybook (separate app; do not mix into React Storybook).
 
   Recommendation
-  Review visual coverage in Storybook next, then decide whether to add richer
-  examples or framework wrappers for Angular/Vue.
+  React adapter is at catalog parity. Next work is Phase 4.1 — Vue adapter.
+  Spec and wave split: `.kiro/specs/vue-package/spec.md` and `waves.md`.
+  Angular stays a stub until Vue Wave 0–2 prove the binding model.
 
-  One caveat: the recent completed components are present in the working tree but
-  many files are still untracked/not committed.
+  One caveat: the recent completed React components are present in the working
+  tree but many files may still be untracked/not committed.
