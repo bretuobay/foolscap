@@ -155,3 +155,125 @@ export type { SelectOption } from '@web-loom/foolscap-core'
 export { ComboboxRoot, ComboboxInput, ComboboxListbox } from './tier3/Combobox'
 export type { ComboboxRootProps, ComboboxInputProps, ComboboxListboxProps } from './tier3/Combobox'
 
+export {
+  Drawer,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerClose,
+  DrawerBody,
+  DrawerFooter,
+} from './tier3/Drawer'
+export type { DrawerProps, DrawerTitleProps, DrawerSide } from './tier3/Drawer'
+
+export {
+  DropdownMenuRoot,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+} from './tier3/DropdownMenu'
+export type { DropdownMenuRootProps } from './tier3/DropdownMenu'
+export type { DropdownMenuItem } from '@web-loom/foolscap-core'
+
+export { DatepickerRoot, DatepickerTrigger, DatepickerDialog } from './tier3/Datepicker'
+export type { DatepickerRootProps } from './tier3/Datepicker'
+
+export { NavigationRoot, NavigationToggle, NavigationList } from './tier3/Navigation'
+export type { NavigationRootProps, NavigationItem } from './tier3/Navigation'
+
+export {
+  PaginationRoot,
+  PaginationList,
+  PaginationPrev,
+  PaginationNext,
+  PaginationPageLink,
+  PaginationEllipsis,
+} from './tier3/Pagination'
+export type { PaginationRootProps, PaginationPageLinkProps, PaginationPage } from './tier3/Pagination'
+
+export {
+  SegmentedControlRoot,
+  SegmentedControlItemView,
+  SegmentedControlIndicator,
+} from './tier3/SegmentedControl'
+export type {
+  SegmentedControlRootProps,
+  SegmentedControlItemProps,
+  SegmentedControlItem,
+  SegmentedControlMode,
+} from './tier3/SegmentedControl'
+
+export {
+  RatingRoot,
+  RatingItems,
+  RatingItem,
+  RatingValueLabel,
+  RatingReadOnlyIcon,
+} from './tier3/Rating'
+
+export type { RatingRootProps, RatingItemProps } from './tier3/Rating'
+
+export {
+  ProgressIndicatorRoot,
+  ProgressIndicatorStepView,
+  ProgressIndicatorStepIndicator,
+  ProgressIndicatorStepLabel,
+  ProgressIndicatorStepDescription,
+  ProgressIndicatorStepSrStatus,
+} from './tier3/ProgressIndicator'
+export type {
+  ProgressIndicatorRootProps,
+  ProgressIndicatorStepProps,
+  ProgressIndicatorStep,
+  ProgressIndicatorOrientation,
+} from './tier3/ProgressIndicator'
+
+export {
+  StepperRoot,
+  StepperLabel,
+  StepperDecrement,
+  StepperInput,
+  StepperIncrement,
+  StepperHiddenInput,
+} from './tier3/Stepper'
+export type { StepperRootProps } from './tier3/Stepper'
+
+export {
+  TreeViewRoot,
+  TreeViewItemView,
+  TreeViewItemContent,
+  TreeViewToggle,
+  TreeViewLabel,
+  TreeViewGroup,
+} from './tier3/TreeView'
+export type {
+  TreeViewRootProps,
+  TreeViewItemProps,
+  TreeViewItem,
+  TreeViewSelectionMode,
+} from './tier3/TreeView'
+
+export {
+  CarouselRoot,
+  CarouselViewport,
+  CarouselControls,
+  CarouselPrev,
+  CarouselNext,
+  CarouselIndicators,
+  CarouselIndicator,
+} from './tier3/Carousel'
+export type { CarouselRootProps, CarouselIndicatorProps } from './tier3/Carousel'
+
+export {
+  RichTextEditorRoot,
+  RichTextEditorToolbar,
+  RichTextEditorToolbarGroup,
+  RichTextEditorButton,
+  RichTextEditorEditor,
+  RichTextEditorLinkForm,
+} from './tier3/RichTextEditor'
+export type {
+  RichTextEditorRootProps,
+  RichTextEditorToolbarGroupProps,
+  RichTextEditorButtonProps,
+  RichTextEditorCommand,
+} from './tier3/RichTextEditor'
