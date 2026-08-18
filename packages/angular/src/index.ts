@@ -133,3 +133,25 @@ export {
 } from './tier2/Form'
 export type { FormRootProps, FormErrorSummaryProps, FieldConfig } from './tier2/Form'
 
+export { TabsRoot, TabsList, Tab, TabPanel } from './tier3/Tabs'
+export type { TabsRootProps, TabProps, TabPanelProps } from './tier3/Tabs'
+
+export { TooltipRoot, TooltipTrigger, TooltipContent } from './tier3/Tooltip'
+export type { TooltipRootProps, TooltipPlacement } from './tier3/Tooltip'
+
+export { Modal, ModalHeader, ModalTitle, ModalBody, ModalFooter, ModalClose } from './tier3/Modal'
+export type { ModalProps, ModalTitleProps, ModalBodyProps } from './tier3/Modal'
+
+export { ToastProvider, Toaster, ToastItem } from './tier3/Toast'
+export type { ToastProviderProps, ToasterProps, ToastItemProps, Toast } from './tier3/Toast'
+
+export { injectToast, useToast } from './bindings/inject-toast'
+export type { UseToastReturn } from './bindings/inject-toast'
+
+export { SelectRoot, SelectTrigger, SelectListbox } from './tier3/Select'
+export type { SelectRootProps, SelectTriggerProps } from './tier3/Select'
+export type { SelectOption } from '@web-loom/foolscap-core'
+
+export { ComboboxRoot, ComboboxInput, ComboboxListbox } from './tier3/Combobox'
+export type { ComboboxRootProps, ComboboxInputProps, ComboboxListboxProps } from './tier3/Combobox'
+
