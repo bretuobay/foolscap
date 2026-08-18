@@ -16,9 +16,11 @@ This repository is a pnpm/Turborepo workspace.
 | `@web-loom/foolscap-css`     | Classless HTML styles plus class-based component CSS.                       |
 | `@web-loom/foolscap-core`    | Framework-free TypeScript behavior machines and accessibility prop-getters. |
 | `@web-loom/foolscap-react`   | React adapter and styled React components.                                  |
-| `@web-loom/foolscap-vue`     | Vue package placeholder/build target.                                       |
-| `@web-loom/foolscap-angular` | Angular package placeholder/build target.                                   |
-| `@foolscap/storybook`        | Storybook documentation and component examples.                             |
+| `@web-loom/foolscap-vue`     | Vue 3 adapter.                                                                  |
+| `@web-loom/foolscap-angular` | Angular 18+ standalone adapter.                                                 |
+| `@foolscap/storybook`        | React Storybook documentation and component examples.                           |
+| `@foolscap/storybook-vue`    | Vue Storybook documentation.                                                    |
+| `@foolscap/storybook-angular`| Angular Storybook documentation.                                                |
 
 ## Architecture
 
@@ -100,6 +102,8 @@ pnpm test
 pnpm lint
 pnpm typecheck
 pnpm storybook
+pnpm storybook:vue
+pnpm storybook:angular
 ```
 
 Package-scoped examples:
@@ -114,23 +118,23 @@ pnpm --filter @foolscap/storybook typecheck
 
 ```text
 apps/
-  storybook/        Storybook docs, examples, a11y/e2e harness
+  storybook/          React Storybook
+  storybook-vue/      Vue Storybook
+  storybook-angular/  Angular Storybook
 packages/
   tokens/           Design token source and builds
   css/              Classless and component CSS
   core/             Headless behavior machines
   react/            React components and hooks
-  vue/              Vue package target
-  angular/          Angular package target
+  vue/              Vue components and composables
+  angular/          Angular standalone components
 research-docs/      Product and planning documents
 .kiro/specs/        Component and package specs
 ```
 
 ## Current Status
 
-The React package currently covers the tracked Tier 1, Tier 2, and Tier 3 component specs with Storybook examples. The CSS package includes classless styles, component CSS, and token-driven styling. The core package contains the shared behavior machines for interactive components.
-
-Vue and Angular packages exist as workspace targets but do not yet have adapter parity with React.
+The React and Vue packages currently cover the tracked Tier 1, Tier 2, and Tier 3 component specs with Storybook examples. The Angular package covers Tier 1 (Wave 1) with an Angular Storybook; Tier 2/3 bindings follow the waves in `.kiro/specs/angular-package/waves.md`. The CSS package includes classless styles, component CSS, and token-driven styling. The core package contains the shared behavior machines for interactive components.
 
 ## Product Principles
 
