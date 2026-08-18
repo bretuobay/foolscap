@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/angular'
+import { screen } from '@testing-library/angular'
 import { describe, expect, it, vi } from 'vitest'
+import { render } from '../test-helpers'
 import { Alert } from './Alert'
 import { Avatar, AvatarGroup } from './Avatar'
 import { Badge } from './Badge'
@@ -60,7 +61,7 @@ describe('tier 1 primitives (wave 1A)', () => {
     await render(`<h1 fc-heading class="extra-heading">Dashboard</h1>`, { imports: [Heading] })
     expect(screen.getByRole('heading', { level: 1 })).toHaveClass('fc-heading', 'extra-heading')
 
-    await render(`<label fc-label required for="name" class="extra-label">Name</label>`, { imports: [Label] })
+    await render(`<label fc-label [required]="true" for="name" class="extra-label">Name</label>`, { imports: [Label] })
     expect(screen.getByText('Name')).toHaveAttribute('data-required', 'true')
     expect(screen.getByText('Name')).toHaveClass('fc-label', 'extra-label')
 

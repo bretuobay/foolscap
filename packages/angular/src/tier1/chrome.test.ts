@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/angular'
+import { screen } from '@testing-library/angular'
 import { describe, expect, it } from 'vitest'
+import { render } from '../test-helpers'
 import { Button } from './Button'
 import { Footer, FooterBottom, FooterGrid, FooterLinks, FooterSectionTitle } from './Footer'
 import { Header, HeaderActions, HeaderBrand, HeaderNav } from './Header'

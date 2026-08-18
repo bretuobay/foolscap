@@ -1,7 +1,7 @@
 import '@angular/compiler'
 import '@analogjs/vitest-angular/setup-zone'
 import '@testing-library/jest-dom/vitest'
-import { getTestBed } from '@angular/core/testing'
+import { getTestBed, TestBed } from '@angular/core/testing'
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -11,6 +11,7 @@ import { afterEach } from 'vitest'
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting())
 
 afterEach(() => {
+  TestBed.resetTestingModule()
   document.body.innerHTML = ''
 })
 

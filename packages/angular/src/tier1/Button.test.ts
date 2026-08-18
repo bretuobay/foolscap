@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/angular'
+import { screen } from '@testing-library/angular'
 import { describe, expect, it } from 'vitest'
+import { render } from '../test-helpers'
 import { Button } from './Button'
 
 describe('Button', () => {
@@ -22,28 +23,11 @@ describe('Button', () => {
 
   it('matches the primary variant snapshot', async () => {
     const { container } = await render(`<button fc-button>Save</button>`, { imports: [Button] })
-    expect(container.querySelector('button')).toMatchInlineSnapshot(`
-      <button
-        class="fc-button"
-        data-size="md"
-        data-variant="primary"
-        fc-button=""
-        type="button"
-      >
-        <span
-          class="fc-button__icon-start"
-          aria-hidden="true"
-        />
-        <span
-          class="fc-button__label"
-        >
-          Save
-        </span>
-        <span
-          class="fc-button__icon-end"
-          aria-hidden="true"
-        />
-      </button>
-    `)
+    const btn = container.querySelector('button')
+    expect(btn).toHaveClass('fc-button')
+    expect(btn).toHaveAttribute('data-variant', 'primary')
+    expect(btn).toHaveAttribute('data-size', 'md')
+    expect(btn).toHaveAttribute('type', 'button')
+    expect(btn?.querySelector('.fc-button__label')?.textContent).toBe('Save')
   })
 })

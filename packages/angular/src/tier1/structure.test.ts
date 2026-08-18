@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/angular'
+import { screen } from '@testing-library/angular'
 import { describe, expect, it } from 'vitest'
+import { render } from '../test-helpers'
 import { BreadcrumbItem, Breadcrumbs } from './Breadcrumbs'
 import { Button } from './Button'
 import { ButtonGroup } from './ButtonGroup'

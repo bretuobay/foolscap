@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/angular'
+import { screen } from '@testing-library/angular'
 import { describe, expect, it, vi } from 'vitest'
+import { render } from '../test-helpers'
 import { Checkbox } from './Checkbox'
 import { ColorPicker } from './ColorPicker'
 import { DateInput } from './DateInput'
