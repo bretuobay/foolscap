@@ -46,6 +46,7 @@ export interface CheckboxProps {
   host: {
     class: 'fc-checkbox',
     '[attr.data-state]': 'indeterminate ? "indeterminate" : null',
+    '[attr.id]': 'null',
   },
 })
 export class Checkbox implements AfterViewInit {

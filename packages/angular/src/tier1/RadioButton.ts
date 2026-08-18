@@ -27,6 +27,7 @@ export interface RadioButtonProps {
   `,
   host: {
     class: 'fc-radio-button',
+    '[attr.id]': 'null',
   },
 })
 export class RadioButton {
