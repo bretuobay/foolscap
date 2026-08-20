@@ -1,0 +1,122 @@
+import { fireEvent, render, screen, waitFor } from '@testing-library/angular'
+import userEvent from '@testing-library/user-event'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  RichTextEditorButton,
+  RichTextEditorEditor,
+  RichTextEditorLinkForm,
+  RichTextEditorRoot,
+  RichTextEditorToolbar,
+  RichTextEditorToolbarGroup,
+} from './RichTextEditor'
+
+const imports = [
+  RichTextEditorRoot,
+  RichTextEditorToolbar,
+  RichTextEditorToolbarGroup,
+  RichTextEditorButton,
+  RichTextEditorEditor,
+  RichTextEditorLinkForm,
+]
+
+describe('RichTextEditor', () => {
+  let execCommand: ReturnType<typeof vi.fn>
+  let queryCommandState: ReturnType<typeof vi.fn>
+  let queryCommandValue: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    execCommand = vi.fn()
+    queryCommandState = vi.fn(() => false)
+    queryCommandValue = vi.fn(() => '')
+    Object.assign(document, { execCommand, queryCommandState, queryCommandValue })
+  })
+
+  it('renders toolbar and editable textbox', async () => {
+    await render(`<fc-rte defaultValue="<p>Hello</p>" placeholder="Write..."></fc-rte>`, { imports })
+    expect(screen.getByRole('toolbar', { name: 'Text formatting' })).toHaveClass('fc-rte__toolbar')
+    expect(screen.getByRole('textbox', { name: 'Content editor' })).toHaveAttribute(
+      'contenteditable',
+      'true',
+    )
+    expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('emits change on editor input', async () => {
+    const onChange = vi.fn()
+    await render(`<fc-rte defaultValue="<p>Hello</p>" (change)="onChange($event)"></fc-rte>`, {
+      imports,
+      componentProperties: { onChange },
+    })
+    const editor = screen.getByRole('textbox', { name: 'Content editor' })
+    editor.innerHTML = '<p>Changed</p>'
+    fireEvent.input(editor)
+    expect(onChange).toHaveBeenCalledWith('<p>Changed</p>')
+  })
+
+  it('allows clearing all editor content without restoring the previous html', async () => {
+    const onChange = vi.fn()
+    await render(
+      `<fc-rte defaultValue="<p>Hello</p>" placeholder="Write..." (change)="onChange($event)"></fc-rte>`,
+      { imports, componentProperties: { onChange } },
+    )
+    const editor = screen.getByRole('textbox', { name: 'Content editor' })
+    editor.focus()
+    editor.innerHTML = ''
+    fireEvent.input(editor)
+    expect(editor.innerHTML).toBe('')
+    expect(onChange).toHaveBeenCalledWith('')
+  })
+
+  it('does not prevent basic editing and navigation keys', async () => {
+    await render(`<fc-rte defaultValue="<p>Hello</p>"></fc-rte>`, { imports })
+    const editor = screen.getByRole('textbox', { name: 'Content editor' })
+    for (const key of ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab']) {
+      const allowed = editor.dispatchEvent(new KeyboardEvent('keydown', { key, cancelable: true, bubbles: true }))
+      expect(allowed, key).toBe(true)
+    }
+  })
+
+  it('executes toolbar commands without stealing selection on mousedown', async () => {
+    const user = userEvent.setup()
+    await render(`<fc-rte defaultValue="<p>Hello</p>"></fc-rte>`, { imports })
+    const bold = screen.getByRole('button', { name: 'Bold' })
+    const mouseDown = bold.dispatchEvent(new MouseEvent('mousedown', { cancelable: true, bubbles: true }))
+    expect(mouseDown).toBe(false)
+    await user.click(bold)
+    expect(execCommand).toHaveBeenCalledWith('bold', false, undefined)
+  })
+
+  it('reflects active toolbar state', async () => {
+    queryCommandState.mockImplementation((command: string) => command === 'italic')
+    await render(`<fc-rte defaultValue="<p>Hello</p>"></fc-rte>`, { imports })
+    const editor = screen.getByRole('textbox', { name: 'Content editor' })
+    editor.focus()
+    editor.dispatchEvent(new FocusEvent('focus', { bubbles: true }))
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Italic' })).toHaveAttribute('aria-pressed', 'true')
+    })
+    expect(screen.getByRole('button', { name: 'Italic' })).toHaveAttribute('data-state', 'active')
+  })
+
+  it('opens link form and applies url', async () => {
+    const user = userEvent.setup()
+    await render(`<fc-rte defaultValue="<p>Hello</p>"></fc-rte>`, { imports })
+    await user.click(screen.getByRole('button', { name: 'Insert link' }))
+    await user.type(screen.getByRole('textbox', { name: 'Link URL' }), 'https://example.com')
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(execCommand).toHaveBeenCalledWith('createLink', false, 'https://example.com')
+  })
+
+  it('reflects controlled value while emitting change', async () => {
+    const onChange = vi.fn()
+    await render(`<fc-rte value="<p>Controlled</p>" (change)="onChange($event)"></fc-rte>`, {
+      imports,
+      componentProperties: { onChange },
+    })
+    const editor = screen.getByRole('textbox', { name: 'Content editor' })
+    expect(editor.innerHTML).toBe('<p>Controlled</p>')
+    editor.innerHTML = '<p>Draft</p>'
+    fireEvent.input(editor)
+    expect(onChange).toHaveBeenCalledWith('<p>Draft</p>')
+  })
+})

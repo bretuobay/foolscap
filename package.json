@@ -11,7 +11,11 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "storybook": "turbo storybook --filter=@foolscap/storybook",
+    "storybook:vue": "turbo storybook --filter=@foolscap/storybook-vue",
+    "storybook:angular": "turbo storybook --filter=@foolscap/storybook-angular",
     "build:storybook": "turbo build:storybook --filter=@foolscap/storybook",
+    "build:storybook:vue": "turbo build:storybook --filter=@foolscap/storybook-vue",
+    "build:storybook:angular": "turbo build:storybook --filter=@foolscap/storybook-angular",
     "test:storybook": "turbo test:storybook --filter=@foolscap/storybook",
     "test:e2e": "turbo test:e2e",
     "test:visual": "turbo test:visual",
@@ -32,8 +36,13 @@
     "playwright": "^1.45.0",
     "prettier": "^3.4.0",
     "turbo": "^2.3.0",
-    "typescript": "^5.7.0",
+    "typescript": "~5.8.3",
     "vitest": "^2.1.9"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "5.8.3"
+    }
   },
   "prettier": "@foolscap/prettier-config"
 }

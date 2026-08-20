@@ -1,0 +1,8 @@
+{
+  "extends": "@foolscap/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "rootDir": "."
+  },
+  "include": [".storybook/**/*.ts", "stories/**/*.ts"]
+}

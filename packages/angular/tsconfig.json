@@ -1,8 +1,18 @@
 {
   "extends": "@foolscap/tsconfig/base.json",
   "compilerOptions": {
+    "target": "ES2022",
     "useDefineForClassFields": false,
-    "experimentalDecorators": false
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,
+    "importHelpers": true,
+    "declaration": false,
+    "types": ["vitest/globals"]
   },
-  "include": ["src", "tsup.config.ts", "vitest.config.ts"]
+  "include": ["src"],
+  "exclude": ["dist"],
+  "angularCompilerOptions": {
+    "compilationMode": "partial",
+    "strictTemplates": true
+  }
 }

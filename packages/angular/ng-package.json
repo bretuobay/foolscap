@@ -1,0 +1,12 @@
+{
+  "dest": "dist",
+  "lib": {
+    "entryFile": "src/index.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "@web-loom/foolscap-core",
+    "@web-loom/foolscap-css",
+    "@web-loom/foolscap-tokens",
+    "tslib"
+  ]
+}

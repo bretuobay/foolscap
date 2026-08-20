@@ -1,0 +1,38 @@
+{
+  "name": "@foolscap/storybook-angular",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 ANALOG_STORYBOOK=true storybook dev --port 6008 --no-open",
+    "build:storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 ANALOG_STORYBOOK=true storybook build",
+    "serve:storybook": "node scripts/serve-static-storybook.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "@web-loom/foolscap-angular": "workspace:*",
+    "@web-loom/foolscap-css": "workspace:*",
+    "@web-loom/foolscap-tokens": "workspace:*",
+    "rxjs": "^7.8.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@analogjs/storybook-angular": "^1.22.0",
+    "@analogjs/vite-plugin-angular": "^1.22.0",
+    "@foolscap/eslint-config": "workspace:*",
+    "@foolscap/tsconfig": "workspace:*",
+    "@storybook/addon-a11y": "^8.6.18",
+    "@storybook/addon-essentials": "^8.6.18",
+    "@storybook/angular": "^8.6.18",
+    "eslint": "^9.18.0",
+    "storybook": "^8.6.18",
+    "typescript": "~5.8.3",
+    "vite": "^6.0.0"
+  }
+}
