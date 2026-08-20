@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "isolatedModules": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["../**/*.spec.ts", "../storybook-static/**", "./main.ts"],
+  "include": ["../stories/**/*.ts", "./preview.ts"],
+  "files": ["./typings.d.ts"]
+}

@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 storybook dev --port 6008 --no-open",
-    "build:storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 storybook build",
+    "storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 ANALOG_STORYBOOK=true storybook dev --port 6008 --no-open",
+    "build:storybook": "HOME=/tmp STORYBOOK_DISABLE_TELEMETRY=1 ANALOG_STORYBOOK=true storybook build",
     "serve:storybook": "node scripts/serve-static-storybook.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
