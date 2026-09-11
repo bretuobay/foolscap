@@ -1,0 +1,2994 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Foolscap Architecture</title>
+<meta name="description" content="One design system, one behavior core, three frameworks, zero drift. Scroll an engraved schematic of Foolscap's architecture, traced through one real component -- Tabs -- from tokens to a rendered React, Vue and Angular component.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23262b28'/><circle cx='11' cy='16' r='4' fill='none' stroke='%23eef1e8' stroke-width='2'/><circle cx='23' cy='10' r='2.6' fill='%23c7a052'/><circle cx='23' cy='16' r='2.6' fill='%2397a06a'/><circle cx='23' cy='22' r='2.6' fill='%2397a06a'/><line x1='14.5' y1='15' x2='20.5' y2='11' stroke='%23eef1e8' stroke-width='1.4'/><line x1='14.5' y1='16' x2='20.5' y2='16' stroke='%23eef1e8' stroke-width='1.4'/><line x1='14.5' y1='17' x2='20.5' y2='21' stroke='%23eef1e8' stroke-width='1.4'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* ============================================================================
+   scrollcraft.css: the taste floor
+   ----------------------------------------------------------------------------
+   Two layers, and the split matters:
+
+     TOKENS   what you override per brand. Colour roles, the type ramp, the
+              spacing scale, elevation, motion. A brand is ~12 values.
+     DEVICES  what the engine drives. Do not restyle these to taste; they are
+              the mechanism. Style your own markup instead.
+
+   Nothing here draws a "component". There are no card, badge, or pill classes,
+   because a stylesheet that ships those is how every page built on it ends up
+   with the same shapes. You get a floor and a vocabulary; the composition is
+   yours.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- tokens -- */
+:root {
+  /* --- colour roles. Override these six and the page is rebranded. -------- */
+  --sc-canvas:      #08090b;   /* the page ground. Drift interpolates this.   */
+  --sc-surface:     #101217;   /* anything raised off the ground             */
+  --sc-ink:         #f4f2ef;   /* primary text                               */
+  --sc-ink-soft:    #9a9ba1;   /* secondary text. Tinted, never flat gray.   */
+  --sc-accent:      #d8ff3e;   /* ONE accent. It owns a region, not confetti. */
+  --sc-accent-ink:  #08090b;   /* text that sits on the accent               */
+
+  --sc-hairline:    color-mix(in oklab, var(--sc-ink) 12%, transparent);
+  --sc-hairline-strong: color-mix(in oklab, var(--sc-ink) 22%, transparent);
+
+  /* --- type. Two families max. Display carries voice, text carries prose. - */
+  --sc-font-display: "Instrument Sans", "Geist", system-ui, sans-serif;
+  --sc-font-text:    "Geist", system-ui, sans-serif;
+  --sc-font-mono:    "Geist Mono", ui-monospace, monospace;
+
+  /* Fluid ramp. Tracking tightens as size grows because a face set at 6rem
+     with 0 tracking reads loose; this is optical correction, not decoration. */
+  --sc-t-xs:   clamp(0.75rem, 0.72rem + 0.15vw, 0.82rem);
+  --sc-t-sm:   clamp(0.875rem, 0.84rem + 0.18vw, 0.95rem);
+  --sc-t-base: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+  --sc-t-lg:   clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --sc-t-xl:   clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --sc-t-2xl:  clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+  --sc-t-3xl:  clamp(2.8rem, 1.9rem + 4.2vw, 5rem);
+  --sc-t-4xl:  clamp(3.4rem, 1.9rem + 6.6vw, 7.5rem);
+
+  --sc-track-tight:  -0.035em;
+  --sc-track-snug:   -0.02em;
+  --sc-track-normal: -0.005em;
+  --sc-track-wide:    0.08em;
+
+  --sc-leading-none: 0.94;
+  --sc-leading-tight: 1.06;
+  --sc-leading-body: 1.62;
+
+  --sc-measure: 62ch;
+
+  /* --- space. 4px base: the useful middle steps an 8-only scale misses. --- */
+  --sc-1: 0.25rem;  --sc-2: 0.5rem;   --sc-3: 0.75rem;  --sc-4: 1rem;
+  --sc-5: 1.5rem;   --sc-6: 2rem;     --sc-7: 3rem;     --sc-8: 4rem;
+  --sc-9: 6rem;     --sc-10: 8rem;    --sc-11: 12rem;
+
+  /* Section rhythm is fluid so a phone doesn't inherit desktop air. */
+  --sc-section: clamp(4.5rem, 9vw, 11rem);
+  --sc-gutter:  clamp(1.25rem, 5vw, 5.5rem);
+  --sc-maxw:    82rem;
+
+  /* --- radius. Pick one scale for the page and hold it. ------------------- */
+  --sc-r-sm: 6px;  --sc-r-md: 12px;  --sc-r-lg: 20px;  --sc-r-pill: 999px;
+
+  /* --- elevation. Every shadow has an offset AND a soft blur, and is tinted
+         to the canvas hue. A zero-offset coloured halo is decoration, not
+         depth, so there isn't one here. ---------------------------------- */
+  --sc-shadow-color: 220 40% 2%;
+  --sc-e1: 0 1px 2px hsl(var(--sc-shadow-color) / 0.28),
+           0 2px 6px -1px hsl(var(--sc-shadow-color) / 0.20);
+  --sc-e2: 0 2px 4px hsl(var(--sc-shadow-color) / 0.24),
+           0 8px 18px -4px hsl(var(--sc-shadow-color) / 0.30);
+  --sc-e3: 0 4px 8px hsl(var(--sc-shadow-color) / 0.22),
+           0 18px 40px -8px hsl(var(--sc-shadow-color) / 0.38),
+           0 48px 90px -24px hsl(var(--sc-shadow-color) / 0.30);
+
+  /* Edge light: a 1px top highlight sells a raised surface better than any
+     amount of blur, because real raised things catch light on their lip. */
+  --sc-edge: inset 0 1px 0 color-mix(in oklab, var(--sc-ink) 10%, transparent);
+
+  /* --- motion. Built-in CSS easings are too weak for UI. ------------------ */
+  --sc-ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --sc-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --sc-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --sc-d-fast: 160ms;  --sc-d-base: 240ms;  --sc-d-slow: 420ms;
+
+  --sc-z-stage: 1; --sc-z-copy: 20; --sc-z-chrome: 60;
+}
+
+/* --------------------------------------------------------------- reset -- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--sc-canvas);
+  color: var(--sc-ink);
+  font-family: var(--sc-font-text);
+  font-size: var(--sc-t-base);
+  line-height: var(--sc-leading-body);
+  letter-spacing: var(--sc-track-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis-weight: none;
+  overflow-x: clip;
+}
+img, video, canvas, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ------------------------------------------------- the browser surfaces --
+   The parts you did not draw still carry the design. Selection, caret, focus
+   ring, scrollbar and tabular numerals all ship with defaults that belong to no
+   design system. Theming them is the cheapest signal that a page was built
+   rather than assembled, and it is the step that gets skipped most reliably. */
+::selection { background: var(--sc-accent); color: var(--sc-accent-ink); }
+:root { caret-color: var(--sc-accent); accent-color: var(--sc-accent); }
+:focus-visible {
+  outline: 2px solid var(--sc-accent);
+  outline-offset: 3px;
+  border-radius: var(--sc-r-sm);
+}
+:where(a) { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+@supports (scrollbar-color: auto) {
+  html { scrollbar-color: color-mix(in oklab, var(--sc-ink) 26%, transparent) transparent; scrollbar-width: thin; }
+}
+:where(table, .sc-nums, [data-sc-count]) { font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------------- typography -- */
+.sc-display {
+  font-family: var(--sc-font-display);
+  font-weight: 500;
+  line-height: var(--sc-leading-none);
+  letter-spacing: var(--sc-track-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+.sc-display--xl { font-size: var(--sc-t-4xl); }
+.sc-display--lg { font-size: var(--sc-t-3xl); }
+.sc-display--md { font-size: var(--sc-t-2xl); letter-spacing: var(--sc-track-snug); }
+.sc-lede {
+  font-size: var(--sc-t-lg);
+  line-height: 1.44;
+  letter-spacing: var(--sc-track-snug);
+  color: var(--sc-ink);
+  max-width: 46ch;
+  text-wrap: pretty;
+  margin: 0;
+}
+.sc-body { max-width: var(--sc-measure); color: var(--sc-ink-soft); text-wrap: pretty; margin: 0; }
+.sc-label {
+  font-family: var(--sc-font-mono);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+}
+
+/* ---------------------------------------------------------------- layout -- */
+.sc-wrap { width: 100%; max-width: var(--sc-maxw); margin-inline: auto; padding-inline: var(--sc-gutter); }
+.sc-section { padding-block: var(--sc-section); }
+/* More space above a heading than below it: the gap belongs to the boundary,
+   not to the pair. */
+.sc-stack > * + * { margin-top: var(--sc-4); }
+.sc-stack > :is(h1,h2,h3) { margin-top: var(--sc-7); }
+.sc-stack > :is(h1,h2,h3):first-child { margin-top: 0; }
+.sc-rule { height: 1px; border: 0; background: var(--sc-hairline); margin: 0; }
+
+/* =============================================================== DEVICES ==
+   Driven by the engine. Restyle your own markup, not these.                */
+
+.sc-act--pinned { position: relative; }
+.sc-stage {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+}
+
+/* scrub / sequence media */
+.sc-stage :is(video[data-sc-scrub], canvas[data-sc-sequence], .sc-stage__poster) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+video[data-sc-scrub] { opacity: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip video[data-sc-scrub] { opacity: 1; }
+/* The poster is a live frame-holder, not a placeholder: it stays up until a
+   real video frame has painted, which is what stops the blank-stage flash. */
+.sc-stage__poster { z-index: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip .sc-stage__poster { opacity: 0; }
+
+/* A scrim only where text sits. A full-frame darkening layer flattens the
+   image everywhere to fix contrast in one corner. */
+.sc-scrim {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: linear-gradient(
+    var(--sc-scrim-angle, 180deg),
+    color-mix(in oklab, var(--sc-canvas) var(--sc-scrim-a, 78%), transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 68%);
+}
+/* Point the scrim at the copy. A scrim gradient that darkens the top while the
+   copy sits at the bottom fixes contrast nowhere and flattens the image
+   everywhere, which is the most common way text-over-video goes wrong. */
+.sc-scrim--bottom { --sc-scrim-angle: 0deg; }
+.sc-scrim--left   { --sc-scrim-angle: 90deg; }
+.sc-scrim--right  { --sc-scrim-angle: 270deg; }
+
+/* Corner scrims, for copy anchored to a corner. An edge gradient has to darken
+   a whole band across the frame to cover one corner; a corner gradient puts the
+   density where the text is and leaves the rest of the image alone. Pair with
+   .sc-copy--lead / .sc-copy--trail. */
+.sc-scrim--lead {
+  background: linear-gradient(to top right,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+.sc-scrim--trail {
+  background: linear-gradient(to top left,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+/* A band across the bottom, for copy that spans the full width of the frame.
+   That is what both corner anchors become below 860px, and it is also the right
+   shape whenever the copy block is wider than a corner. */
+.sc-scrim--band {
+  background: linear-gradient(to top,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 58%);
+}
+.sc-scrim--vignette {
+  background: radial-gradient(120% 90% at 50% 45%, transparent 40%,
+              color-mix(in oklab, var(--sc-canvas) 70%, transparent) 100%);
+}
+
+/* copy over a stage.
+   max-width is in rem, never ch. A `ch` on this container resolves against the
+   CONTAINER's font-size (body size), not the display size of the heading inside
+   it, so `max-width: 20ch` here silently produces a ~180px column and wraps a
+   hero headline to six lines. Set a ch measure on the text element itself. */
+.sc-copy {
+  position: absolute; z-index: var(--sc-z-copy);
+  inset-inline: var(--sc-gutter);
+  max-width: min(46rem, 76vw);
+  will-change: opacity, transform;
+}
+.sc-copy--lead   { left: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); }
+/* inset-inline FIRST. It is the shorthand for left+right, so declaring it after
+   `left: 50%` resets left to auto and the block drifts off the left edge. */
+.sc-copy--center { inset-inline: auto; left: 50%; top: 50%; translate: -50% -50%; text-align: center; }
+.sc-copy--trail  { inset-inline: auto; right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); text-align: right; }
+
+/* cue defaults: the engine writes opacity/transform inline, these are the
+   pre-paint state so nothing flashes before the first read() */
+[data-sc-cue] { opacity: 0; will-change: opacity, transform; }
+.sc-ready [data-sc-cue] { transition: none; }
+
+/* kinetic split */
+.sc-split { display: inline-block; overflow: hidden; vertical-align: top; }
+/* Descenders live below the baseline; a line mask clipped to the line box eats
+   the tails off g, y, p, j. The padding buys them room back. */
+.sc-split--line { display: block; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.sc-split__i { display: inline-block; will-change: transform, opacity; }
+.sc-is-split { opacity: 1 !important; }
+
+/* horizontal rail */
+[data-sc-pan] { display: flex; will-change: transform; }
+
+/* reveal + parallax */
+[data-sc-reveal] { will-change: clip-path; }
+[data-sc-parallax] { will-change: transform; }
+
+/* flow reveal (fires once) */
+[data-sc-in], [data-sc-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--sc-ease-out), transform 620ms var(--sc-ease-out);
+}
+[data-sc-in].sc-in, [data-sc-stagger] > .sc-in { opacity: 1; transform: none; }
+
+/* pointer devices */
+[data-sc-tilt] { transform-style: preserve-3d; will-change: transform; }
+[data-sc-magnet] { will-change: transform; }
+/* isolation always; position only if nothing more specific already set it.
+   Written with :where() (zero specificity) on purpose: a plain `position:
+   relative` here has the same weight as `.sc-stage` and, being later in the
+   file, silently wins. A stage carrying both attributes then stops being
+   sticky and the whole act scrolls away instead of pinning. */
+[data-sc-spotlight] { isolation: isolate; }
+:where([data-sc-spotlight]) { position: relative; }
+[data-sc-spotlight]::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(
+    28rem 28rem at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.5) * 100%),
+    color-mix(in oklab, var(--sc-accent) 16%, transparent), transparent 70%);
+  opacity: 0; transition: opacity var(--sc-d-slow) var(--sc-ease-out);
+}
+[data-sc-spotlight]:hover::after { opacity: 1; }
+
+/* =========================================================== WORLDFLIGHT ==
+   One fixed stage for the whole page. The only thing in document flow is the
+   spacer, and it is empty. If you find yourself adding a section here, you want
+   act mode instead: the moment a real block scrolls past the fixed stage, the
+   page has a seam again and the whole point is gone.                        */
+
+[data-sc-mode="worldflight"] { position: relative; }
+
+.sc-world {
+  position: fixed; inset: 0;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+  background: var(--sc-canvas);
+}
+
+/* Every leg is mounted for the life of the page and stacked in the same box.
+   The engine owns opacity, visibility and z-index here; do not set them. */
+.sc-world__seg {
+  position: absolute; inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+.sc-world__seg > :is(video, img, canvas) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+/* The poster is the frame-holder AND the first camera move: the engine pushes
+   it in slowly until a real decoded frame is available to replace it. */
+.sc-world__poster {
+  z-index: 0;
+  transform-origin: 50% 50%;
+  transition: opacity 420ms var(--sc-ease-out);
+}
+.sc-world__seg > video { z-index: 1; }
+.sc-world__seg.sc-has-clip .sc-world__poster { opacity: 0; }
+/* The act stylesheet lights a clip through its ancestor act. A worldflight leg
+   has no act, so match the class the engine also writes on the clip itself. */
+video[data-sc-scrub].sc-has-clip { opacity: 1; }
+
+/* The copy layer is fixed too, and inert by default: the engine hands
+   pointer-events back to a block only while it is actually legible. */
+.sc-world__copy {
+  position: fixed; inset: 0;
+  z-index: var(--sc-z-copy);
+  pointer-events: none;
+}
+.sc-world__scrim { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+[data-sc-copy] {
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.sc-ready [data-sc-copy] { transition: none; }
+
+/* The track. Empty on purpose. */
+.sc-world__spacer { pointer-events: none; }
+
+/* scroll progress */
+[data-sc-progress] {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: var(--sc-z-chrome);
+  background: var(--sc-accent); transform-origin: 0 50%; transform: scaleX(0);
+  will-change: transform;
+}
+
+/* ----------------------------------------------------------- atmosphere --
+   Depth is not only shadow. Grain keeps a flat dark ground from banding, and
+   it is the difference between "a dark page" and "a lit room". */
+.sc-grain { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0.045; }
+.sc-grain::before {
+  content: ""; position: absolute; inset: -50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* -------------------------------------------------------- reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  /* Fewer and gentler, not zero. Opacity still carries the reveal so the page
+     is comprehensible; every position change is dropped. */
+  [data-sc-in], [data-sc-stagger] > * { transform: none; transition-duration: 220ms; }
+  [data-sc-parallax], [data-sc-pan], .sc-split__i { transform: none !important; }
+  /* A wipe is a position change too. Show reveal content settled. */
+  [data-sc-reveal] { clip-path: none !important; }
+  /* A rail's transform IS its navigation, not decoration. Zeroing it the way
+     parallax and kinetic type are zeroed parks the act on its first screenful
+     and makes everything past the fold unreachable: a device degrading into
+     missing content. Hand the travel back to the reader as an ordinary scroll
+     region instead, so the same items are all still gettable without motion.
+     A build that would rather re-lay the rail out as a grid can still do that;
+     this is the floor, not the ceiling. */
+  [data-sc-act="pan"] .sc-stage,
+  [data-sc-act="pan"] [data-sc-stage] {
+    overflow-x: auto; overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+  [data-sc-pan] > * { scroll-snap-align: center; }
+  [data-sc-spotlight]::after { display: none; }
+  /* A worldflight keeps its whole story here. No clip is ever fetched, so the
+     posters are the film, and they cross-dissolve through exactly the same
+     seams at exactly the same scroll positions. The push-in and the copy drift
+     are the only things that go. */
+  .sc-world__poster, [data-sc-copy] { transform: none !important; }
+}
+
+/* --------------------------------------------------------------- mobile -- */
+@media (max-width: 860px) {
+  .sc-copy { inset-inline: var(--sc-gutter); max-width: none; }
+  .sc-copy--trail { text-align: left; }
+  .sc-stage { height: 100svh; }
+  /* .sc-copy--trail re-anchors to the left and spans the full width here, so a
+     bottom-RIGHT corner gradient darkens the one corner the copy just left and
+     guarantees a contrast failure over any bright clip. Point the density at
+     the copy: the same band .sc-scrim--band paints. */
+  .sc-scrim--trail {
+    background: linear-gradient(to top,
+      color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+      color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+      transparent 58%);
+  }
+}
+
+</style>
+<style>
+  /* --------------------- Foolscap architecture, "the schematic" variant -- */
+  :root {
+    --sc-canvas:      #262b28;   /* cool graphite-olive ground  */
+    --sc-surface:     #1e231f;   /* deeper                      */
+    --sc-ink:         #eef1e8;   /* paper                       */
+    --sc-ink-soft:    #c8cdbd;   /* muted, cooler than canonical */
+    --sc-accent:      #b8825f;   /* clay: attention, scarce      */
+    --sc-accent-ink:  #f7f4ec;
+    --sc-font-display: "Space Grotesk", system-ui, sans-serif;
+    --sc-font-text:    "Inter", system-ui, sans-serif;
+    --sc-font-mono:    "Space Mono", ui-monospace, monospace;
+    --sc-shadow-color: 100 16% 6%;
+
+    --gold:  #c7a052;   /* marker band, selection, current      */
+    --sage:  #97a06a;   /* verified, output, done                */
+    --clay:  #b8825f;   /* attention, on dark grounds             */
+    --clay-ink: #8d5a36; /* attention, on paper -- 4.97:1 minimum */
+    --paper: #eef1e8;
+    --inkk:  #1f2018;   /* ink on paper surfaces                  */
+
+    /* engraving inks */
+    --e-grid:   rgba(238, 241, 232, 0.055);
+    --e-gridx:  rgba(238, 241, 232, 0.11);
+    --e-line:   rgba(238, 241, 232, 0.85);
+    --e-faint:  rgba(200, 205, 189, 0.78);
+    --e-ghost:  rgba(200, 205, 189, 0.38);
+    --e-ring:   #c8cdbd;
+    --e-done:   rgba(184, 130, 95, 0.55);
+
+    /* depth veil, graphite world (see references/DEPTH.md) */
+    --d-wash: 17 20 18; --d-a-max: 0.74; --d-blur-max: 3.5px; --d-sat: 0.75;
+  }
+  html { scroll-behavior: auto; }
+  body { background: var(--sc-canvas); }
+  ::selection { background: var(--clay); color: var(--sc-accent-ink); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
+  .smallcaps {
+    font-family: var(--sc-font-mono);
+    font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+  }
+
+  /* --------------------------------------------------------- the one act -- */
+  .loop-main { overflow: visible; }
+  .loop, .loop .sc-stage, .loop [data-sc-stage] { background: var(--sc-canvas); }
+  .stage-sheet, .overlay {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .overlay { pointer-events: none; z-index: 12; }
+
+  .stage-sheet path, .stage-sheet line, .stage-sheet circle, .stage-sheet rect {
+    vector-effect: non-scaling-stroke;
+  }
+  .stage-sheet mask path, .stage-sheet mask circle { vector-effect: none; }
+
+  .e-grid line  { stroke: var(--e-grid); stroke-width: 1; }
+  .e-gridx line { stroke: var(--e-gridx); stroke-width: 1; }
+  .e-frame { fill: none; stroke: var(--e-faint); stroke-width: 1; }
+  .e-crop  { stroke: var(--e-faint); stroke-width: 1.2; }
+  .e-arc  { fill: none; stroke: var(--e-line); stroke-width: 3; stroke-linecap: butt;
+    transition: stroke 400ms var(--sc-ease-out); }
+  .e-path--sage { stroke: var(--sage); }
+  .e-path--clay { stroke: var(--clay); }
+  .e-path--idle { stroke: var(--e-line); }
+  .e-rogue { fill: none; stroke: var(--clay); stroke-width: 2.4; stroke-dasharray: 5 4;
+    transition: opacity 300ms var(--sc-ease-out); }
+  .e-trail { fill: none; stroke-width: 2; }
+  .e-station-rest { fill: var(--sc-canvas); stroke: rgba(151, 160, 106, 0.55); stroke-width: 2.2; }
+  .e-station { fill: var(--sc-canvas); stroke: var(--e-line); stroke-width: 2.2; }
+  .e-station-core { fill: var(--e-ring); }
+  .e-halo { fill: none; stroke: var(--clay); stroke-width: 2; }
+  .e-int line, .e-int path, .e-int rect, .e-int circle {
+    stroke: var(--e-faint); fill: none; stroke-width: 1.6;
+  }
+  .e-int .fill { fill: rgba(200, 205, 189, 0.14); stroke: var(--e-faint); }
+  .e-hatch line { stroke: var(--e-faint); stroke-width: 1.2; }
+  .e-chip { stroke-width: 1.6; transition: fill 300ms var(--sc-ease-out), stroke 300ms var(--sc-ease-out); }
+  .e-chip--idle { fill: var(--sc-canvas); stroke: var(--e-faint); }
+  .e-chip--sage { fill: var(--sage); stroke: var(--sage); }
+  .e-chip--clay { fill: var(--clay); stroke: var(--clay); }
+
+  .e-drawmask {
+    stroke: #fff; fill: none; stroke-linecap: butt; stroke-linejoin: round;
+    stroke-width: 8;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - clamp(0, (var(--sc-p, 0) - var(--f0, 0)) / var(--fw, 1), 1));
+  }
+
+  .stage-sheet text {
+    font-family: var(--sc-font-mono);
+    font-size: calc(var(--fs, 10) * var(--inv, 1) * 1px);
+    letter-spacing: 0.06em;
+    fill: var(--sc-ink-soft);
+    paint-order: stroke;
+    stroke: rgba(38, 43, 40, 0.9);
+    stroke-width: 0.32em;
+    stroke-linejoin: round;
+  }
+  .e-plates { opacity: 0.3; }
+  .e-plate {
+    fill: var(--sc-canvas);
+    stroke: none;
+  }
+  .stage-sheet text.t-name { fill: var(--sc-ink); font-weight: 700; letter-spacing: 0.1em; }
+  .stage-sheet text.t-plain { fill: var(--e-faint); letter-spacing: 0.04em; }
+  .stage-sheet text.t-center { fill: var(--sc-ink); font-weight: 700; letter-spacing: 0.16em; text-anchor: middle;
+    transition: opacity 350ms var(--sc-ease-out); }
+  .stage-sheet text.t-fixed {
+    font-size: 11px; fill: var(--e-faint);
+  }
+  .stage-sheet .titleblock rect { fill: rgba(30, 35, 31, 0.5); stroke: var(--e-faint); stroke-width: 1; }
+  .stage-sheet .titleblock line { stroke: var(--e-faint); stroke-width: 1; }
+
+  .e-token { fill: var(--clay); stroke: var(--sc-canvas); }
+
+  .overlay line { stroke: var(--clay); stroke-width: 1.4; }
+  .overlay circle.pinhalo { fill: none; stroke: var(--clay); stroke-width: 1.8; }
+
+  /* ------------------------------------------------------------ the cards -- */
+  .card {
+    position: absolute;
+    z-index: 20;
+    width: min(25.5rem, calc(100vw - 2 * var(--sc-gutter)));
+    background: var(--paper);
+    color: var(--inkk);
+    border: 1px solid rgba(31, 32, 24, 0.5);
+    box-shadow: var(--sc-e2);
+    padding: clamp(0.9rem, 1.6vw, 1.3rem) clamp(1rem, 1.8vw, 1.45rem);
+  }
+  .card--left  { left: clamp(1rem, 4vw, 4rem); bottom: clamp(4.5rem, 11vh, 7.5rem); }
+  .card--right { right: clamp(1rem, 4vw, 4rem); bottom: clamp(4.5rem, 11vh, 7.5rem); }
+  .card__head {
+    display: flex; align-items: baseline; gap: var(--sc-3);
+    font-family: var(--sc-font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(31, 32, 24, 0.72);
+  }
+  .card__no { color: var(--clay-ink); font-weight: 700; }
+  .card__ctx { margin-left: auto; text-transform: none; }
+  .card h2 {
+    margin: var(--sc-2) 0 0;
+    font-family: var(--sc-font-display);
+    font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.55rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .card__plain {
+    margin: var(--sc-3) 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: rgba(31, 32, 24, 0.85);
+    text-wrap: pretty;
+  }
+  .card__cap {
+    margin: var(--sc-3) 0 0;
+    font-family: var(--sc-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(31, 32, 24, 0.72);
+  }
+  .card__cap b { color: var(--clay-ink); font-weight: 700; }
+  .card__cap + .card__code { margin-top: 0.35rem; }
+  .card__code {
+    margin: var(--sc-3) 0 0;
+    background: var(--inkk);
+    color: var(--paper);
+    font-family: var(--sc-font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    padding: 0.7rem 0.85rem;
+    overflow-x: auto;
+  }
+  .card__code code { display: block; white-space: normal; }
+  .card__code .ln { white-space: pre; }
+  .card__code .ln { display: block; padding-inline: 0.3rem; margin-inline: -0.3rem;
+    transition: background 300ms var(--sc-ease-out), color 300ms var(--sc-ease-out); }
+  .card__code .ln.lit { background: var(--gold); color: var(--inkk); }
+  .card__code .ln.lit .c { color: rgba(31, 32, 24, 0.66); }
+  .card__code .ln.lit .k, .card__code .ln.lit .s,
+  .card__code .ln.lit .n, .card__code .ln.lit .f { color: var(--inkk); }
+  .card__code .k { color: var(--gold); }
+  .card__code .f { color: var(--paper); font-weight: 700; }
+  .card__code .s { color: #a9b492; }
+  .card__code .n { color: #a9b492; }
+  .card__code .c { color: rgba(200, 205, 189, 0.62); font-style: italic; }
+  .card__tip {
+    margin: var(--sc-3) 0 0;
+    padding-top: var(--sc-3);
+    border-top: 1px solid rgba(31, 32, 24, 0.16);
+    font-family: var(--sc-font-mono);
+    font-size: 0.68rem;
+    line-height: 1.55;
+    color: rgba(31, 32, 24, 0.72);
+    text-wrap: pretty;
+  }
+
+  .todos { list-style: none; margin: var(--sc-3) 0 0; padding: 0;
+    font-family: var(--sc-font-mono); font-size: 0.72rem; }
+  .todos li { display: flex; gap: 0.6rem; padding-block: 0.24rem; align-items: baseline;
+    color: rgba(31, 32, 24, 0.58); transition: color 300ms var(--sc-ease-out); }
+  .todos li + li { border-top: 1px solid rgba(31, 32, 24, 0.1); }
+  .todos li b { font-weight: 700; width: 1.1em; flex: none; }
+  .todos li[data-state="open"] b::before { content: "\00b7"; }
+  .todos li[data-state="done"] { color: var(--inkk); }
+  .todos li[data-state="done"] b { color: #5e6a3d; }
+  .todos li[data-state="done"] b::before { content: "\2713"; }
+  .todos li[data-state="fail"] { color: var(--inkk); }
+  .todos li[data-state="fail"] b { color: var(--clay-ink); }
+  .todos li[data-state="fail"] b::before { content: "\2717"; }
+  .todos li .turntag { margin-left: auto; font-size: 0.62rem; color: rgba(31, 32, 24, 0.5); }
+
+  .card--bare {
+    background: transparent; border: 0; box-shadow: none; padding: 0;
+    color: var(--sc-ink);
+  }
+  .card--title {
+    width: min(40rem, calc(100vw - 2 * var(--sc-gutter)));
+    left: clamp(1.25rem, 5vw, 5.5rem); bottom: auto; top: clamp(4.5rem, 13vh, 8.5rem);
+    padding: 1.5rem 4.5rem 1.8rem 1.7rem;
+    margin-left: -1.7rem;
+    border-radius: 10px;
+    background: linear-gradient(100deg,
+      rgba(28, 32, 29, 0.95) 0%,
+      rgba(28, 32, 29, 0.85) 55%,
+      rgba(28, 32, 29, 0) 96%);
+  }
+  .card--title .smallcaps { color: var(--sc-ink-soft); }
+  .card--title h1 {
+    margin: var(--sc-3) 0 0;
+    font-family: var(--sc-font-display);
+    font-size: clamp(2.3rem, 1.4rem + 4.2vw, 4.8rem);
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .card--title p:not(.smallcaps) {
+    margin: var(--sc-4) 0 0; max-width: 36em;
+    font-size: var(--sc-t-lg); line-height: 1.5;
+    color: var(--sc-ink); text-wrap: pretty;
+  }
+  .card--breath {
+    width: min(30rem, calc(100vw - 2 * var(--sc-gutter)));
+    left: 50%; translate: -50% 0; bottom: clamp(5rem, 13vh, 8.5rem);
+    text-align: center;
+    background: rgba(28, 32, 29, 0.88);
+    border-radius: 10px;
+    padding: 1.1rem 1.8rem;
+  }
+  .card--breath p {
+    margin: 0;
+    font-family: var(--sc-font-display);
+    font-size: clamp(1.3rem, 1.1rem + 1.2vw, 1.9rem);
+    font-weight: 500; line-height: 1.25; text-wrap: balance;
+  }
+  .card--breath .smallcaps { display: block; margin-top: var(--sc-3); color: var(--sc-ink-soft); }
+  .card--colophon {
+    width: min(36rem, calc(100vw - 2 * var(--sc-gutter)));
+    left: clamp(1.25rem, 5vw, 5.5rem); bottom: clamp(5rem, 13vh, 8.5rem);
+    padding: 1.4rem 4.5rem 1.6rem 1.7rem;
+    margin-left: -1.7rem;
+    border-radius: 10px;
+    background: linear-gradient(100deg,
+      rgba(28, 32, 29, 0.95) 0%,
+      rgba(28, 32, 29, 0.85) 55%,
+      rgba(28, 32, 29, 0) 96%);
+  }
+  .card--colophon h2 {
+    margin: var(--sc-2) 0 0;
+    font-family: var(--sc-font-display);
+    font-size: clamp(1.7rem, 1.3rem + 1.8vw, 2.6rem);
+    font-weight: 600; line-height: 1.05; letter-spacing: -0.01em;
+  }
+  .card--colophon p { margin: var(--sc-3) 0 0; max-width: 44em; font-size: 0.92rem;
+    line-height: 1.55; color: var(--sc-ink-soft); text-wrap: pretty; }
+  .card--colophon p b { color: var(--sc-ink); font-weight: 600; }
+  .card--colophon .smallcaps { color: var(--sc-ink-soft); }
+
+  /* ---------------------------------------------------------------- chrome -- */
+  .mast {
+    position: fixed; z-index: 30;
+    top: clamp(0.8rem, 2vh, 1.4rem); left: var(--sc-gutter);
+    font-family: var(--sc-font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sc-ink);
+    max-width: calc(100vw - 13rem);
+  }
+  .mast i { font-style: normal; color: var(--clay); }
+  .mast small {
+    display: block; margin-top: 0.25rem;
+    font-size: 0.64rem; letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--sc-ink-soft);
+  }
+
+  /* System Assembly: four segments, sequential; the fourth carries three
+     sub-chips that light together -- the simultaneous-parity proof */
+  .hud {
+    position: fixed; z-index: 30;
+    top: clamp(0.8rem, 2vh, 1.4rem); right: var(--sc-gutter);
+    font-family: var(--sc-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    color: var(--sc-ink-soft);
+    background: rgba(30, 35, 31, 0.82);
+    border: 1px solid rgba(200, 205, 189, 0.28);
+    padding: 0.55rem 0.7rem 0.6rem;
+    width: 14.5rem;
+  }
+  .hud__label {
+    margin: 0 0 0.45rem; display: flex; justify-content: space-between; gap: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.6rem;
+    color: var(--sc-ink);
+  }
+  .hud__label span { color: rgba(200, 205, 189, 0.6); }
+  .hud__bar {
+    position: relative; height: 13px;
+    border: 1px solid rgba(200, 205, 189, 0.4);
+    display: flex; align-items: stretch; gap: 1px;
+    background: rgba(31, 32, 24, 0.65);
+  }
+  .hud__bar .seg { position: relative; flex: 1 1 0; height: 100%; background: rgba(200, 205, 189, 0.12);
+    transition: background 300ms var(--sc-ease-out); display: flex; align-items: center; justify-content: center; gap: 2px; }
+  .hud__bar .seg-tokens.is-lit { background: rgba(238, 241, 232, 0.55); }
+  .hud__bar .seg-css.is-lit    { background: var(--clay); }
+  .hud__bar .seg-core.is-lit   { background: var(--gold); }
+  .hud__bar .seg-adapt.is-lit  { background: rgba(151, 160, 106, 0.35); }
+  .hud__bar .seg-adapt .chip { width: 3px; height: 7px; background: rgba(200, 205, 189, 0.3); opacity: 0.5;
+    transition: background 200ms var(--sc-ease-out), opacity 200ms var(--sc-ease-out); }
+  .hud__bar .seg-adapt.is-lit .chip { background: var(--sage); opacity: 1; }
+  .hud__row {
+    margin: 0.45rem 0 0; display: flex; justify-content: space-between; gap: 0.7rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud__row #hud-stage { color: var(--sc-ink-soft); }
+  .hud__row #hud-fill { color: var(--sc-ink); }
+  .hud__row #hud-parity.v-fail { color: var(--clay); }
+  .hud__row #hud-parity.v-pass { color: var(--sage); }
+
+  .stack {
+    position: fixed; z-index: 30;
+    left: 50%; translate: -50% 0;
+    bottom: clamp(0.6rem, 1.6vh, 1.1rem);
+    display: flex; gap: 2px;
+    background: rgba(30, 35, 31, 0.9);
+    border: 1px solid rgba(200, 205, 189, 0.28);
+    padding: 0.18rem 0.35rem;
+    font-family: var(--sc-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    max-width: calc(100vw - 1.2rem);
+  }
+  .stack button {
+    appearance: none; border: 0; background: none; cursor: pointer;
+    display: flex; align-items: center; gap: 0.35rem;
+    padding: 0.32rem 0.45rem;
+    color: var(--sc-ink-soft);
+    text-transform: uppercase;
+  }
+  .stack button[aria-current="true"] {
+    color: var(--inkk);
+    background:
+      linear-gradient(178deg, transparent 0 5%, rgba(199, 160, 82, 0.85) 6% 94%, transparent 95% 100%);
+  }
+  .stack button:hover { color: var(--sc-ink); }
+
+  /* ---------------------------------------------------------------- mobile -- */
+  @media (max-width: 860px) {
+    .card--left, .card--right {
+      left: 50%; right: auto; translate: -50% 0;
+      bottom: clamp(3.6rem, 8vh, 5rem);
+      width: min(24rem, calc(100vw - 1.6rem));
+      padding: 0.8rem 0.95rem;
+    }
+    .card__plain { font-size: 0.82rem; }
+    .card__code { font-size: 0.66rem; }
+    .card--title { top: clamp(3.4rem, 10vh, 6rem); left: 50%; translate: -50% 0; width: calc(100vw - 1.6rem);
+      background: rgba(38, 43, 40, 0.88); padding: 0.9rem 0.95rem; }
+    .card--breath, .card--colophon { bottom: clamp(3.6rem, 8vh, 5rem); }
+    .card--colophon { left: 50%; translate: -50% 0; width: calc(100vw - 1.6rem); }
+    .hud { width: 10.5rem; padding: 0.4rem 0.5rem 0.45rem; }
+    .hud__label span { display: none; }
+    .hud__row { font-size: 0.56rem; }
+    .mast { max-width: calc(100vw - 12.5rem); font-size: 0.6rem; }
+    .stack { padding: 0.1rem 0.3rem; }
+    .stack button { padding: 0.55rem 0.28rem; min-height: 44px; }
+    .stack button span.lab { display: none; }
+    .mast small { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .e-drawmask { stroke-dashoffset: 0 !important; }
+  }
+
+  /* ------------------------------------------------------------ depth veil -- */
+  .depth-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 11;
+    pointer-events: none;
+    background: rgb(var(--d-wash) / var(--d-a, 0));
+    backdrop-filter: blur(var(--d-blur, 0px)) saturate(var(--d-sat, 1));
+    -webkit-backdrop-filter: blur(var(--d-blur, 0px)) saturate(var(--d-sat, 1));
+    -webkit-mask-image: radial-gradient(
+      ellipse var(--d-rx, 240px) var(--d-ry, 180px) at var(--d-x, 50%) var(--d-y, 50%),
+      transparent 0%, transparent var(--d-core, 58%), #000 100%);
+    mask-image: radial-gradient(
+      ellipse var(--d-rx, 240px) var(--d-ry, 180px) at var(--d-x, 50%) var(--d-y, 50%),
+      transparent 0%, transparent var(--d-core, 58%), #000 100%);
+    will-change: backdrop-filter;
+  }
+  .depth-veil.d-fixed { position: fixed; }
+  .depth-veil.is-off { display: none; }
+  .card.is-fore { box-shadow: 0 20px 44px -20px hsl(var(--sc-shadow-color) / 0.55); }
+  .card { transition: box-shadow 420ms var(--sc-ease-out); }
+  @media (prefers-reduced-motion: reduce) {
+    .depth-veil { display: none; }
+    .card.is-fore { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sr-only" aria-label="Stations">
+  <p>This page is one continuous engineering drawing of Foolscap's architecture.
+    Each scroll step zooms into one layer -- tokens, the tier gate, CSS, core,
+    the framework adapters, and the rendered component -- and shows its code.
+    Use the station list to jump to a stage.</p>
+</nav>
+
+<header class="mast" aria-label="Page state">
+  <span>FOOLSCAP <i>//</i> ONE CORE, THREE FRAMEWORKS</span>
+  <small id="mast-state">an engraving of an architecture</small>
+</header>
+
+<aside class="hud" aria-hidden="true">
+  <p class="hud__label">System Assembly <span>4 layers</span></p>
+  <div class="hud__bar">
+    <i class="seg seg-tokens" id="seg-tokens"></i><i class="seg seg-css" id="seg-css"></i><i class="seg seg-core" id="seg-core"></i><i class="seg seg-adapt" id="seg-adapt"><b class="chip"></b><b class="chip"></b><b class="chip"></b></i>
+  </div>
+  <p class="hud__row"><span id="hud-stage">·</span><span id="hud-fill">0%</span><span id="hud-parity">·</span></p>
+</aside>
+
+<nav class="stack" id="stack" aria-label="Station navigation"></nav>
+
+<main class="loop-main">
+  <section class="loop mode--terminal" data-sc-act="pin" data-sc-span="14" id="loop">
+    <div data-sc-stage>
+      <svg class="stage-sheet" id="stage-sheet" aria-hidden="true"></svg>
+      <svg class="overlay" id="overlay" aria-hidden="true"></svg>
+
+      <!-- p = 0: the title -->
+      <div class="card card--bare card--title" data-sc-cue="0 0.043 0 0.35">
+        <p class="smallcaps">Foolscap // sheet 1 of 1 // section view</p>
+        <h1>One core. Three frameworks. Zero drift.</h1>
+        <p>Foolscap ships design as four layers: tokens, styles, a headless
+          behavior core, and thin framework adapters. Scroll to trace one real
+          component &mdash; Tabs &mdash; start to finish.</p>
+      </div>
+
+      <!-- Stage 01 / Tokens -->
+      <article class="card card--right" data-region="tokens" data-anchor="tokens" data-sc-cue="0.068 0.108 0.14 0.18" aria-label="Stage 1: tokens">
+        <p class="card__head"><span class="card__no">Stage 01</span><span>// tokens</span></p>
+        <h2>One JSON file owns every color.</h2>
+        <p class="card__plain">Design decisions live in one token file, not
+          sprinkled through 60 components. Change a value once and every
+          layer above inherits it.</p>
+        <p class="card__cap">&#9656; packages/tokens/src/palette.tokens.json</p>
+        <pre class="card__code" data-hl-a="2 2" data-hl-b="3 4"><code><span class="ln">{</span>
+<span class="ln">  <span class="f">"paper"</span>:     { <span class="k">"$value"</span>: <span class="s">"#FBFBF9"</span>, <span class="k">"$type"</span>: <span class="s">"color"</span> },</span>
+<span class="ln">  <span class="f">"ink"</span>:       { <span class="k">"$value"</span>: <span class="s">"#1A1A1A"</span>, <span class="k">"$type"</span>: <span class="s">"color"</span> },</span>
+<span class="ln">  <span class="f">"ink-muted"</span>: { <span class="k">"$value"</span>: <span class="s">"#5C5C5C"</span>, <span class="k">"$type"</span>: <span class="s">"color"</span> },</span>
+<span class="ln">  <span class="f">"grey-500"</span>:  { <span class="k">"$value"</span>: <span class="s">"#737373"</span>, <span class="k">"$type"</span>: <span class="s">"color"</span> }</span>
+<span class="ln">}</span></code></pre>
+        <p class="card__tip">// one token, many surfaces &mdash; never hard-code a hex in component CSS.</p>
+      </article>
+
+      <!-- The Tier Gate -->
+      <article class="card card--right" data-region="gate" data-anchor="gate" data-sc-cue="0.148 0.178 0.14 0.18" aria-label="The tier gate">
+        <p class="card__head"><span class="card__no">The gate</span><span>// how much JS does this need?</span></p>
+        <h2>Every component answers one question first.</h2>
+        <p class="card__plain">Tier 1 is CSS-only. Tier 2 is a native element
+          plus a thin shim. Tier 3 needs a real state machine. Tabs' real
+          answer: Tier 3.</p>
+        <p class="card__cap">&#9656; PRD &sect;7.1 &mdash; the three-tier strategy</p>
+        <pre class="card__code" data-hl-a="1 2" data-hl-b="5 6"><code><span class="ln"><span class="c">// tier 1 -- css only, no js   (target: ≥60% of 60)</span></span>
+<span class="ln">Button · Badge · Card · Table …</span>
+<span class="ln"><span class="c">// tier 2 -- native element + thin shim</span></span>
+<span class="ln">Accordion · Modal · Popover · Toggle</span>
+<span class="ln"><span class="c">// tier 3 -- headless machine required</span></span>
+<span class="ln"><span class="f">Tabs</span> · Combobox · Select · Toast</span></code></pre>
+        <p class="card__tip">// route by what the platform already gives you, not by habit.</p>
+      </article>
+
+      <!-- Stage 02 / CSS -->
+      <article class="card card--left" data-region="css" data-anchor="css" data-sc-cue="0.218 0.248 0.14 0.18" aria-label="Stage 2: css">
+        <p class="card__head"><span class="card__no">Stage 02</span><span>// css, the paper skin</span></p>
+        <h2>Every color, one line of CSS.</h2>
+        <p class="card__plain">tabs.css never writes a hex code. It reads
+          tokens through custom properties, with the paper skin's own
+          fallback baked in.</p>
+        <p class="card__cap">&#9656; packages/css/src/components/tabs.css</p>
+        <pre class="card__code" data-hl-a="2 4" data-hl-b="5 7"><code><span class="ln"><span class="f">@layer foolscap.components</span> {</span>
+<span class="ln">  <span class="f">.fc-tabs__tab</span> {</span>
+<span class="ln">    <span class="k">color</span>: <span class="s">var(--fc-ink-muted, rgb(26 26 26 / .6))</span>;</span>
+<span class="ln">  }</span>
+<span class="ln">  <span class="f">.fc-tabs__tab[aria-selected='true']</span> {</span>
+<span class="ln">    <span class="k">border-bottom-color</span>: <span class="s">var(--fc-ink, rgb(26 26 26))</span>;</span>
+<span class="ln">  }</span>
+<span class="ln">}</span></code></pre>
+        <p class="card__tip">// no hard-coded colours, spacing, or type sizes in component CSS &mdash; the PRD's own lint rule.</p>
+      </article>
+
+      <!-- Stage 03 / Core -->
+      <article class="card card--left" data-region="core" data-anchor="core" data-sc-cue="0.288 0.322 0.14 0.18" aria-label="Stage 3: core">
+        <p class="card__head"><span class="card__no">Stage 03</span><span>// core, the headless machine</span></p>
+        <h2>Zero framework imports. All the behavior.</h2>
+        <p class="card__plain">createTabs() owns state, keyboard handling and
+          ARIA. React, Vue and Angular never see any of this logic &mdash;
+          only its output.</p>
+        <p class="card__cap">&#9656; packages/core/src/tier3/tabs.ts</p>
+        <pre class="card__code" data-hl-a="1 1" data-hl-b="5 6"><code><span class="ln"><span class="k">import</span> { createStore } <span class="k">from</span> <span class="s">'@web-loom/store-core'</span></span>
+<span class="ln"><span class="k">export function</span> <span class="f">createTabs</span>(options = {}) {</span>
+<span class="ln">  <span class="k">const</span> store = createStore({ value, focusedValue }, ...)</span>
+<span class="ln">  <span class="k">return</span> {</span>
+<span class="ln">    <span class="f">getTabProps</span>(value) { <span class="c">/* role, aria-selected, onKeyDown */</span> },</span>
+<span class="ln">    <span class="f">getPanelProps</span>(value) { <span class="c">/* role, hidden */</span> },</span>
+<span class="ln">    subscribe: store.subscribe, destroy: store.destroy,</span>
+<span class="ln">  }</span>
+<span class="ln">}</span></code></pre>
+        <p class="card__tip">// zero React/Vue/Angular imports at the top of this file &mdash; that's the whole guarantee.</p>
+      </article>
+
+      <!-- Stage 04 / Adapters -->
+      <article class="card card--right" data-region="adapt" data-anchor="adapt" data-sc-cue="0.362 0.398 0.14 0.18" aria-label="Stage 4: adapters">
+        <p class="card__head"><span class="card__no">Stage 04</span><span>// adapters, one core, three idioms</span></p>
+        <h2>Three frameworks, one call to createTabs.</h2>
+        <p class="card__plain">React's hook, Vue's composable, Angular's
+          injector &mdash; different plumbing, identical wiring. None of them
+          touch a keyboard event.</p>
+        <p class="card__cap">&#9656; react/Tabs.tsx &middot; vue/Tabs.ts &middot; angular/Tabs.ts</p>
+        <pre class="card__code" data-hl-a="1 2" data-hl-b="5 6"><code><span class="ln"><span class="c">// react -- useMachine + Context</span></span>
+<span class="ln"><span class="k">const</span> machine = useMachine(() =&gt; <span class="f">createTabs</span>({ ... }))</span>
+<span class="ln"><span class="c">// vue -- useMachine + provide/inject</span></span>
+<span class="ln"><span class="k">const</span> machine = useMachine(() =&gt; <span class="f">createTabs</span>({ ... }))</span>
+<span class="ln"><span class="c">// angular -- injectMachine + InjectionToken</span></span>
+<span class="ln"><span class="k">this</span>.machine = injectMachine(() =&gt; <span class="f">createTabs</span>({ ... }))</span></code></pre>
+        <p class="card__tip">// adapters add no behavior of their own &mdash; that would break parity.</p>
+      </article>
+
+      <!-- Stage 05 / Terminal -->
+      <article class="card card--left" data-region="term" data-anchor="term" data-sc-cue="0.438 0.470 0.14 0.18" aria-label="Stage 5: tabs, rendered">
+        <p class="card__head"><span class="card__no">Stage 05</span><span>// tabs, rendered</span></p>
+        <h2>Three trees. One state. No tell.</h2>
+        <p class="card__plain">Same fc-tabs class contract, same createTabs
+          state, in three different component trees. A user can't tell which
+          framework rendered it.</p>
+        <p class="card__cap">&#9656; PRD &sect;9.5 &mdash; parity, the payoff</p>
+        <pre class="card__code" data-hl-a="1 3" data-hl-b="4 5"><code><span class="ln"><span class="f">parity</span>: 100% behavioral parity</span>
+<span class="ln">        across React, Vue, Angular --</span>
+<span class="ln">        enforced by shared core tests.</span>
+<span class="ln">a fix to core's focus-trap</span>
+<span class="ln">fixes all three frameworks at once.</span></code></pre>
+        <p class="card__tip">// the convergence IS the thesis &mdash; one core, drawn three times, indistinguishable.</p>
+      </article>
+
+      <!-- The breath -->
+      <div class="card card--bare card--breath" data-sc-cue="0.484 0.514 0.2 0.25">
+        <p>That's the whole system.</p>
+        <p class="smallcaps">now watch it run</p>
+      </div>
+
+      <!-- THE PEAK: the live run -->
+      <article class="card card--left" data-region="run" data-anchor="token" data-sc-cue="0.524 0.760 0.06 0.09" aria-label="The system runs">
+        <p class="card__head"><span class="card__no">Live</span><span>// one click, three renders</span></p>
+        <h2>Now watch parity hold &mdash; and break.</h2>
+        <p class="card__plain">Click Tab 2. The state travels through core
+          into all three adapters at once. Then someone "fixes" React
+          directly.</p>
+        <ul class="todos" id="todos">
+          <li data-state="open"><b></b><span>tokens &rarr; css: mirrored</span><span class="turntag"></span></li>
+          <li data-state="open"><b></b><span>tokens &rarr; core: compiled</span><span class="turntag"></span></li>
+          <li data-state="open"><b></b><span>core &rarr; react &middot; vue &middot; angular: synced</span><span class="turntag"></span></li>
+          <li data-state="open"><b></b><span>react patched directly</span><span class="turntag">direct patch</span></li>
+          <li data-state="open"><b></b><span>parity: 3/3 restored</span><span class="turntag"></span></li>
+        </ul>
+        <p class="card__tip" id="laps-note">// caught before merge &mdash; the React-only patch never shipped, because parity is enforced, not assumed.</p>
+      </article>
+
+      <!-- Resolution -->
+      <article class="card card--right" data-region="ret" data-anchor="term" data-sc-cue="0.770 0.812 0.15 0.2" aria-label="Resolved">
+        <p class="card__head"><span class="card__no">Resolved</span><span>// parity restored</span><span class="card__ctx">3/3 &middot; core patched</span></p>
+        <h2>It converges the only way it can.</h2>
+        <p class="card__plain">The rogue patch was rerouted through core.
+          Three renders, one behavior, zero drift &mdash; because there was
+          only ever one core to update.</p>
+      </article>
+
+      <!-- colophon: holds -->
+      <div class="card card--bare card--colophon" data-sc-cue="0.828 1 0.18 0">
+        <p class="smallcaps">The drawing, complete</p>
+        <h2>The core is the product.</h2>
+        <p>Tokens decide what it looks like. CSS decides how that paint
+          lands. Core decides how it behaves. Adapters just translate.
+          <b>Every layer inherits from the one below it.</b> That is
+          Foolscap's whole architecture.</p>
+        <p>Foolscap Architecture &middot; a @web-loom engraving.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================================================================
+   scrollcraft: a scroll-driven interaction runtime
+   ----------------------------------------------------------------------------
+   Vanilla JS. Zero dependencies. Zero DOM generation.
+
+   The engine does NOT build your page. You author real, semantic HTML and mark
+   it up with data-sc-* attributes; the engine reads them and drives them from a
+   single scroll value on a single rAF loop. That is deliberate: a runtime that
+   generates its own DOM from a config object makes every site it touches look
+   identical, which is the failure mode this replaces.
+
+   ---------------------------------------------------------------------------
+   ACTS: the unit of scroll time
+   ---------------------------------------------------------------------------
+     <section data-sc-act="pin" data-sc-span="2.5"> ... </section>
+
+     data-sc-act   scrub | pin | pan | flow   (default: flow)
+     data-sc-clip-map="travel" opts a pinned act OUT of full-life clip mapping.
+                   By DEFAULT a scrub clip is mapped across the stage's entire
+                   on-screen life, not across its pinned travel, because a pinned
+                   stage is visible for a viewport BEFORE the pin begins (sliding
+                   up into view) and a viewport AFTER it ends (sliding off the
+                   top). Mapped to pinned travel, the clip sits on its first
+                   frame through the whole entry and its last frame through the
+                   whole exit: the reader watches a still photograph while the
+                   page moves. Pair it with data-sc-dwell, which moves quickly at
+                   the edges and settles in the middle, so the fast motion lands
+                   on the two slides and the settle lands inside the pin where
+                   the copy is. data-sc-runout is accepted and ignored; it named
+                   the old opt-in for the exit half of this.
+     data-sc-span  viewport-heights of scroll this act owns. Pinned devices only
+                   (scrub/pin/pan). Default 1.5. The engine sets the outer
+                   height and sticks the first .sc-stage / [data-sc-stage] child.
+
+     Every act exposes a normalized progress p (0..1):
+       pinned  p = (y - top) / (height - vh)
+       flow    p = (y + vh - top) / (height + vh)
+     and publishes it as --sc-p on the act element, so CSS can read it too.
+
+   ---------------------------------------------------------------------------
+   DEVICES: what p drives
+   ---------------------------------------------------------------------------
+     data-sc-scrub            on <video>. p scrubs currentTime. Blob-loaded, so
+                              it seeks without needing HTTP range support.
+     data-sc-sequence="a/{i}.webp:120:1"
+                              on <canvas>. p scrubs an image sequence
+                              (path template : frameCount : startIndex).
+     data-sc-pan="0.6"        on a wide rail inside data-sc-act="pan". p drives
+                              horizontal travel. Value = extra travel multiplier.
+     data-sc-parallax="-0.2"  translateY by rate * act-progress * viewport.
+                              Negative = moves up faster than scroll (recedes).
+     data-sc-cue="0.1 0.5"    opacity/rise keyed to p. One value = enter+hold.
+                              Two = enter..leave. Add a third for the hold point.
+     data-sc-kinetic="lines"  lines | words | chars. Splits the element and
+                              staggers its reveal across the cue window.
+     data-sc-reveal="up"      up | down | left | right | iris. clip-path wipe.
+     data-sc-count="0 4200"   number bloom across the cue window.
+     data-sc-in               flow-section reveal, fires once on entry via
+                              IntersectionObserver (cheaper, and content that
+                              re-hides on scroll-up is a defect, not an effect).
+                              data-sc-stagger="60" on the parent staggers kids.
+     data-sc-drift="#07090c"  page background interpolates toward this colour
+                              while the act is on screen.
+
+   ---------------------------------------------------------------------------
+   WORLDFLIGHT: the page mode for one continuous flight
+   ---------------------------------------------------------------------------
+     <div data-sc-mode="worldflight" data-sc-seam="0.12">
+       <div data-sc-world>
+         <div data-sc-segment data-sc-w="1.4" data-sc-linger="0.3"
+              data-sc-waypoint="Approach">
+           <img class="sc-world__poster" src="p1.webp" alt="">
+           <video data-sc-src="leg1.mp4" data-sc-src-mobile="leg1-m.mp4"></video>
+         </div>
+         ... more segments, in flight order ...
+       </div>
+       <div data-sc-world-copy>
+         <div class="sc-world__scrim sc-scrim sc-scrim--band"></div>
+         <div data-sc-copy data-sc-window="hero"> ... </div>
+         <div data-sc-copy data-sc-window="0.34 0.56"> ... </div>
+         <div data-sc-copy data-sc-window="finale"> ... </div>
+       </div>
+       <div data-sc-spacer aria-hidden="true"></div>
+     </div>
+
+   Acts cut the page into pinned blocks, which is the right shape for a page of
+   chapters and the wrong shape for one continuous camera move: the reader hits
+   the end of an act, the stage unsticks, a static page slides past, and the next
+   act starts the whole thing again. Worldflight removes the seams by removing
+   the blocks. There is ONE fixed stage for the entire page. The only element in
+   document flow is a spacer, whose height the engine sets to the sum of the
+   segment weights plus one viewport so the last flight can finish. Scroll drives
+   the film timeline and the overlay opacity. Nothing else moves.
+
+     data-sc-w        viewport-heights this segment owns. Default 1.3.
+     data-sc-linger   dwell remap for this leg only (see lingerEase). Max 0.6.
+     data-sc-seam     crossfade band, in viewport-heights of scroll. Default 0.12.
+     data-sc-waypoint label published on --sc-seg / the sc:waypoint event, so a
+                      page can draw its own route rail. The engine draws none.
+     data-sc-window   on a copy block: "hero" | "finale" | "from to [in [out]]"
+                      as fractions of the WHOLE track.
+
+   Every clip stays mounted for the life of the page. Segments crossfade by
+   opacity over the seam band; nothing ever swaps a src, because a src swap is a
+   black frame and a black frame is the cut this mode exists to avoid.
+
+   ---------------------------------------------------------------------------
+   POINTER: interactivity that isn't scroll
+   ---------------------------------------------------------------------------
+     data-sc-tilt="8"         3D tilt toward the pointer, spring-damped, degrees.
+     data-sc-magnet="0.35"    element drifts toward the pointer inside its bounds.
+     data-sc-spotlight        publishes --sc-mx/--sc-my (0..1) for a light that
+                              follows the pointer across the surface.
+   All three are gated to (hover: hover) and (pointer: fine) and disabled under
+   prefers-reduced-motion. Touch never fires them.
+
+   ---------------------------------------------------------------------------
+   REDUCED MOTION
+   ---------------------------------------------------------------------------
+   Fewer and gentler, not zero. Cues still fade (comprehension survives), but
+   translation collapses, video clips are never fetched (the poster holds), and
+   pointer devices are inert. A worldflight still tells its whole story: the
+   posters cross-dissolve through the same seams and the same copy windows.
+
+   ---------------------------------------------------------------------------
+   THE PLAYHEAD
+   ---------------------------------------------------------------------------
+   Every scrub clip on the page, act or worldflight, is driven by one smoothed
+   playhead. Scroll only ever writes a TARGET; a standalone rAF loop walks the
+   current time toward it at a fixed fraction per frame (data-sc-lerp, default
+   0.18; 1.0 under reduced motion, which is no smoothing at all). Writes are
+   gated by a deadband and skipped while the decoder is still seeking. Without
+   the smoothing a trackpad flick reads as a stutter, because wheel events do
+   not arrive at a constant rate and a 1:1 write reproduces every gap in them.
+   ========================================================================== */
+
+(function (global) {
+  'use strict';
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fineMQ = matchMedia('(hover: hover) and (pointer: fine)');
+  var smallMQ = matchMedia('(max-width: 860px)');
+  var coarse = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var isMobile = function () { return coarse || smallMQ.matches; };
+
+  var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+  var clamp01 = function (x) { return clamp(x, 0, 1); };
+  var smooth = function (x) { x = clamp01(x); return x * x * (3 - 2 * x); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+
+  // Monotone dwell remap. Settles the camera mid-act (where the copy peaks) and
+  // moves quicker at the edges. f(0)=0 and f(1)=1 always, so seam frames between
+  // consecutive clips are untouched and the chain stays invisible.
+  function dwell(x, L) {
+    if (!L) return x;
+    L = clamp01(L);
+    var c = x - 0.5;
+    return (1 - L) * x + L * (4 * c * c * c + 0.5);
+  }
+
+  // Same curve, capped harder, and used per worldflight segment. Above ~0.6 the
+  // derivative at the midpoint gets low enough that the camera visibly stops
+  // dead mid-leg, which reads as a stall rather than a hold. The endpoints are
+  // fixed by construction: f(0)=0, f(1)=1, so the first and last frames of every
+  // leg are still exactly the frames the seam law matched, and the chain between
+  // legs stays invisible no matter how much dwell a leg asks for.
+  function lingerEase(x, L) {
+    if (!L) return x;
+    L = clamp(L, 0, 0.6);
+    var c = x - 0.5;
+    return (1 - L) * x + L * (4 * c * c * c + 0.5);
+  }
+
+  // The lerp is a mechanism, not a taste knob. It is exposed so a page whose
+  // clips are unusually short (where 0.18 lags behind the pointer) can tighten
+  // it, and it is never read as 0: a 0 lerp is a playhead that never moves.
+  function lerpRate(el) {
+    var v = parseFloat(el && el.getAttribute && el.getAttribute('data-sc-lerp'));
+    return isNaN(v) || v <= 0 ? 0 : clamp(v, 0.02, 1);
+  }
+
+  // ---- colour -------------------------------------------------------------
+  function parseColor(str) {
+    str = (str || '').trim();
+    var m = str.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (m) {
+      var h = m[1];
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+    }
+    m = str.match(/rgba?\(([^)]+)\)/i);
+    if (m) {
+      var p = m[1].split(/[,\s/]+/).filter(Boolean).map(parseFloat);
+      return [p[0], p[1], p[2]];
+    }
+    return null;
+  }
+  function mixColor(a, b, t) {
+    return 'rgb(' + Math.round(lerp(a[0], b[0], t)) + ',' +
+                    Math.round(lerp(a[1], b[1], t)) + ',' +
+                    Math.round(lerp(a[2], b[2], t)) + ')';
+  }
+
+  // ---- text splitting -----------------------------------------------------
+  // Wraps each unit in a masked span so the reveal can slide from behind a clean
+  // edge instead of just fading. Lines are measured after layout, so this must
+  // run once fonts are ready or the line boxes are wrong.
+  function splitText(el, mode) {
+    if (el.__scSplit) return el.__scSplit;
+    var text = el.textContent;
+    var units = [];
+
+    if (mode === 'chars' || mode === 'words') {
+      var parts = mode === 'chars' ? Array.from(text) : text.split(/(\s+)/);
+      el.textContent = '';
+      parts.forEach(function (t) {
+        if (/^\s+$/.test(t)) { el.appendChild(document.createTextNode(t)); return; }
+        var mask = document.createElement('span');
+        mask.className = 'sc-split';
+        var inner = document.createElement('span');
+        inner.className = 'sc-split__i';
+        inner.textContent = t;
+        mask.appendChild(inner);
+        el.appendChild(mask);
+        units.push(inner);
+      });
+    } else {
+      // lines: wrap every word, measure offsetTop, regroup words into line spans
+      var words = text.split(/\s+/).filter(Boolean);
+      el.textContent = '';
+      var probes = words.map(function (w, i) {
+        var s = document.createElement('span');
+        s.textContent = w;
+        el.appendChild(s);
+        if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+        return s;
+      });
+      var lines = [], cur = null, lastTop = null;
+      probes.forEach(function (s) {
+        var top = s.offsetTop;
+        if (lastTop === null || Math.abs(top - lastTop) > 1) { cur = []; lines.push(cur); lastTop = top; }
+        cur.push(s.textContent);
+      });
+      el.textContent = '';
+      lines.forEach(function (words, li) {
+        var mask = document.createElement('span');
+        mask.className = 'sc-split sc-split--line';
+        var inner = document.createElement('span');
+        inner.className = 'sc-split__i';
+        inner.textContent = words.join(' ');
+        mask.appendChild(inner);
+        el.appendChild(mask);
+        // Whitespace between the line spans. Without it the line boxes abut in
+        // the text layer, so selecting and copying the heading yields
+        // "even whenbreakfast" and a screen reader hears the same.
+        if (li < lines.length - 1) el.appendChild(document.createTextNode(' '));
+        units.push(inner);
+      });
+    }
+    el.classList.add('sc-is-split');
+    el.__scSplit = units;
+    return units;
+  }
+
+  // ---- number formatting --------------------------------------------------
+  function formatNum(v, template) {
+    var decimals = 0;
+    var dot = template.indexOf('.');
+    if (dot > -1) decimals = template.length - dot - 1;
+    var s = v.toFixed(decimals);
+    if (/,/.test(template) || Math.abs(v) >= 10000) {
+      var bits = s.split('.');
+      bits[0] = bits[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      s = bits.join('.');
+    }
+    return s;
+  }
+
+  // =========================================================================
+  function mount(root, opts) {
+    root = typeof root === 'string' ? document.querySelector(root) : (root || document);
+    opts = opts || {};
+
+    var acts = [];
+    var worlds = [];
+    var drifts = [];
+    var playheads = [];
+    var scrollEls = [];
+    var vh = innerHeight, vw = innerWidth;
+    var y = 0, needsLayout = true;
+    var progressBar = root.querySelector('[data-sc-progress]');
+    var docEl = document.documentElement;
+
+    // One rate for the page, overridable per clip. Read from the mount root, the
+    // document element, or the option bag, in that order.
+    var LERP = lerpRate(root.nodeType === 1 ? root : null) ||
+               lerpRate(docEl) ||
+               (opts.lerp > 0 ? clamp(opts.lerp, 0.02, 1) : 0) ||
+               0.18;
+
+    // Every scrub clip on the page lives here, whatever drives it. tick() walks
+    // this one list, so an act clip and a worldflight leg get the same playhead.
+    function makeClip(v, host) {
+      var rec = {
+        el: v, host: host || v,
+        ready: false, loading: false, painted: false,
+        cur: 0, target: 0, live: false,
+        lerp: lerpRate(v) || LERP
+      };
+      v.muted = true; v.playsInline = true; v.preload = 'none';
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+      playheads.push(rec);
+      return rec;
+    }
+
+    // ---- collect acts -----------------------------------------------------
+    Array.prototype.forEach.call(root.querySelectorAll('[data-sc-act]'), function (el) {
+      var device = el.getAttribute('data-sc-act') || 'flow';
+      var pinned = device === 'scrub' || device === 'pin' || device === 'pan';
+      var act = {
+        el: el,
+        device: device,
+        pinned: pinned,
+        span: parseFloat(el.getAttribute('data-sc-span')) || (pinned ? 1.5 : 0),
+        dwell: parseFloat(el.getAttribute('data-sc-dwell')) || 0,
+        clipTravel: pinned && el.getAttribute('data-sc-clip-map') === 'travel',
+        p: 0, raw: 0, top: 0, height: 0, live: false,
+        cues: [], parallax: [], reveals: [], counts: [],
+        video: null, seq: null, rail: null
+      };
+
+      if (pinned) {
+        act.stage = el.querySelector('[data-sc-stage]') || el.querySelector('.sc-stage');
+        if (act.stage) act.stage.classList.add('sc-stage');
+        el.classList.add('sc-act--pinned');
+      }
+
+      // scrub video
+      var v = el.querySelector('video[data-sc-scrub]');
+      if (v) act.video = makeClip(v, el);
+
+      // image sequence
+      var cv = el.querySelector('canvas[data-sc-sequence]');
+      if (cv) {
+        var spec = cv.getAttribute('data-sc-sequence').split(':');
+        act.seq = {
+          el: cv, ctx: cv.getContext('2d', { alpha: false }),
+          tpl: spec[0], count: parseInt(spec[1], 10) || 1, start: parseInt(spec[2], 10) || 0,
+          frames: [], loaded: 0, drawn: -1
+        };
+      }
+
+      // horizontal rail
+      act.rail = el.querySelector('[data-sc-pan]');
+      if (act.rail) act.railExtra = parseFloat(act.rail.getAttribute('data-sc-pan')) || 0;
+
+      // cues
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-cue]'), function (c) {
+        var nums = (c.getAttribute('data-sc-cue') || '').trim().split(/\s+/).map(parseFloat);
+        // from [to [rampIn [rampOut]]]
+        // rampIn/rampOut are fractions OF THE WINDOW, defaulting to 0.3 each.
+        // That leaves a ~40% plateau at full opacity in the middle. Without a
+        // plateau a cue is a triangle: it touches opacity 1 for a single
+        // instant, so the reader has to stop on exactly the right pixel to see
+        // the line at full strength, and every heading reads as slightly faded.
+        var cue = {
+          el: c,
+          from: isNaN(nums[0]) ? 0 : nums[0],
+          to: nums.length > 1 && !isNaN(nums[1]) ? nums[1] : null,
+          rIn: nums.length > 2 && !isNaN(nums[2]) ? clamp01(nums[2]) : 0.3,
+          rOut: nums.length > 3 && !isNaN(nums[3]) ? clamp01(nums[3]) : null,
+          rise: parseFloat(c.getAttribute('data-sc-rise')),
+          kinetic: c.getAttribute('data-sc-kinetic'),
+          units: null, state: -1
+        };
+        if (cue.rOut === null) cue.rOut = (nums.length > 2 && !isNaN(nums[2])) ? 0.3 : 0.3;
+        if (isNaN(cue.rise)) cue.rise = 1;
+        act.cues.push(cue);
+      });
+
+      // parallax
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-parallax]'), function (c) {
+        act.parallax.push({ el: c, rate: parseFloat(c.getAttribute('data-sc-parallax')) || 0 });
+      });
+
+      // reveals
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-reveal]'), function (c) {
+        var nums = (c.getAttribute('data-sc-reveal-at') || '0 0.5').trim().split(/\s+/).map(parseFloat);
+        act.reveals.push({ el: c, dir: c.getAttribute('data-sc-reveal') || 'up', from: nums[0] || 0, to: nums[1] || 0.5 });
+      });
+
+      // counters
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-count]'), function (c) {
+        var nums = (c.getAttribute('data-sc-count') || '').trim().split(/\s+/);
+        var at = (c.getAttribute('data-sc-count-at') || '0.1 0.55').trim().split(/\s+/).map(parseFloat);
+        // Strip separators before parsing so the author can write the target
+        // exactly as it should render. Without this, "0 3,500" parses the target
+        // as 3 (the comma stops parseFloat) and "0 3500" renders "3500", because
+        // formatNum only adds separators above 10,000. So any real figure between
+        // 1,000 and 9,999 could not be shown the way it is written everywhere
+        // else on the page. The template still drives the formatting.
+        var num = function (s) { return parseFloat(String(s).replace(/,/g, '')) || 0; };
+        act.counts.push({
+          el: c, a: num(nums[0]), b: num(nums[1]),
+          tpl: nums[1] || '0', from: at[0], to: at[1], last: null
+        });
+      });
+
+      acts.push(act);
+
+      var d = el.getAttribute('data-sc-drift');
+      if (d) { var rgb = parseColor(d); if (rgb) drifts.push({ act: act, rgb: rgb }); }
+    });
+
+    // ---- collect worldflights --------------------------------------------
+    Array.prototype.forEach.call(root.querySelectorAll('[data-sc-mode="worldflight"]'), function (el) {
+      var W = {
+        el: el,
+        stage: el.querySelector('[data-sc-world]') || el.querySelector('.sc-world'),
+        copyLayer: el.querySelector('[data-sc-world-copy]') || el.querySelector('.sc-world__copy'),
+        spacer: el.querySelector('[data-sc-spacer]') || el.querySelector('.sc-world__spacer'),
+        seam: 0, segs: [], copies: [], total: 0, top: 0, index: -1, checked: false
+      };
+      var seam = parseFloat(el.getAttribute('data-sc-seam'));
+      // A seam wider than the shortest leg would have three clips dissolving at
+      // once and no leg ever fully present. Cap it well under that.
+      W.seam = isNaN(seam) || seam <= 0 ? 0.12 : clamp(seam, 0.02, 0.4);
+      if (W.stage) W.stage.classList.add('sc-world');
+      if (W.copyLayer) W.copyLayer.classList.add('sc-world__copy');
+      if (W.spacer) W.spacer.classList.add('sc-world__spacer');
+
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-segment]'), function (s) {
+        var seg = {
+          el: s,
+          w: parseFloat(s.getAttribute('data-sc-w')) || 1.3,
+          linger: clamp(parseFloat(s.getAttribute('data-sc-linger')) || 0, 0, 0.6),
+          label: s.getAttribute('data-sc-waypoint') || '',
+          poster: s.querySelector('[data-sc-poster]') || s.querySelector('.sc-world__poster') || s.querySelector('img'),
+          c0: 0, c1: 0, local: 0, op: -1, z: -1, clip: null
+        };
+        s.classList.add('sc-world__seg');
+        if (seg.poster) seg.poster.classList.add('sc-world__poster');
+        var v = s.querySelector('video');
+        if (v) {
+          // Mark it as a scrub clip whether or not the author did. Everything
+          // downstream, the stylesheet and the verification harness included,
+          // finds scrub media by this attribute.
+          v.setAttribute('data-sc-scrub', '');
+          seg.clip = makeClip(v, s);
+        }
+        W.segs.push(seg);
+      });
+
+      var run = 0;
+      W.segs.forEach(function (s) { s.c0 = run; run += Math.max(s.w, 0.1); s.c1 = run; });
+      W.total = Math.max(run, 0.001);
+
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-copy]'), function (cEl) {
+        var spec = (cEl.getAttribute('data-sc-window') || '').trim();
+        var q = { el: cEl, from: 0, to: 1, rIn: 0.3, rOut: 0.3, state: -1 };
+        var first = W.segs[0], last = W.segs[W.segs.length - 1];
+        if (spec === 'hero') {
+          // Present the instant the reader lands. A hero that fades IN has to
+          // fade in from nothing over an empty first screen, which is the one
+          // moment on the page where there is nothing else to look at.
+          q.from = 0;
+          q.to = first ? (0.62 * first.w) / W.total : 0.3;
+          q.rIn = 0; q.rOut = 0.65;
+        } else if (spec === 'finale') {
+          q.from = last ? (last.c0 + 0.4 * last.w) / W.total : 0.7;
+          q.to = 1; q.rIn = 0.55; q.rOut = 0;
+        } else {
+          var n = spec.split(/\s+/).map(parseFloat);
+          q.from = isNaN(n[0]) ? 0 : clamp01(n[0]);
+          q.to = (n.length > 1 && !isNaN(n[1])) ? clamp01(n[1]) : clamp01(q.from + 0.18);
+          if (n.length > 2 && !isNaN(n[2])) q.rIn = clamp01(n[2]);
+          if (n.length > 3 && !isNaN(n[3])) q.rOut = clamp01(n[3]);
+        }
+        if (q.to <= q.from) q.to = clamp01(q.from + 0.05);
+        W.copies.push(q);
+      });
+
+      worlds.push(W);
+    });
+
+    // ---- flow reveals (fire once) ----------------------------------------
+    var io = null;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var el = e.target;
+          el.classList.add('sc-in');
+          var stagger = parseFloat(el.getAttribute('data-sc-stagger'));
+          if (!isNaN(stagger)) {
+            Array.prototype.forEach.call(el.children, function (kid, i) {
+              kid.style.transitionDelay = (i * stagger) + 'ms';
+              kid.classList.add('sc-in');
+            });
+          }
+          io.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-in]'), function (el) { io.observe(el); });
+    } else {
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-in]'), function (el) { el.classList.add('sc-in'); });
+    }
+
+    // ---- layout -----------------------------------------------------------
+    function layout() {
+      vh = innerHeight; vw = innerWidth;
+      acts.forEach(function (a) {
+        if (a.pinned) a.el.style.height = (a.span * 100) + 'vh';
+      });
+      // The spacer is the whole document flow of a worldflight. Its height is
+      // the sum of the leg weights plus one viewport: without that extra screen
+      // the track runs out at the moment the last leg reaches p=1, so the last
+      // leg's final second is a place the reader can never actually stop.
+      // Set in pixels, not vh, because .sc-world is sized in svh on phones and a
+      // vh/svh mismatch would put the track and the stage on different rulers.
+      worlds.forEach(function (W) {
+        if (W.spacer) W.spacer.style.height = Math.round((W.total + 1) * vh) + 'px';
+      });
+      acts.forEach(function (a) {
+        var r = a.el.getBoundingClientRect();
+        a.top = r.top + scrollY;
+        a.height = r.height;
+      });
+      if (acts.length) {
+        acts.forEach(function (a) {
+          if (a.seq && a.seq.el) {
+            var box = a.seq.el.getBoundingClientRect();
+            var dpr = Math.min(devicePixelRatio || 1, 2);
+            a.seq.el.width = Math.round(box.width * dpr);
+            a.seq.el.height = Math.round(box.height * dpr);
+            a.seq.drawn = -1;
+          }
+        });
+      }
+      // A pinned act whose stage is not actually sticky fails silently: the
+      // stage just scrolls by, the copy cues correctly against a frame nobody
+      // can see, and every automated check passes. Any author rule that sets
+      // `position` on the stage causes it. Say so.
+      acts.forEach(function (a) {
+        if (!a.pinned || !a.stage || a.stageChecked) return;
+        a.stageChecked = true;
+        var pos = getComputedStyle(a.stage).position;
+        if (pos !== 'sticky' && pos !== '-webkit-sticky') {
+          console.warn('[scrollcraft] act "' + (a.el.id || a.device) + '" will not pin: its stage computes ' +
+            'position:' + pos + ', not sticky. Something is overriding .sc-stage.', a.stage);
+        }
+      });
+
+      worlds.forEach(function (W) {
+        W.top = W.el.getBoundingClientRect().top + scrollY;
+        if (W.checked) return;
+        W.checked = true;
+        if (!W.stage) {
+          console.warn('[scrollcraft] worldflight has no [data-sc-world] stage; nothing will fly.', W.el);
+          return;
+        }
+        if (!W.spacer) {
+          console.warn('[scrollcraft] worldflight has no [data-sc-spacer]; the page has no scroll track.', W.el);
+        }
+        // The same silent failure as an unpinned act, one level worse: a stage
+        // that is not fixed scrolls away and takes the whole page with it, while
+        // every progress number still reads correctly.
+        var wp = getComputedStyle(W.stage).position;
+        if (wp !== 'fixed') {
+          console.warn('[scrollcraft] worldflight stage computes position:' + wp + ', not fixed. ' +
+            'Something is overriding .sc-world, and the flight will scroll off screen.', W.stage);
+        }
+      });
+
+      needsLayout = false;
+      read();
+    }
+
+    // ---- video ------------------------------------------------------------
+    function loadVideo(a) { loadClip(a.video); }
+    function loadClip(V) {
+      // Under reduced motion the clip is never fetched. The poster holds the
+      // frame and the copy still cues, so the page reads without the decode.
+      if (reduce || !V || V.loading) return;
+      var src = V.el.getAttribute('data-sc-src') ||
+                (isMobile() && V.el.getAttribute('data-sc-src-mobile')) ||
+                V.el.currentSrc || V.el.src;
+      if (isMobile() && V.el.getAttribute('data-sc-src-mobile')) src = V.el.getAttribute('data-sc-src-mobile');
+      if (!src) return;
+      V.loading = true;
+      fetch(src).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); })
+        .then(function (blob) {
+          // Listeners and preload BEFORE src. Assigning src starts the load, so
+          // attaching afterwards and then calling load() restarts it and aborts
+          // the first request (visible as ERR_ABORTED on the blob URL).
+          V.el.addEventListener('loadedmetadata', function () {
+            V.ready = true;
+            // Force one seek even when the target is already 0. The reveal is
+            // gated on a 'seeked' event, and the raf loop only seeks when the
+            // time actually needs to change, so a clip sitting at the very top
+            // of its act would never seek, never fire 'seeked', and never
+            // replace its poster until the reader scrolled it off zero.
+            try { V.el.currentTime = Math.max(V.target * (V.el.duration || 1), 0.001); } catch (e) {}
+            read();
+          });
+          // Reveal only once a real frame has painted. iOS keeps a seeked-but-
+          // never-played muted video blank, so hiding the poster on metadata
+          // alone flashes an empty stage.
+          V.el.addEventListener('seeked', function () {
+            V.painted = true;
+            V.host.classList.add('sc-has-clip');
+            V.el.classList.add('sc-has-clip');
+          }, { once: true });
+          V.el.preload = 'auto';
+          V.el.src = URL.createObjectURL(blob);
+        })
+        .catch(function () { V.loading = false; });
+    }
+
+    // ---- image sequence ---------------------------------------------------
+    function loadSeq(a) {
+      var S = a.seq;
+      if (!S || S.frames.length) return;
+      for (var i = 0; i < S.count; i++) {
+        (function (i) {
+          var img = new Image();
+          img.decoding = 'async';
+          img.src = S.tpl.replace('{i}', String(S.start + i))
+                         .replace('{ii}', String(S.start + i).padStart(2, '0'))
+                         .replace('{iii}', String(S.start + i).padStart(3, '0'))
+                         .replace('{iiii}', String(S.start + i).padStart(4, '0'));
+          img.onload = function () { S.loaded++; if (S.loaded === 1) S.drawn = -1; };
+          S.frames[i] = img;
+        })(i);
+      }
+    }
+    function drawSeq(a) {
+      var S = a.seq;
+      if (!S || !S.frames.length) return;
+      var idx = clamp(Math.round(a.p * (S.count - 1)), 0, S.count - 1);
+      if (idx === S.drawn) return;
+      var img = S.frames[idx];
+      if (!img || !img.complete || !img.naturalWidth) return;
+      var cw = S.el.width, ch = S.el.height;
+      // cover fit
+      var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      var w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+      S.ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      S.drawn = idx;
+    }
+
+    // ---- worldflight ------------------------------------------------------
+    // t is the position along the flight, measured in viewport-heights of
+    // scroll, so every number here is in the same unit the author wrote the
+    // weights in. There is no per-segment geometry to read: the stage never
+    // moves, so nothing needs measuring on scroll.
+    function readWorld(W) {
+      if (!W.segs.length) return;
+      var S = W.seam;
+      var t = clamp((y - W.top) / Math.max(vh, 1), 0, W.total);
+      var pr = t / W.total;
+      var i, s;
+
+      // The current leg is the last one whose crossfade has begun.
+      var k = 0;
+      for (i = 0; i < W.segs.length; i++) if (t >= W.segs[i].c0 - S / 2) k = i;
+
+      for (i = 0; i < W.segs.length; i++) {
+        s = W.segs[i];
+        var local = clamp01((t - s.c0) / Math.max(s.w, 0.001));
+        s.local = local;
+
+        // Fetch a leg only while it is within reach. Loading the whole flight up
+        // front is tens of megabytes before the first frame paints; loading it
+        // on arrival means arriving at a poster.
+        if (s.clip && t > s.c0 - 1.6 && t < s.c1 + 1.6) loadClip(s.clip);
+
+        // Opacity. The incoming leg fades UP over the outgoing one, which holds
+        // at full strength underneath until it is completely covered. Fading
+        // both halves of a crossfade is what puts the page ground through the
+        // middle of the seam and reads as a flash.
+        var op;
+        if (i > k) op = 0;
+        else if (i === k) op = i === 0 ? 1 : smooth((t - (s.c0 - S / 2)) / S);
+        else op = t < s.c1 + S / 2 ? 1 : 0;
+
+        var z = i === k ? 120 : Math.round(100 + op * 10);
+        if (op !== s.op) {
+          s.el.style.opacity = op.toFixed(3);
+          // A leg at zero must stop compositing entirely. Six full-bleed video
+          // layers all painting at opacity 0 costs the same as painting them.
+          s.el.style.visibility = op > 0.002 ? 'visible' : 'hidden';
+          s.op = op;
+        }
+        if (z !== s.z) { s.el.style.zIndex = String(z); s.z = z; }
+
+        if (s.clip) {
+          s.clip.live = op > 0.002;
+          s.clip.target = lingerEase(local, s.linger);
+        }
+        // Until a real frame has painted, the poster carries the move. A still
+        // that sits perfectly still while the page scrolls announces itself as a
+        // placeholder; a slow push in reads as the camera already flying.
+        if (s.poster && !reduce && !(s.clip && s.clip.painted) && op > 0.002) {
+          s.poster.style.transform = 'scale(' + (1.03 + local * 0.14).toFixed(4) + ')';
+        }
+      }
+
+      for (var c = 0; c < W.copies.length; c++) {
+        var q = W.copies[c];
+        var win = Math.max(q.to - q.from, 0.001);
+        var inEnd = q.from + win * q.rIn;
+        var outStart = q.to - win * q.rOut;
+        var vis;
+        // A hero declares rIn 0, so inEnd sits exactly on `from` and the ramp
+        // branch is skipped: the block is simply present from the first pixel.
+        if (pr < q.from) vis = 0;
+        else if (pr < inEnd) vis = smooth((pr - q.from) / Math.max(inEnd - q.from, 0.001));
+        else if (pr <= outStart) vis = 1;
+        else vis = smooth(1 - (pr - outStart) / Math.max(q.to - outStart, 0.001));
+        vis = clamp01(vis);
+
+        // The ONLY transform on the copy side, and it is capped at 4vh across
+        // the whole window. Anything larger stops reading as a parallax layer
+        // over a moving world and starts reading as a second page scrolling at a
+        // different speed, which is the exact cheapness this mode replaces.
+        var wp = clamp01((pr - q.from) / win);
+        q.el.style.opacity = vis.toFixed(3);
+        q.el.style.transform = reduce ? 'none'
+          : 'translate3d(0,' + ((0.5 - wp) * 4).toFixed(2) + 'vh,0)';
+        var on = vis > 0.5;
+        if (on !== (q.state === 1)) { q.state = on ? 1 : 0; q.el.style.pointerEvents = on ? 'auto' : 'none'; }
+      }
+
+      // Publish the route, draw none of it. A gauge, a map, a leg counter and a
+      // set of chapter dots are all the same two numbers, and a runtime that
+      // ships one of them ships it to every page that uses this mode.
+      var cur = W.segs[k];
+      W.el.style.setProperty('--sc-seg', String(k));
+      W.el.style.setProperty('--sc-segp', cur.local.toFixed(4));
+      docEl.style.setProperty('--sc-seg', String(k));
+      docEl.style.setProperty('--sc-segp', cur.local.toFixed(4));
+      if (k !== W.index) {
+        W.index = k;
+        try {
+          W.el.dispatchEvent(new CustomEvent('sc:waypoint', {
+            bubbles: true,
+            detail: { index: k, count: W.segs.length, label: cur.label, el: cur.el, progress: pr }
+          }));
+        } catch (e) {}
+      }
+    }
+
+    // ---- per-frame scroll read -------------------------------------------
+    function read() {
+      y = scrollY || pageYOffset;
+      var driftA = null, driftB = null, driftT = 0;
+      var maxY = Math.max((document.documentElement.scrollHeight || 0) - vh, 1);
+
+      for (var i = 0; i < acts.length; i++) {
+        var a = acts[i];
+        var raw;
+        if (a.pinned) {
+          var travel = Math.max(a.height - vh, 1);
+          raw = clamp01((y - a.top) / travel);
+        } else {
+          raw = clamp01((y + vh - a.top) / (a.height + vh));
+        }
+        a.raw = raw;
+        a.p = a.dwell ? dwell(raw, a.dwell) : raw;
+
+        // Clip time is NOT cue time. Cues belong to the pin, so they keep using
+        // `p`. The clip belongs to the stage, and the stage is on screen for one
+        // viewport before the pin starts and one after it ends. Driving the clip
+        // from `p` therefore parks it on frame one for the whole entry slide and
+        // on its last frame for the whole exit slide, which is a still
+        // photograph moving up the screen under the reader's hand.
+        //
+        // So map the clip across the stage's entire visible life instead. Both
+        // ends are clamped to scroll that actually exists: an act at the top of
+        // the document has no entry slide and must still start on frame one, and
+        // an act near the bottom must still reach its last frame while the page
+        // can still scroll.
+        a.vp = a.p;
+        if (a.pinned && !a.clipTravel) {
+          var startY = a.top - Math.min(vh, a.top);
+          var endY = Math.min(a.top + a.height, maxY);
+          var vraw = clamp01((y - startY) / Math.max(endY - startY, 1));
+          a.vp = a.dwell ? dwell(vraw, a.dwell) : vraw;
+        }
+        a.live = (y > a.top - vh * 1.25) && (y < a.top + a.height + vh * 1.25);
+        a.el.style.setProperty('--sc-p', a.p.toFixed(4));
+
+        // Fetch earlier than we drive. A 1080p clip is megabytes, and a reader
+        // who scrolls briskly will otherwise arrive at a stage that is still
+        // downloading and see a poster where the camera move should be.
+        var warm = (y > a.top - vh * 3) && (y < a.top + a.height + vh * 1.5);
+        if (warm) {
+          if (a.video) loadVideo(a);
+          if (a.seq) loadSeq(a);
+        }
+        if (a.live && a.seq) drawSeq(a);
+        if (a.video) { a.video.live = a.live; if (a.video.ready) a.video.target = a.vp; }
+
+        // horizontal rail
+        if (a.rail) {
+          var over = a.rail.scrollWidth - vw;
+          if (over > 0) {
+            var extra = over * (a.railExtra || 0);
+            a.rail.style.transform = 'translate3d(' + (-(over + extra) * a.p).toFixed(2) + 'px,0,0)';
+          }
+        }
+
+        if (!a.live) {
+          // An act that scrolls out of range must release its cues rather than
+          // freezing them at whatever they last were. A "hold" cue left at
+          // opacity 1 keeps its element hit-testable and paintable long after
+          // its act is gone, which shows up as a stray headline over a later
+          // section. Zero once, then leave it alone.
+          if (a.parked !== true) {
+            for (var z = 0; z < a.cues.length; z++) {
+              var pq = a.cues[z];
+              pq.el.style.opacity = '0';
+              pq.el.style.pointerEvents = 'none';
+              pq.state = 0;
+              if (pq.units) for (var zu = 0; zu < pq.units.length; zu++) pq.units[zu].style.opacity = '0';
+            }
+            a.parked = true;
+          }
+          continue;
+        }
+        a.parked = false;
+
+        // cues
+        for (var c = 0; c < a.cues.length; c++) {
+          var q = a.cues[c];
+          var vis;
+          if (q.to === null) {
+            vis = smooth((a.p - q.from) / 0.18);
+          } else {
+            var win = Math.max(q.to - q.from, 0.001);
+            var inEnd = q.from + win * q.rIn;        // full opacity from here
+            var outStart = q.to - win * q.rOut;      // starts leaving here
+            if (a.p < inEnd) vis = smooth((a.p - q.from) / Math.max(inEnd - q.from, 0.001));
+            else if (a.p <= outStart) vis = 1;       // the plateau
+            else vis = smooth(1 - (a.p - outStart) / Math.max(q.to - outStart, 0.001));
+          }
+          vis = clamp01(vis);
+
+          if (q.kinetic) {
+            if (!q.units) q.units = splitText(q.el, q.kinetic);
+            var n = q.units.length;
+            // Stagger across the reveal window. 0.62 spread leaves the tail of
+            // the window for the last unit to finish, so the line lands together
+            // rather than trickling.
+            for (var u = 0; u < n; u++) {
+              var uStart = (u / Math.max(n, 1)) * 0.62;
+              var uv = clamp01((vis - uStart) / (1 - 0.62 + 0.001));
+              uv = smooth(uv);
+              q.units[u].style.opacity = uv.toFixed(3);
+              q.units[u].style.transform = reduce ? 'none'
+                : 'translate3d(0,' + ((1 - uv) * 100).toFixed(2) + '%,0)';
+            }
+            q.el.style.opacity = '1';
+          } else {
+            q.el.style.opacity = vis.toFixed(3);
+            q.el.style.transform = reduce ? 'none'
+              : 'translate3d(0,' + ((1 - vis) * 2.4 * q.rise).toFixed(2) + 'vh,0)';
+          }
+          var on = vis > 0.5;
+          if (on !== (q.state === 1)) { q.state = on ? 1 : 0; q.el.style.pointerEvents = on ? 'auto' : 'none'; }
+        }
+
+        // parallax
+        if (!reduce) {
+          for (var pz = 0; pz < a.parallax.length; pz++) {
+            var pp = a.parallax[pz];
+            pp.el.style.transform = 'translate3d(0,' + (pp.rate * (a.p - 0.5) * 100).toFixed(2) + 'px,0)';
+          }
+        }
+
+        // reveals
+        for (var rv = 0; rv < a.reveals.length; rv++) {
+          var R = a.reveals[rv];
+          var t = smooth((a.p - R.from) / Math.max(R.to - R.from, 0.001));
+          var pct = ((1 - t) * 100).toFixed(2);
+          R.el.style.clipPath =
+            R.dir === 'down' ? 'inset(' + pct + '% 0 0 0)' :
+            R.dir === 'left' ? 'inset(0 ' + pct + '% 0 0)' :
+            R.dir === 'right' ? 'inset(0 0 0 ' + pct + '%)' :
+            R.dir === 'iris' ? 'circle(' + (t * 78).toFixed(2) + '% at 50% 50%)' :
+                               'inset(0 0 ' + pct + '% 0)';
+        }
+
+        // counters
+        for (var ct = 0; ct < a.counts.length; ct++) {
+          var K = a.counts[ct];
+          var kt = smooth((a.p - K.from) / Math.max(K.to - K.from, 0.001));
+          var val = lerp(K.a, K.b, kt);
+          var out = formatNum(val, K.tpl);
+          if (out !== K.last) { K.el.textContent = out; K.last = out; }
+        }
+      }
+
+      for (var w = 0; w < worlds.length; w++) readWorld(worlds[w]);
+
+      // background drift
+      for (var d = 0; d < drifts.length; d++) {
+        var D = drifts[d];
+        if (D.act.raw > 0 && D.act.raw < 1) {
+          driftA = D; driftT = smooth(D.act.raw / 0.35);
+          driftB = drifts[d - 1] || D;
+          break;
+        }
+        if (D.act.raw >= 1) { driftA = D; driftB = D; driftT = 1; }
+      }
+      if (driftA) {
+        docEl.style.setProperty('--sc-canvas', mixColor(driftB.rgb, driftA.rgb, driftT));
+      }
+
+      if (progressBar) {
+        var max = Math.max(document.body.scrollHeight - vh, 1);
+        progressBar.style.transform = 'scaleX(' + clamp01(y / max).toFixed(4) + ')';
+      }
+    }
+
+    // ---- video seek loop --------------------------------------------------
+    // Split from read() on purpose: seeking is asynchronous and rate-limited by
+    // the decoder, while read() must stay cheap enough to run on every scroll
+    // event. The lerp here is also what turns a jittery wheel into a glide.
+    function tick() {
+      // Deadband. A phone decoder cannot service a seek every frame, so asking
+      // for one costs more than it shows; 20ms of clip is under a frame of
+      // footage anyway.
+      var eps = isMobile() ? 0.02 : 0.008;
+      for (var i = 0; i < playheads.length; i++) {
+        var V = playheads[i];
+        if (!V.ready) continue;
+        // Never queue a seek while the decoder is still resolving the last one.
+        // On a phone a fast flick otherwise piles seeks up and freezes the clip.
+        if (V.el.seeking) continue;
+        // An offscreen clip that has already arrived stops costing anything.
+        if (!V.live && Math.abs(V.cur - V.target) < 0.002) continue;
+        V.cur += (V.target - V.cur) * (reduce ? 1 : V.lerp);
+        var dur = V.el.duration || 1;
+        var t = clamp(V.cur, 0, 0.999) * dur;
+        if (Math.abs(V.el.currentTime - t) > eps) { try { V.el.currentTime = t; } catch (e) {} }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // iOS will not paint a muted video that has never been handed a user
+    // gesture, so a clip can be loaded, seeked and still show nothing. One
+    // play-pause on the first touch unlocks every clip on the page at once.
+    var primed = false;
+    function prime() {
+      if (primed) return;
+      primed = true;
+      playheads.forEach(function (V) {
+        try {
+          var pr = V.el.play();
+          if (pr && pr.then) pr.then(function () { V.el.pause(); }, function () {});
+          else V.el.pause();
+        } catch (e) {}
+      });
+    }
+    addEventListener('touchstart', prime, { passive: true, once: true });
+    addEventListener('pointerdown', prime, { passive: true, once: true });
+
+    // ---- pointer devices --------------------------------------------------
+    var tilts = [], magnets = [], spots = [];
+    function initPointer() {
+      if (reduce || !fineMQ.matches) return;
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-tilt]'), function (el) {
+        tilts.push({ el: el, max: parseFloat(el.getAttribute('data-sc-tilt')) || 6, x: 0, ty: 0, tx: 0, y: 0 });
+      });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-magnet]'), function (el) {
+        magnets.push({ el: el, k: parseFloat(el.getAttribute('data-sc-magnet')) || 0.3, x: 0, y: 0, tx: 0, ty: 0 });
+      });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-spotlight]'), function (el) {
+        spots.push(el);
+      });
+      if (!tilts.length && !magnets.length && !spots.length) return;
+
+      addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        for (var i = 0; i < tilts.length; i++) {
+          var T = tilts[i], r = T.el.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > vh + 200) { T.tx = 0; T.ty = 0; continue; }
+          var nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+          var ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+          var inside = Math.abs(nx) < 1.6 && Math.abs(ny) < 1.6;
+          T.tx = inside ? clamp(ny, -1, 1) * -T.max : 0;
+          T.ty = inside ? clamp(nx, -1, 1) * T.max : 0;
+        }
+        for (var m = 0; m < magnets.length; m++) {
+          var M = magnets[m], mr = M.el.getBoundingClientRect();
+          var dx = e.clientX - (mr.left + mr.width / 2);
+          var dy = e.clientY - (mr.top + mr.height / 2);
+          var near = Math.abs(dx) < mr.width && Math.abs(dy) < mr.height * 2.5;
+          M.tx = near ? dx * M.k : 0;
+          M.ty = near ? dy * M.k : 0;
+        }
+        for (var s = 0; s < spots.length; s++) {
+          var sr = spots[s].getBoundingClientRect();
+          spots[s].style.setProperty('--sc-mx', clamp01((e.clientX - sr.left) / sr.width).toFixed(3));
+          spots[s].style.setProperty('--sc-my', clamp01((e.clientY - sr.top) / sr.height).toFixed(3));
+        }
+      }, { passive: true });
+
+      (function pointerTick() {
+        // Interpolate toward the target rather than tracking the pointer
+        // directly. Direct tracking reads as artificial because it carries no
+        // momentum; the lerp gives it weight.
+        for (var i = 0; i < tilts.length; i++) {
+          var T = tilts[i];
+          T.x += (T.tx - T.x) * 0.09; T.y += (T.ty - T.y) * 0.09;
+          if (Math.abs(T.x) > 0.001 || Math.abs(T.y) > 0.001) {
+            T.el.style.transform = 'perspective(1100px) rotateX(' + T.x.toFixed(3) + 'deg) rotateY(' + T.y.toFixed(3) + 'deg)';
+          }
+        }
+        for (var m = 0; m < magnets.length; m++) {
+          var M = magnets[m];
+          M.x += (M.tx - M.x) * 0.12; M.y += (M.ty - M.y) * 0.12;
+          M.el.style.transform = 'translate3d(' + M.x.toFixed(2) + 'px,' + M.y.toFixed(2) + 'px,0)';
+        }
+        requestAnimationFrame(pointerTick);
+      })();
+    }
+
+    // ---- wiring -----------------------------------------------------------
+    var ticking = false;
+    addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(function () { read(); ticking = false; }); }
+    }, { passive: true });
+
+    // Keyboard focus on a pinned or panning act. The browser's own
+    // scroll-into-view parks the focused element barely on screen, which is
+    // exactly the scroll position at which its cue has not opened yet, so focus
+    // lands on a control nobody can see and every automated opacity check still
+    // passes. Centring the act instead is a position where the cue is lit by
+    // definition. behavior:'instant' on purpose: scrollcraft.css sets
+    // scroll-behavior:smooth, so the default animates the jump and focus sits
+    // off screen for the whole of a multi-screen glide.
+    addEventListener('focusin', function (e) {
+      var el = e.target;
+      if (!el || !el.closest) return;
+      var act = el.closest('[data-sc-act]');
+      if (!act || !root.contains(act)) return;
+      var cue = el.closest('[data-sc-cue]');
+      if (!cue) return;
+      if (parseFloat(getComputedStyle(cue).opacity || '1') > 0.85) return;
+      el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+    });
+
+    var lastW = innerWidth;
+    addEventListener('resize', function () {
+      // Ignore URL-bar-only height changes on phones. Relaying out on those
+      // makes the page jump under the reader's thumb for no reason.
+      if (innerWidth === lastW && isMobile()) { vh = innerHeight; return; }
+      lastW = innerWidth;
+      layout();
+    }, { passive: true });
+
+    if (document.fonts && document.fonts.ready) {
+      // Line splitting measures line boxes, so it has to wait for the real face.
+      document.fonts.ready.then(function () {
+        acts.forEach(function (a) { a.cues.forEach(function (q) { if (q.kinetic && q.units) { q.el.__scSplit = null; q.units = null; } }); });
+        layout();
+      });
+    }
+
+    layout();
+    initPointer();
+    requestAnimationFrame(tick);
+    document.documentElement.classList.add('sc-ready');
+
+    var api = { layout: layout, read: read, acts: acts, worlds: worlds, clips: playheads, lerp: LERP };
+    global.ScrollCraft.instances.push(api);
+    return api;
+  }
+
+  // The instance list is not an API for the page. It is how the verification
+  // harness reads the real playhead records: a screenshot taken mid-lerp is a
+  // frame the page never actually holds, so the harness has to be able to ask
+  // whether the playhead has arrived rather than guess with a timeout.
+  global.ScrollCraft = { mount: mount, reduce: reduce, instances: [] };
+})(window);
+
+</script>
+<script>
+/* --------------------------------------------------------------- CCDepth --
+   The three-plane compositor. Drop this file in before loop.js, copy the
+   matching :root block out of depth.css, and drive it from render().
+
+   WHY THIS EXISTS. The format's first six builds put the furniture, the
+   resting stations, their labels, the focused cluster and the card all on
+   one plane, then tried to separate them with opacity alone. Amit's verdict:
+   "the text overlaps and there's no dimension, it just feels like everything
+   is kind of plopped on the same layer." Opacity cannot do this job. A label
+   at 0.38 is still a sharp label competing for the same eye; a grid at 0.5 is
+   still a grid. What separates planes is FOCUS and OCCLUSION, and this does
+   both with one element.
+
+   USE, in three lines of render():
+
+     var ap = DEPTH.box(plateWorldRect, vb, ppu);   // subject -> screen
+     DEPTH.set(cueOpacity, ap);                     // 0 fades it out entirely
+
+   and once at build time:
+
+     var DEPTH = CCDepth.mount({ reduced: reduced });
+
+   THE APERTURE SHOULD BE THE SUBJECT, NOT THE NODE. Centring a circle on
+   the station node leaves the internals diagram and its labels sitting in
+   the veil, which is the exact overlap the veil is meant to end. Feed it
+   the focus PLATE rect: that rectangle was already authored, per stop, as
+   "everything this station owns". Builds with no plates should author one
+   rect per stop rather than falling back to a radius guess.               */
+
+(function (w, d) {
+  'use strict';
+
+  var CORE = 0.58;           /* the clear fraction of the mask radius; the
+                                remaining 42% is the falloff. Matches the
+                                --d-core default in depth.css. */
+
+  function num(v, f) { return (typeof v === 'number' && isFinite(v)) ? v : f; }
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+  function mount(opts) {
+    opts = opts || {};
+    /* the pinned stage, not body: see the mount note in depth.css. */
+    var host = opts.mount || d.querySelector('[data-sc-stage]') || d.body;
+    var reduced = !!opts.reduced;
+
+    var veil = d.createElement('div');
+    veil.className = 'depth-veil is-off' + (host === d.body ? ' d-fixed' : '');
+    veil.setAttribute('aria-hidden', 'true');
+    host.appendChild(veil);
+
+    /* No backdrop-filter (old Firefox, some embedded webviews) means the
+       wash is carrying the separation on its own, so it has to go deeper.
+       Detected once, not per frame. */
+    var canBlur = !!(w.CSS && CSS.supports &&
+      (CSS.supports('backdrop-filter', 'blur(2px)') ||
+       CSS.supports('-webkit-backdrop-filter', 'blur(2px)')));
+    var aBoost = canBlur ? 1 : 1.18;
+
+    var st = veil.style;
+    var read = getComputedStyle(d.documentElement);
+    var aMax = parseFloat(read.getPropertyValue('--d-a-max')) || 0.74;
+    var bMax = parseFloat(read.getPropertyValue('--d-blur-max')) || 3.5;
+
+
+    var lastO = -1, off = true, foreEl = null;
+
+    function set(o, ap) {
+      o = clamp01(num(o, 0));
+      if (reduced) o = 0;
+      if (!ap || !isFinite(ap.x)) o = 0;
+
+      if (o <= 0.005) {
+        if (!off) { off = true; veil.classList.add('is-off'); lastO = 0; }
+        return;
+      }
+      if (off) { off = false; veil.classList.remove('is-off'); }
+
+      /* Geometry every frame: the camera is still moving under the card, so
+         a stale aperture drifts off its own subject visibly. */
+      st.setProperty('--d-x', ap.x.toFixed(1) + 'px');
+      st.setProperty('--d-y', ap.y.toFixed(1) + 'px');
+      st.setProperty('--d-rx', (Math.max(56, ap.rx) / CORE).toFixed(1) + 'px');
+      st.setProperty('--d-ry', (Math.max(48, ap.ry) / CORE).toFixed(1) + 'px');
+
+      /* Strength only when it actually moved: setting a backdrop blur is a
+         layer invalidation, and at 0.01 steps it is free to skip. */
+      if (Math.abs(o - lastO) > 0.012) {
+        lastO = o;
+        st.setProperty('--d-a', (aMax * aBoost * o).toFixed(3));
+        st.setProperty('--d-blur', (bMax * o).toFixed(2) + 'px');
+      }
+    }
+
+    /* THE FOREGROUND LIFT. One card at a time carries `.is-fore`; the class
+       is a no-op on worlds whose cards are transparent, by design (see
+       depth.css). Toggling by identity rather than per-frame keeps this off
+       the style-recalc path. */
+    function fore(elm) {
+      if (elm === foreEl) return;
+      if (foreEl) foreEl.classList.remove('is-fore');
+      foreEl = (elm && !reduced) ? elm : null;
+      if (foreEl) foreEl.classList.add('is-fore');
+    }
+
+    return { el: veil, set: set, fore: fore };
+  }
+
+  /* world rect -> screen aperture. `r` is [x, y, w, h] in sheet units, `vb`
+     the live viewBox, `ppu` screen px per sheet unit horizontally. The
+     vertical scale is derived separately because fit() may letterbox. */
+  function box(r, vb, ppu, pad) {
+    if (!r || !vb) return null;
+    var vppu = w.innerHeight / vb.h;
+    pad = num(pad, 26);
+    return {
+      x: (r[0] + r[2] / 2 - vb.x) * ppu,
+      y: (r[1] + r[3] / 2 - vb.y) * vppu,
+      rx: (r[2] / 2) * ppu + pad,
+      ry: (r[3] / 2) * vppu + pad
+    };
+  }
+
+  /* the union of several world rects, for a stop whose subject is a node
+     PLUS a plate that sits off to one side. */
+  function union() {
+    var xs = [], ys = [], xe = [], ye = [], i, r;
+    for (i = 0; i < arguments.length; i++) {
+      r = arguments[i];
+      if (!r) continue;
+      xs.push(r[0]); ys.push(r[1]); xe.push(r[0] + r[2]); ye.push(r[1] + r[3]);
+    }
+    if (!xs.length) return null;
+    var x0 = Math.min.apply(null, xs), y0 = Math.min.apply(null, ys);
+    return [x0, y0, Math.max.apply(null, xe) - x0, Math.max.apply(null, ye) - y0];
+  }
+
+  /* a square world rect centred on a point, for stops with no plate */
+  function at(p, halfW, halfH) {
+    if (!p) return null;
+    halfH = num(halfH, halfW);
+    return [p[0] - halfW, p[1] - halfH, halfW * 2, halfH * 2];
+  }
+
+  w.CCDepth = { mount: mount, box: box, union: union, at: at };
+}(window, document));
+
+</script>
+<script>
+/* One core, three frameworks, zero drift. A trunk (design tokens) forks into
+   a styles lane and a behavior lane; the behavior lane forks again into
+   three framework adapters; every lane reconverges on one rendered Tabs
+   component. Bespoke to this page; the engine (scrollcraft.js) and the
+   depth compositor (depth.js) are untouched. */
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------ geometry -- */
+  var RAD = Math.PI / 180;
+
+  /* Label placement is authored per station, not derived: each cluster's
+     internals occupy a different quadrant, so the name goes wherever that
+     station's drawing leaves clear space. lx/ly are screen px from the node,
+     la is the anchor, pAbove puts the phrase eyebrow-style above the name. */
+  var STATIONS = [
+    { id: 'tokens', x: 180, y: 500, no: '01', name: 'TOKENS', plain: 'the single source of visual truth',
+      lx: 0, ly: 50, la: 'middle', pAbove: false, wIdx: 0 },       // swatches above, labels below
+    { id: 'gate', x: 500, y: 500, no: '·', name: 'THE TIER GATE', plain: 'how much JS does this need?',
+      lx: 0, ly: -46, la: 'middle', pAbove: true, wIdx: 1 },       // branches below, labels eyebrow-above
+    { id: 'css', x: 880, y: 230, no: '02', name: 'CSS', plain: 'tokenized styling, zero hard-coded hex',
+      lx: 0, ly: -40, la: 'middle', pAbove: true, wIdx: 2 },       // selectors below, labels above
+    { id: 'core', x: 880, y: 770, no: '03', name: 'CORE', plain: 'framework-free, state + a11y only',
+      lx: 0, ly: 46, la: 'middle', pAbove: false, wIdx: 3 },       // black box above, labels below
+    { id: 'adapt', x: 1180, y: 740, no: '04', name: 'ADAPTERS', plain: 'one call to createTabs, three idioms',
+      lx: 0, ly: 66, la: 'middle', pAbove: false, wIdx: 4 },       // fan labels beside the lines, name below
+    { id: 'term', x: 1400, y: 500, no: '05', name: 'TABS, RENDERED', plain: 'same state, three component trees',
+      lx: 0, ly: 52, la: 'middle', pAbove: false, wIdx: 5 }        // chips above, labels below
+  ];
+  var byId = {};
+  STATIONS.forEach(function (s) { byId[s.id] = s; });
+
+  /* the drawn paths: a trunk that forks twice and reconverges. Fixed bezier
+     "d" strings, not a parametric curve -- this topology does not wrap. */
+  var PATHS = {
+    trunk:   'M 180 500 L 500 500',
+    upperA:  'M 500 500 C 620 500, 720 320, 880 230',   // gate -> css
+    upperB:  'M 880 230 C 1080 150, 1280 320, 1400 500', // css -> terminal
+    lowerA:  'M 500 500 C 620 500, 720 680, 880 770',   // gate -> core
+    trunk2:  'M 880 770 L 1180 740',                     // core -> adapters
+    react:   'M 1180 640 C 1280 600, 1340 550, 1400 500',
+    vue:     'M 1180 740 C 1280 720, 1350 610, 1400 500',
+    angular: 'M 1180 840 C 1280 860, 1350 650, 1400 500',
+    rogue:   'M 1480 560 C 1450 520, 1410 490, 1380 470'  // outside patch, stabs into react
+  };
+
+  /* camera: named boxes, then keyframes. Centres lerp, sizes log-lerp. */
+  function box(x, y, w, h) { return [x, y, w, h]; }
+  var CAM_BOXES = {
+    FULL:  box(0, 0, 1600, 1000),
+    TITLE: box(-420, -40, 1780, 1113),
+    S_TOKENS: box(-5, 285, 660, 430),
+    S_GATE:   box(295, 302, 700, 456),
+    S_CSS:    box(405, 70, 660, 430),
+    S_CORE:   box(405, 515, 660, 430),
+    S_ADAPT:  box(975, 510, 700, 460),
+    S_TERM:   box(925, 285, 660, 430),
+    MID:   box(170, 120, 1240, 760),
+    EXITB: box(1060, 310, 560, 380)
+  };
+  var CAM = [
+    [0.000, 'TITLE'],    [0.045, 'TITLE'],
+    [0.065, 'S_TOKENS'], [0.108, 'S_TOKENS'],
+    [0.128, 'S_GATE'],   [0.178, 'S_GATE'],
+    [0.198, 'S_CSS'],    [0.248, 'S_CSS'],
+    [0.268, 'S_CORE'],   [0.322, 'S_CORE'],
+    [0.342, 'S_ADAPT'],  [0.398, 'S_ADAPT'],
+    [0.418, 'S_TERM'],   [0.470, 'S_TERM'],
+    [0.478, 'FULL'],     [0.516, 'FULL'],
+    [0.520, 'MID'],      [0.755, 'MID'],
+    [0.768, 'EXITB'],    [0.795, 'EXITB'],
+    [0.815, 'TITLE'],    [1.001, 'TITLE']
+  ];
+
+  /* the diagram, drawn (inked) as scroll passes each transition -- every
+     segment is fully drawn by the time the tour reaches the terminal. */
+  var DRAWN = [
+    { key: 'trunk',   f: [0.108, 0.128] },
+    { key: 'upperA',  f: [0.178, 0.198] },
+    { key: 'lowerA',  f: [0.248, 0.268] },
+    { key: 'trunk2',  f: [0.322, 0.342] },
+    { key: 'upperB',  f: [0.398, 0.418] },
+    { key: 'react',   f: [0.398, 0.418] },
+    { key: 'vue',     f: [0.398, 0.418] },
+    { key: 'angular', f: [0.398, 0.418] }
+  ];
+
+  var REGIONS = [
+    { id: 'tokens', w: [0.050, 0.120], no: '01', lab: 'TOKENS', state: 'stage 01 // tokens' },
+    { id: 'gate',   w: [0.120, 0.190], no: '·',  lab: 'GATE',   state: 'the gate // css always, core if tier 3' },
+    { id: 'css',    w: [0.190, 0.260], no: '02', lab: 'CSS',    state: 'stage 02 // css' },
+    { id: 'core',   w: [0.260, 0.335], no: '03', lab: 'CORE',   state: 'stage 03 // core' },
+    { id: 'adapt',  w: [0.335, 0.410], no: '04', lab: 'ADAPT',  state: 'stage 04 // adapters' },
+    { id: 'term',   w: [0.410, 0.478], no: '05', lab: 'RENDER', state: 'stage 05 // tabs, rendered' },
+    { id: 'run',    w: [0.478, 0.800], no: '»',  lab: 'RUN',    state: 'live // one click, three renders' },
+    { id: 'ret',    w: [0.800, 1.001], no: '✓', lab: 'PARITY', state: 'parity restored // 3/3' }
+  ];
+
+  /* focus plates, one per station, kept as DATA for the depth compositor
+     (DEPTH.md step 3) as well as for sizing the translucent platform. */
+  var PLATE_R = {
+    tokens: [50, 350, 260, 220],
+    gate:   [380, 410, 260, 190],
+    css:    [740, 190, 290, 300],
+    core:   [740, 560, 290, 300],
+    adapt:  [990, 600, 320, 320],
+    term:   [1260, 380, 260, 260]
+  };
+  function subjectPlate(anchor) {
+    var s = byId[anchor];
+    if (!s) return null;
+    return CCDepth.union(PLATE_R[anchor], CCDepth.at([s.x, s.y], 40));
+  }
+
+  /* HUD: System Assembly -- four segments fill in sequence as the tour
+     passes each layer; the fourth (adapters) fills as three sub-chips at
+     once, the visual proof of parity. Thresholds are region midpoints. */
+  var SEG_T = { tokens: 0.085, css: 0.225, core: 0.300, adapt: 0.375 };
+  var PARITY_FAIL_FROM = 0.625, PARITY_FAIL_TO = 0.690;
+
+  /* finale phases, inside the 'run' region -- a single per-pass sweep, not
+     a lap: this topology does not wrap. */
+  var RUN = {
+    breath:  [0.482, 0.516],
+    travel0: 0.520, travel1: 0.535,   // trunk
+    travel2: 0.555,                    // + lowerA
+    travel3: 0.570,                    // + trunk2
+    travel4: 0.600,                    // + vue (arrival)
+    holdTo:  0.625,
+    failFrom: 0.625, failTo: 0.645,    // rogue draws in
+    failHoldTo: 0.690,
+    fixFrom: 0.690, fixTo: 0.730,      // reroute + resync
+    rogueFadeFrom: 0.690, rogueFadeTo: 0.710
+  };
+  var TODOS = [
+    { done: 0.545 },
+    { done: 0.565 },
+    { done: 0.600 },
+    { fail: RUN.failFrom, done: RUN.fixTo, tagDone: 'core' },
+    { done: 0.730 }
+  ];
+
+  /* --------------------------------------------------------------- helpers -- */
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(name, attrs, parent) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function clamp01(v) { return Math.min(1, Math.max(0, v)); }
+  function smooth(t) { return t * t * t * (t * (6 * t - 15) + 10); }
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ----------------------------------------------------- build the sheet -- */
+  var svg = document.getElementById('stage-sheet');
+  var scaled = [];
+  var lods = [];
+
+  function label(txt, x, y, opts, parent) {
+    var t = el('text', { 'class': opts.cls || '', 'text-anchor': opts.a || 'start' }, parent || svg);
+    t.textContent = txt;
+    t.style.setProperty('--fs', opts.fs || 9.5);
+    scaled.push({ el: t, kind: 'label', x: x, y: y, dx: opts.dx || 0, dy: opts.dy || 0 });
+    if (opts.lod) lods.push({ el: t, lod: opts.lod });
+    return t;
+  }
+
+  // the desk, then the sheet
+  el('rect', { x: -500, y: -400, width: 2600, height: 1800, fill: 'var(--sc-surface)', stroke: 'none' }, svg);
+  el('rect', { x: 0, y: 0, width: 1600, height: 1000, fill: 'var(--sc-canvas)', stroke: 'none' }, svg);
+
+  // grid inside the frame
+  var grid = el('g', { 'class': 'e-grid' }, svg);
+  var gridx = el('g', { 'class': 'e-gridx' }, svg);
+  for (var gx = 80; gx < 1600; gx += 80)
+    el('line', { x1: gx, y1: 24, x2: gx, y2: 952 }, gx % 400 === 0 ? gridx : grid);
+  for (var gy = 80; gy < 1000; gy += 80)
+    el('line', { x1: 24, y1: gy, x2: 1576, y2: gy }, gy % 400 === 0 ? gridx : grid);
+
+  // frame + crop marks
+  el('rect', { x: 24, y: 24, width: 1552, height: 928, 'class': 'e-frame' }, svg);
+  [[24, 24, 1, 1], [1576, 24, -1, 1], [24, 952, 1, -1], [1576, 952, -1, -1]].forEach(function (c) {
+    el('line', { x1: c[0] - c[2] * 6, y1: c[1], x2: c[0] - c[2] * 22, y2: c[1], 'class': 'e-crop' }, svg);
+    el('line', { x1: c[0], y1: c[1] - c[3] * 6, x2: c[0], y2: c[1] - c[3] * 22, 'class': 'e-crop' }, svg);
+  });
+
+  // title block: one quiet row
+  var tb = el('g', { 'class': 'titleblock' }, svg);
+  el('rect', { x: 1198, y: 908, width: 378, height: 44 }, tb);
+  var tbt = el('text', { x: 1214, y: 934, 'class': 't-fixed' }, tb);
+  tbt.textContent = 'FOOLSCAP ARCHITECTURE · REV 01 · SHEET 1 OF 1';
+
+  /* focus plates: a translucent platform under each station's diagram --
+     but per DEPTH.md, most of the separation work now belongs to the veil,
+     so the plate is stroke-free and low-opacity, painted in the canvas
+     colour: a fog only where the drawing runs behind a lit cluster. */
+  var plateGroup = el('g', { 'class': 'e-plates' }, svg);
+  var plateEls = {};
+  STATIONS.forEach(function (s) {
+    var pl = PLATE_R[s.id];
+    plateEls[s.id] = el('rect', { x: pl[0], y: pl[1], width: pl[2], height: pl[3], rx: 8,
+      'class': 'e-plate', opacity: 0 }, plateGroup);
+  });
+
+  // defs for masked draw-on-scroll segments
+  var defs = el('defs', {}, svg);
+  var pathEls = {};
+  function drawnPath(key, extraClass) {
+    var d = PATHS[key];
+    var mk = el('mask', { id: 'mk-' + key, maskUnits: 'userSpaceOnUse', x: -500, y: -400, width: 2600, height: 1800 }, defs);
+    el('rect', { x: -500, y: -400, width: 2600, height: 1800, fill: '#000' }, mk);
+    var mp = el('path', { d: d, 'class': 'e-drawmask', pathLength: 1 }, mk);
+    var w = DRAWN.filter(function (r) { return r.key === key; })[0];
+    mp.style.setProperty('--f0', w.f[0]);
+    mp.style.setProperty('--fw', (w.f[1] - w.f[0]).toFixed(4));
+    var p = el('path', { d: d, 'class': 'e-arc e-path ' + (extraClass || ''), mask: 'url(#mk-' + key + ')' }, svg);
+    pathEls[key] = p;
+    return p;
+  }
+  ['trunk', 'upperA', 'lowerA', 'trunk2', 'upperB'].forEach(function (k) { drawnPath(k); });
+  drawnPath('react', 'e-path--react');
+  drawnPath('vue', 'e-path--adapter');
+  drawnPath('angular', 'e-path--adapter');
+
+  // the rogue patch: hidden until the finale's failure beat
+  (function () {
+    var mk = el('mask', { id: 'mk-rogue', maskUnits: 'userSpaceOnUse', x: -500, y: -400, width: 2600, height: 1800 }, defs);
+    el('rect', { x: -500, y: -400, width: 2600, height: 1800, fill: '#000' }, mk);
+    var mp = el('path', { d: PATHS.rogue, 'class': 'e-drawmask', pathLength: 1 }, mk);
+    mp.style.setProperty('--f0', RUN.failFrom);
+    mp.style.setProperty('--fw', (RUN.failTo - RUN.failFrom).toFixed(4));
+    pathEls.rogue = el('path', { d: PATHS.rogue, 'class': 'e-rogue', mask: 'url(#mk-rogue)' }, svg);
+  }());
+
+  // invisible reference paths for getPointAtLength (token travel)
+  var travelEls = {};
+  ['trunk', 'lowerA', 'trunk2', 'vue'].forEach(function (k) {
+    travelEls[k] = el('path', { d: PATHS[k], fill: 'none', stroke: 'none' }, svg);
+  });
+
+  /* stations: node, name, plain phrase, halo */
+  var halos = [];
+  STATIONS.forEach(function (s) {
+    var halo = el('circle', { cx: s.x, cy: s.y, r: 30, 'class': 'e-halo', opacity: 0 }, svg);
+    halos.push({ el: halo, x: s.x, y: s.y });
+    el('circle', { cx: s.x, cy: s.y, r: 16, 'class': 'e-station-rest' }, svg);
+    s.ring = el('circle', { cx: s.x, cy: s.y, r: 16, 'class': 'e-station', opacity: 0 }, svg);
+    s.core = el('circle', { cx: s.x, cy: s.y, r: 5.5, 'class': 'e-station-core', opacity: 0.45 }, svg);
+    var pdy = s.pAbove ? s.ly - 18 : s.ly + 19;
+    s.nameEl = label(s.no + ' ' + s.name, s.x, s.y, { dx: s.lx, dy: s.ly, a: s.la, fs: 15, cls: 't-name' });
+    s.plainEl = label(s.plain, s.x, s.y, { dx: s.lx, dy: pdy, a: s.la, fs: 12, cls: 't-plain' });
+    s.plainEl.style.opacity = '0';
+  });
+
+  /* internals, one small drawing per station; groups are focus-driven:
+     render() owns their opacity entirely. */
+  var intEls = {};
+  function intGroup(key) { var g = el('g', { 'class': 'e-int', opacity: 0 }, svg); intEls[key] = g; return g; }
+
+  (function () { // TOKENS: the palette, four swatches
+    var g = intGroup('tokens');
+    var rows = [['paper', '#FBFBF9'], ['ink', '#1A1A1A'], ['ink-muted', '#5C5C5C'], ['grey-500', '#737373']];
+    rows.forEach(function (r, i) {
+      el('rect', { x: 90, y: 372 + i * 24, width: 14, height: 14, fill: r[1], stroke: 'var(--e-faint)' }, g);
+      label(r[0], 112, 372 + i * 24 + 11, { dy: 0, fs: 12, lod: 1.45 }, g);
+    });
+    label('W3C tokens → --fc- custom properties', 90, 366, { dy: -8, fs: 11.5, lod: 1.45 }, g);
+  }());
+
+  (function () { // GATE: the branch fork
+    var g = intGroup('gate');
+    el('line', { x1: 500, y1: 500, x2: 560, y2: 440 }, g);
+    el('line', { x1: 500, y1: 500, x2: 560, y2: 560 }, g);
+    label('css — always', 566, 434, { dy: -2, fs: 12, lod: 1.45 }, g);
+    label('core — tier 3 only', 566, 566, { dy: 10, fs: 12, lod: 1.45 }, g);
+    label('≥60% of 60 need zero JS', 440, 500, { dx: -8, dy: 34, a: 'end', fs: 11.5, lod: 1.45 }, g);
+  }());
+
+  (function () { // CSS: the selectors
+    var g = intGroup('css');
+    label('.fc-tabs__tab', 800, 300, { dx: -8, a: 'end', fs: 12, lod: 1.45 }, g);
+    label(".fc-tabs__tab[aria-selected='true']", 800, 322, { dx: -8, a: 'end', fs: 12, lod: 1.45 }, g);
+    label('var(--fc-ink, #1a1a1a)', 800, 344, { dx: -8, a: 'end', fs: 11.5, lod: 1.45 }, g);
+    el('line', { x1: 810, y1: 296, x2: 940, y2: 296 }, g);
+    el('line', { x1: 810, y1: 296, x2: 810, y2: 350 }, g);
+    label('@layer foolscap.components', 950, 296, { dy: -4, fs: 11.5, lod: 1.45 }, g);
+  }());
+
+  (function () { // CORE: the framework-free black box
+    var g = intGroup('core');
+    el('rect', { x: 786, y: 606, width: 54, height: 54 }, g);
+    var h = el('g', { 'class': 'e-hatch' }, g);
+    for (var i = 1; i < 6; i++) el('line', { x1: 786, y1: 606 + i * 9, x2: 786 + i * 9, y2: 606 }, h);
+    for (var j = 1; j < 6; j++) el('line', { x1: 786 + j * 9, y1: 660, x2: 840, y2: 606 + j * 9 }, h);
+    label('createTabs(options)', 848, 632, { dx: 10, fs: 12, lod: 1.45 }, g);
+    label('getTabProps / getPanelProps', 786, 594, { dy: -4, fs: 11.5, lod: 1.45 }, g);
+    label('←Arrow · Home · End · Enter', 786, 674, { dy: 18, fs: 11.5, lod: 1.45 }, g);
+  }());
+
+  (function () { // ADAPTERS: labels riding each fork line
+    var g = intGroup('adapt');
+    label('react', 1210, 640, { dx: -6, dy: -6, a: 'end', fs: 12, lod: 1.45 }, g);
+    label('vue', 1210, 740, { dx: -6, dy: 4, a: 'end', fs: 12, lod: 1.45 }, g);
+    label('angular', 1210, 840, { dx: -6, dy: 14, a: 'end', fs: 12, lod: 1.45 }, g);
+    label('useMachine / injectMachine, once each', 1050, 600, { dy: -10, fs: 11.5, lod: 1.45 }, g);
+  }());
+
+  intGroup('term'); // kept empty: the chips live in their own group below,
+                     // visible independent of tour zoom -- the finale needs
+                     // them legible even at the wide MID framing.
+  var chipsGroup = el('g', { opacity: 0 }, svg);
+  (function () { // TERMINAL: three chips, one state
+    var chipY = { react: 462, vue: 500, angular: 538 };
+    ['react', 'vue', 'angular'].forEach(function (k) {
+      el('rect', { x: 1320, y: chipY[k] - 8, width: 16, height: 16, rx: 3, id: 'chip-' + k, 'class': 'e-chip e-chip--idle' }, chipsGroup);
+      label(k, 1300, chipY[k] + 3, { dx: -6, a: 'end', fs: 12, lod: 0 }, chipsGroup);
+    });
+    label('same fc-tabs, same createTabs state', 1300, 440, { dy: -8, a: 'end', fs: 11.5, lod: 0 }, chipsGroup);
+  }());
+
+  /* the gate and terminal light for their moment, then STAY lit: the
+     resolved system is what the finished drawing keeps */
+  function trap(pp, a, b) {
+    var w = b - a, r = w * 0.22;
+    if (pp <= a || pp >= b) return 0;
+    if (pp < a + r) return (pp - a) / r;
+    if (pp > b - r) return (b - pp) / r;
+    return 1;
+  }
+
+  /* centre readout */
+  var centerTurn = label('ASSEMBLY', 790, 504, { a: 'middle', fs: 26, cls: 't-center' });
+
+  /* the token */
+  var token = el('circle', { r: 7, 'class': 'e-token', 'stroke-width': 2 }, svg);
+  scaled.push({ el: token, kind: 'r', r: 7 });
+  token.style.display = 'none';
+
+  /* --------------------------------------------------------- the stack nav -- */
+  var stack = document.getElementById('stack');
+  var stackBtns = [];
+  var act = { el: document.getElementById('loop'), top: 0, travel: 1 };
+  REGIONS.forEach(function (r) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', r.state);
+    b.title = r.state;
+    b.innerHTML = '<span class="num">' + r.no + '</span><span class="lab">' + r.lab + '</span>';
+    b.addEventListener('click', function () {
+      var mid = (r.w[0] + r.w[1]) / 2;
+      window.scrollTo({ top: act.top + act.travel * mid, behavior: reduced ? 'auto' : 'smooth' });
+    });
+    stack.appendChild(b);
+    stackBtns.push(b);
+  });
+
+  /* ------------------------------------------------------------- runtime -- */
+  var mastState = document.getElementById('mast-state');
+  var hudFill = document.getElementById('hud-fill');
+  var hudParity = document.getElementById('hud-parity');
+  var hudStage = document.getElementById('hud-stage');
+  var overlay = document.getElementById('overlay');
+  var segs = {
+    tokens: document.getElementById('seg-tokens'),
+    css: document.getElementById('seg-css'),
+    core: document.getElementById('seg-core'),
+    adapt: document.getElementById('seg-adapt')
+  };
+  var chips = {
+    react: document.getElementById('chip-react'),
+    vue: document.getElementById('chip-vue'),
+    angular: document.getElementById('chip-angular')
+  };
+  var todoEls = Array.prototype.slice.call(document.querySelectorAll('#todos li'));
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card[data-anchor]')).map(function (c) {
+    var cue = c.getAttribute('data-sc-cue').split(/\s+/).map(parseFloat);
+    return { el: c, anchor: c.getAttribute('data-anchor'),
+             from: cue[0], to: cue[1], rIn: cue[2] || 0.3, rOut: cue[3] || 0.3,
+             pre: c.querySelector('pre[data-hl-a]') };
+  });
+  cards.forEach(function (c) {
+    if (!c.pre) return;
+    c.lines = Array.prototype.slice.call(c.pre.querySelectorAll('.ln'));
+    c.hlA = c.pre.getAttribute('data-hl-a').split(' ').map(Number);
+    c.hlB = c.pre.getAttribute('data-hl-b').split(' ').map(Number);
+  });
+
+  var leader = el('line', { x1: 0, y1: 0, x2: 0, y2: 0, opacity: 0 }, overlay);
+  var halo = el('circle', { 'class': 'pinhalo', r: 9, opacity: 0 }, overlay);
+
+  /* the depth compositor: three planes, one veil, mounted inside the stage */
+  var DEPTH = CCDepth.mount({ reduced: reduced });
+
+  function measure() {
+    var r = act.el.getBoundingClientRect();
+    act.top = r.top + window.scrollY;
+    act.travel = Math.max(act.el.offsetHeight - window.innerHeight, 1);
+  }
+
+  function boxOf(name) {
+    var b = CAM_BOXES[name];
+    return { x: b[0], y: b[1], w: b[2], h: b[3] };
+  }
+  function cameraAt(p) {
+    if (reduced) return boxOf('TITLE');
+    var i = 0;
+    while (i < CAM.length - 2 && p >= CAM[i + 1][0]) i++;
+    var a = CAM[i], b = CAM[i + 1];
+    var A = boxOf(a[1]);
+    if (a[1] === b[1]) return A;
+    var B = boxOf(b[1]);
+    var t = smooth(clamp01((p - a[0]) / (b[0] - a[0])));
+    var cx = (A.x + A.w / 2) * (1 - t) + (B.x + B.w / 2) * t;
+    var cy = (A.y + A.h / 2) * (1 - t) + (B.y + B.h / 2) * t;
+    var w = Math.exp(Math.log(A.w) * (1 - t) + Math.log(B.w) * t);
+    var h = Math.exp(Math.log(A.h) * (1 - t) + Math.log(B.h) * t);
+    return { x: cx - w / 2, y: cy - h / 2, w: w, h: h };
+  }
+  function fit(b) {
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var A = vw / vh;
+    var w = b.w, h = b.h;
+    if (w / h < A) w = h * A; else h = w / A;
+    return { x: b.x + b.w / 2 - w / 2, y: b.y + b.h / 2 - h / 2, w: w, h: h };
+  }
+
+  var lastPpu = 0;
+  function rescale(ppu) {
+    if (lastPpu && Math.abs(ppu - lastPpu) / ppu < 0.004) return;
+    lastPpu = ppu;
+    var inv = 1 / ppu;
+    svg.style.setProperty('--inv', inv.toFixed(4));
+    for (var i = 0; i < scaled.length; i++) {
+      var s = scaled[i];
+      if (s.kind === 'label') {
+        s.el.setAttribute('x', (s.x + s.dx * inv).toFixed(2));
+        s.el.setAttribute('y', (s.y + s.dy * inv).toFixed(2));
+      } else if (s.kind === 'r') {
+        s.el.setAttribute('r', (s.r * inv).toFixed(3));
+      }
+    }
+    for (var j = 0; j < lods.length; j++) {
+      lods[j].el.style.opacity = ppu >= lods[j].lod ? '' : '0';
+      lods[j].el.style.pointerEvents = 'none';
+    }
+  }
+
+  function cueOpacity(c, p) {
+    if (p < c.from || p > c.to) return 0;
+    var w = c.to - c.from, t = (p - c.from) / w;
+    if (t < c.rIn) return t / c.rIn;
+    if (t > 1 - c.rOut) return (1 - t) / c.rOut;
+    return 1;
+  }
+
+  function setCls(elm, cls) {
+    if (elm.dataset.state === cls) return;
+    elm.dataset.state = cls;
+    elm.classList.remove('e-path--idle', 'e-path--sage', 'e-path--clay');
+    elm.classList.add('e-path--' + cls);
+  }
+  function setChip(elm, cls) {
+    if (elm.dataset.state === cls) return;
+    elm.dataset.state = cls;
+    elm.classList.remove('e-chip--idle', 'e-chip--sage', 'e-chip--clay');
+    elm.classList.add('e-chip--' + cls);
+  }
+
+  var lastRegion = -2;
+  function render() {
+    if (window.innerWidth < 2 || window.innerHeight < 2) return;
+    var p = clamp01((window.scrollY - act.top) / act.travel);
+
+    // camera
+    var vb = fit(cameraAt(p));
+    svg.setAttribute('viewBox', vb.x.toFixed(1) + ' ' + vb.y.toFixed(1) + ' ' + vb.w.toFixed(1) + ' ' + vb.h.toFixed(1));
+    var ppu = window.innerWidth / vb.w;
+    if (!isFinite(ppu) || ppu <= 0) return;
+    rescale(ppu);
+
+    centerTurn.style.opacity = ppu > 1.45 ? '0' : '';
+
+    // region state: mast + stack nav
+    var ri = -1;
+    for (var i = 0; i < REGIONS.length; i++) if (p >= REGIONS[i].w[0] && p < REGIONS[i].w[1]) ri = i;
+    if (ri !== lastRegion) {
+      lastRegion = ri;
+      mastState.textContent = ri === -1 ? 'an engraving of an architecture' : REGIONS[ri].state;
+      stackBtns.forEach(function (b, k) { b.setAttribute('aria-current', String(k === ri)); });
+    }
+
+    // the token: hidden until the finale switches the diagram on
+    var tokPt = null;
+    if (!reduced && p >= RUN.travel0 && p < RUN.travel4) {
+      var seg, segP, from, to;
+      if (p < RUN.travel1) { seg = 'trunk'; from = RUN.travel0; to = RUN.travel1; }
+      else if (p < RUN.travel2) { seg = 'lowerA'; from = RUN.travel1; to = RUN.travel2; }
+      else if (p < RUN.travel3) { seg = 'trunk2'; from = RUN.travel2; to = RUN.travel3; }
+      else { seg = 'vue'; from = RUN.travel3; to = RUN.travel4; }
+      segP = clamp01((p - from) / (to - from));
+      var pathEl = travelEls[seg];
+      var L = pathEl.getTotalLength();
+      var q = pathEl.getPointAtLength(segP * L);
+      tokPt = [q.x, q.y];
+      token.style.display = '';
+      token.setAttribute('cx', tokPt[0].toFixed(2));
+      token.setAttribute('cy', tokPt[1].toFixed(2));
+    } else {
+      token.style.display = 'none';
+    }
+
+    // station pulses while the token is in flight
+    var running = !reduced && p >= RUN.travel0 && p < RUN.travel4;
+    for (i = 0; i < halos.length; i++) {
+      var op = 0;
+      if (running && tokPt) {
+        var d = Math.hypot(tokPt[0] - halos[i].x, tokPt[1] - halos[i].y);
+        op = Math.max(0, 1 - d / 160) * 0.9;
+      }
+      halos[i].el.setAttribute('opacity', op.toFixed(2));
+    }
+
+    // arrival: at travel4, react/vue/angular + the css path resync sage,
+    // the terminal's three chips flip to the same selected state at once
+    var arrived = reduced || p >= RUN.travel4;
+    var reactState = 'idle', otherState = 'idle';
+    if (arrived) {
+      if (!reduced && p >= RUN.failFrom && p < RUN.fixFrom) reactState = 'clay';
+      else reactState = 'sage';
+      otherState = 'sage';
+    }
+    setCls(pathEls.react, reactState);
+    setChip(chips.react, reactState);
+    setCls(pathEls.vue, otherState);
+    setChip(chips.vue, otherState);
+    setCls(pathEls.angular, otherState);
+    setChip(chips.angular, otherState);
+    setCls(pathEls.upperB, otherState);
+
+    // the rogue patch: reveals during the failure beat, fades once rerouted
+    var rogueOp = 1;
+    if (!reduced) {
+      if (p < RUN.failFrom) rogueOp = 0;
+      else if (p < RUN.rogueFadeFrom) rogueOp = 1;
+      else rogueOp = 1 - clamp01((p - RUN.rogueFadeFrom) / (RUN.rogueFadeTo - RUN.rogueFadeFrom));
+    } else rogueOp = 0;
+    pathEls.rogue.style.opacity = rogueOp.toFixed(2);
+
+    // HUD: System Assembly -- four segments, sequential; adapters' three
+    // sub-chips fill together, not one by one
+    var pd = reduced ? 1 : p;
+    var litT = pd >= SEG_T.tokens, litC = pd >= SEG_T.css, litK = pd >= SEG_T.core, litA = pd >= SEG_T.adapt;
+    segs.tokens.classList.toggle('is-lit', litT);
+    segs.css.classList.toggle('is-lit', litC);
+    segs.core.classList.toggle('is-lit', litK);
+    segs.adapt.classList.toggle('is-lit', litA);
+    var fillCount = (litT ? 1 : 0) + (litC ? 1 : 0) + (litK ? 1 : 0) + (litA ? 1 : 0);
+    hudFill.textContent = (fillCount * 25) + '%';
+    var parityTxt = '·', parityCls = '';
+    if (litA) {
+      if (!reduced && pd >= RUN.failFrom && pd < RUN.fixFrom) { parityTxt = '2/3'; parityCls = 'v-fail'; }
+      else { parityTxt = '3/3'; parityCls = 'v-pass'; }
+    }
+    if (hudParity.textContent !== parityTxt) { hudParity.textContent = parityTxt; hudParity.className = parityCls; }
+    hudStage.textContent = ri === -1 ? '·' : REGIONS[ri].lab;
+    centerTurn.textContent = fillCount >= 4 ? 'ASSEMBLED' : 'ASSEMBLY ' + (fillCount * 25) + '%';
+
+    // todos in the live-run card
+    for (i = 0; i < TODOS.length; i++) {
+      var td = TODOS[i], st = 'open';
+      var pp = reduced ? 1 : p;
+      if (td.fail && pp >= td.fail && pp < td.done) st = 'fail';
+      else if (pp >= td.done) st = 'done';
+      if (todoEls[i].getAttribute('data-state') !== st) {
+        todoEls[i].setAttribute('data-state', st);
+        if (td.tagDone) {
+          var tag = todoEls[i].querySelector('.turntag');
+          tag.textContent = st === 'done' ? 'via ' + td.tagDone : 'direct patch';
+        }
+      }
+    }
+
+    // code line highlights: first half of a card's window lights range A,
+    // second half B
+    var best = null, bo = 0;
+    for (i = 0; i < cards.length; i++) {
+      var c = cards[i];
+      var o = cueOpacity(c, p);
+      if (o > bo) { bo = o; best = c; }
+      if (!c.lines) continue;
+      var sub = clamp01((p - c.from) / (c.to - c.from));
+      var rng = (p >= c.from && p <= c.to) ? (sub < 0.5 ? c.hlA : c.hlB) : null;
+      if (c.lastRng !== (rng && rng[0])) {
+        c.lastRng = rng && rng[0];
+        for (var ln = 0; ln < c.lines.length; ln++)
+          c.lines[ln].classList.toggle('lit', !!rng && ln + 1 >= rng[0] && ln + 1 <= rng[1]);
+      }
+    }
+
+    // leader line + depth aperture from the visible card to its subject
+    var anchorPt = null;
+    if (best && bo > 0.15) {
+      if (best.anchor === 'token') anchorPt = tokPt;
+      else if (byId[best.anchor]) anchorPt = [byId[best.anchor].x, byId[best.anchor].y];
+    }
+    if (anchorPt) {
+      var sx = (anchorPt[0] - vb.x) * ppu, sy = (anchorPt[1] - vb.y) * (window.innerHeight / vb.h);
+      var cr = best.el.getBoundingClientRect();
+      var ex = clamp01((sx - cr.left) / cr.width) * cr.width + cr.left;
+      var ey = sy > cr.top + cr.height / 2 ? cr.bottom : cr.top;
+      if (sx < cr.left) { ex = cr.left; ey = Math.min(Math.max(sy, cr.top + 12), cr.bottom - 12); }
+      else if (sx > cr.right) { ex = cr.right; ey = Math.min(Math.max(sy, cr.top + 12), cr.bottom - 12); }
+      var on = sx > -40 && sx < window.innerWidth + 40 && sy > -40 && sy < window.innerHeight + 40;
+      leader.setAttribute('x1', ex.toFixed(1)); leader.setAttribute('y1', ey.toFixed(1));
+      leader.setAttribute('x2', sx.toFixed(1)); leader.setAttribute('y2', sy.toFixed(1));
+      leader.setAttribute('opacity', on ? (bo * 0.85).toFixed(2) : 0);
+      halo.setAttribute('cx', sx.toFixed(1)); halo.setAttribute('cy', sy.toFixed(1));
+      halo.setAttribute('opacity', on ? bo.toFixed(2) : 0);
+
+      var ap = null;
+      if (on && best.anchor !== 'token') {
+        ap = CCDepth.box(subjectPlate(best.anchor), vb, ppu);
+      }
+      DEPTH.set(ap ? bo : 0, ap);
+      DEPTH.fore(ap ? best.el : null);
+    } else {
+      leader.setAttribute('opacity', 0);
+      halo.setAttribute('opacity', 0);
+      DEPTH.set(0, null);
+      DEPTH.fore(null);
+    }
+
+    // stage focus: the subject expands, everything else rests as quiet marks
+    var detail = ppu >= 1.45;
+    var termF = 0;
+    STATIONS.forEach(function (st) {
+      var f = reduced ? 1 : trap(p, REGIONS[st.wIdx].w[0], REGIONS[st.wIdx].w[1]);
+      // the terminal + gate light for their moment then STAY lit once earned
+      if (st.id === 'term') { f = Math.max(f, reduced ? 1 : clamp01((p - RUN.fixTo) / 0.05)); termF = f; }
+      st.ring.setAttribute('opacity', f.toFixed(2));
+      st.core.setAttribute('opacity', (0.45 + 0.55 * f).toFixed(2));
+      st.nameEl.style.opacity = (0.38 + 0.62 * f).toFixed(2);
+      st.plainEl.style.opacity = detail && !reduced ? f.toFixed(2) : '0';
+      intEls[st.id].style.opacity = detail ? f.toFixed(2) : '0';
+      plateEls[st.id].style.opacity = detail ? f.toFixed(2) : '0';
+    });
+    // the terminal's three chips: visible on the close tour visit (gated by
+    // detail, like any other internals) OR whenever the finale is running,
+    // even at the wide MID framing -- their flip is the page's payoff and
+    // must survive being zoomed out.
+    var chipsOn = reduced || (detail && termF > 0.05) || p >= RUN.travel0;
+    chipsGroup.style.opacity = chipsOn ? '1' : '0';
+  }
+
+  function sizeOverlay() {
+    overlay.setAttribute('viewBox', '0 0 ' + window.innerWidth + ' ' + window.innerHeight);
+    overlay.setAttribute('width', window.innerWidth);
+    overlay.setAttribute('height', window.innerHeight);
+  }
+
+  var dirty = false;
+  function schedule() {
+    if (dirty) return;
+    dirty = true;
+    requestAnimationFrame(function () { dirty = false; render(); });
+  }
+  addEventListener('scroll', schedule, { passive: true });
+  addEventListener('resize', function () { measure(); sizeOverlay(); lastPpu = 0; schedule(); });
+  addEventListener('load', function () { measure(); schedule(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); schedule(); });
+
+  ScrollCraft.mount(document.body);
+  measure();
+  sizeOverlay();
+  render();
+}());
+
+</script>
+</body>
+</html>

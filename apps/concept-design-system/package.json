@@ -1,0 +1,10 @@
+{
+  "name": "@foolscap/concept-design-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A scroll-driven explainer of Foolscap's architecture -- tokens, styles, the headless core, and the React/Vue/Angular adapters -- traced through the real Tabs component.",
+  "scripts": {
+    "dev": "node serve.mjs"
+  }
+}
